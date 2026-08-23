@@ -106,7 +106,7 @@ $$Falso \lor Falso \equiv \text{FALSO}$$
 
 O estado de risco $S_{risco,1}$ é, portanto, uma **contradição** sob a regra de intertravamento vigente — o controlador nunca permitirá que esse estado seja alcançado.
 
-*(Exemplo aplicado ao tanque 1: substituindo $X \to 1$, obtém-se $S_{risco,1,1} \equiv p_{1,1} \land v_{1,1}$, também uma contradição, pela mesma dedução.)*
+*(Exemplo aplicado ao tanque 1: substituindo $X \to 1, obtém-se $S_{risco,1,1} \equiv p_{1,1} \land v_{1,1}$, também uma contradição, pela mesma dedução.)*
 
 ## Prova 2 — Segurança do Dispensador
 
