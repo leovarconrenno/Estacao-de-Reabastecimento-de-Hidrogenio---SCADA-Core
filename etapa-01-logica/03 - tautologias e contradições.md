@@ -77,60 +77,62 @@ $$F_3 \rightarrow \neg v_{3,1}$$
 
 Para demonstrar ao motor do SCADA-Core que a planta nunca entrará em estado de risco de explosão por sobrepressão mantendo a válvula de saída do armazenamento aberta, constrói-se a prova formal do teorema de segurança.
 
-* **Afirmação de Segurança:** "Não é possível ter sobrepressão no armazenamento ($p_1$) E manter a válvula de saída $v_1$ aberta."
+* **Afirmação de Segurança:** "Não é possível ter sobrepressão no armazenamento ($p_{1,X}$) E manter a válvula de saída $v_{1,X}$ aberta."
 * **Proposição do Estado de Risco ($S_{risco,1}$):**
 
-$$S_{risco,1} \equiv p_1 \land v_1$$
+$$S_{risco,1} \equiv p_{1,X} \land v_{1,X}$$
 
-Da regra de intertravamento A, sabe-se que $F_1 \rightarrow (\neg v_1 \land a_1)$, e que $p_1 \rightarrow F_1$ (pois $p_1$ é um dos disjuntos de $F_1$). Por silogismo hipotético, obtém-se a regra derivada implementada no controlador:
+Da regra de intertravamento A, sabe-se que $F_{1,X} \rightarrow (\neg v_{1,X} \land a_{1,1})$, e que $p_{1,X} \rightarrow F_{1,X}$ (pois $p_{1,X}$ é um dos disjuntos de $F_{1,X}$). Por silogismo hipotético, obtém-se a regra derivada implementada no controlador:
 
-$$p_1 \rightarrow \neg v_1$$
+$$p_{1,X} \rightarrow \neg v_{1,X}$$
 
 Aplica-se a equivalência lógica do condicional ($\mathbf{A} \rightarrow \mathbf{B} \equiv \neg \mathbf{A} \lor \mathbf{B}$):
 
-$$p_1 \rightarrow \neg v_1 \equiv \neg p_1 \lor \neg v_1$$
+$$p_{1,X} \rightarrow \neg v_{1,X} \equiv \neg p_{1,X} \lor \neg v_{1,X}$$
 
-Substituindo o estado de risco sob a premissa de que a regra $p_1 \rightarrow \neg v_1$ é estritamente VERDADEIRA (restringindo o espaço de estados):
+Substituindo o estado de risco sob a premissa de que a regra $p_{1,X} \rightarrow \neg v_{1,X}$ é estritamente VERDADEIRA (restringindo o espaço de estados):
 
-$$S_{risco,1} \land (\neg p_1 \lor \neg v_1)$$
+$$S_{risco,1} \land (\neg p_{1,X} \lor \neg v_{1,X})$$
 
-$$(p_1 \land v_1) \land (\neg p_1 \lor \neg v_1)$$
+$$(p_{1,X} \land v_{1,X}) \land (\neg p_{1,X} \lor \neg v_{1,X})$$
 
-Distribuindo $(p_1 \land v_1)$:
+Distribuindo $(p_{1,X} \land v_{1,X})$:
 
-$$\big((p_1 \land v_1) \land \neg p_1\big) \lor \big((p_1 \land v_1) \land \neg v_1\big)$$
+$$\big((p_{1,X} \land v_{1,X}) \land \neg p_{1,X}\big) \lor \big((p_{1,X} \land v_{1,X}) \land \neg v_{1,X}\big)$$
 
-$$(Falso \land v_1) \lor (p_1 \land Falso)$$
+$$(Falso \land v_{1,X}) \lor (p_{1,X} \land Falso)$$
 
 $$Falso \lor Falso \equiv \text{FALSO}$$
 
 O estado de risco $S_{risco,1}$ é, portanto, uma **contradição** sob a regra de intertravamento vigente — o controlador nunca permitirá que esse estado seja alcançado.
 
+*(Exemplo aplicado ao tanque 1: substituindo $X \to 1$, obtém-se $S_{risco,1,1} \equiv p_{1,1} \land v_{1,1}$, também uma contradição, pela mesma dedução.)*
+
 ## Prova 2 — Segurança do Dispensador
 
 Analogamente, demonstra-se que a planta nunca abastecerá um veículo na presença de vazamento de H₂ detectado na área do dispensador.
 
-* **Afirmação de Segurança:** "Não é possível ter vazamento de H₂ no dispensador ($g_2$) E manter a válvula de dispensação $v_2$ aberta."
-* **Proposição do Estado de Risco ($S_{risco,2}$):**
+* **Afirmação de Segurança:** "Não é possível ter vazamento de H₂ no dispensador ($g_{3,1}$) E manter a válvula de dispensação $v_{3,1}$ aberta."
+* **Proposição do Estado de Risco ($S_{risco,3}$):**
 
-$$S_{risco,2} \equiv g_2 \land v_2$$
+$$S_{risco,3} \equiv g_{3,1} \land v_{3,1}$$
 
-Da regra de intertravamento E, sabe-se que $F_3 \rightarrow \neg v_2$, e que $g_2 \rightarrow F_3$ (pois $g_2$ é um dos disjuntos de $F_3$). Por silogismo hipotético:
+Da regra de intertravamento E, sabe-se que $F_3 \rightarrow \neg v_{3,1}$, e que $g_{3,1} \rightarrow F_3$ (pois $g_{3,1}$ é um dos disjuntos de $F_3$). Por silogismo hipotético:
 
-$$g_2 \rightarrow \neg v_2 \equiv \neg g_2 \lor \neg v_2$$
+$$g_{3,1} \rightarrow \neg v_{3,1} \equiv \neg g_{3,1} \lor \neg v_{3,1}$$
 
 Substituindo o estado de risco:
 
-$$S_{risco,2} \land (\neg g_2 \lor \neg v_2)$$
+$$S_{risco,3} \land (\neg g_{3,1} \lor \neg v_{3,1})$$
 
-$$(g_2 \land v_2) \land (\neg g_2 \lor \neg v_2)$$
+$$(g_{3,1} \land v_{3,1}) \land (\neg g_{3,1} \lor \neg v_{3,1})$$
 
-Distribuindo $(g_2 \land v_2)$:
+Distribuindo $(g_{3,1} \land v_{3,1})$:
 
-$$\big((g_2 \land v_2) \land \neg g_2\big) \lor \big((g_2 \land v_2) \land \neg v_2\big)$$
+$$\big((g_{3,1} \land v_{3,1}) \land \neg g_{3,1}\big) \lor \big((g_{3,1} \land v_{3,1}) \land \neg v_{3,1}\big)$$
 
-$$(Falso \land v_2) \lor (g_2 \land Falso)$$
+$$(Falso \land v_{3,1}) \lor (g_{3,1} \land Falso)$$
 
 $$Falso \lor Falso \equiv \text{FALSO}$$
 
-O estado de risco $S_{risco,2}$ é igualmente uma **contradição** lógica: o SCADA-Core nunca permitirá abastecimento com vazamento de H₂ ativo na área do dispensador.
+O estado de risco $S_{risco,3}$ é igualmente uma **contradição** lógica: o SCADA-Core nunca permitirá abastecimento com vazamento de H₂ ativo na área do dispensador.
