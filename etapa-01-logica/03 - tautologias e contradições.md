@@ -51,7 +51,7 @@ A válvula de dispensação ($v_{3,1}$, XV-301) só pode abrir se: o operador ti
 
 * **Condição de Permissivo de Abertura ($P_{disp}$):**
 
-$$P_{disp} \equiv h_{3,1} \land c_{3,1} \land bv_{3,1} \land t_{3,1} \land p_{3,1} \land m_{2,1} \land \lnot g_{1,X} \land \lnot g_{3,1} \land \lnot e_1$$
+$$P_{disp} \equiv h_{3,1} \land c_{3,1} \land bv_{3,1} \land \not t_{3,1} \land p_{3,1} \land m_{2,1} \land \lnot g_{1,X} \land \lnot g_{3,1} \land \lnot e_1$$
 
 * **Regra Operacional:**
 
