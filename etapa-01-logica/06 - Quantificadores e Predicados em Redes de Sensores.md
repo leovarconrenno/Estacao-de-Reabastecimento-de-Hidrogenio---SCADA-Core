@@ -1,6 +1,5 @@
 # 06 - Quantificadores e Predicados em Redes de Sensores
 
----
 
 ## 1. Definição de Domínios e Predicados
 
