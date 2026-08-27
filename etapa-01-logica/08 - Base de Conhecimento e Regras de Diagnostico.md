@@ -2,7 +2,7 @@
 
 ## 1. Fundamentos Matemáticos: Arquitetura de Sistemas Baseados em Regras (RBS)
 
-Na **Estação de Reabastecimento de Hidrogênio** (SCADA-Core), a ocorrência de anomalias operacionais ou falhas de sensores exige diagnósticos automáticos de causa-raiz em tempo real baseados em **Sistemas Especialistas Baseados em Regras** (*Rule-Based Expert Systems*).
+Na **Estação de Reabastecimento de Hidrogênio** (SCADA-Core), a ocorrência de anomalias operacionais, desvios de processo ou falhas de instrumentos em campo exige diagnósticos automáticos de causa-raiz em tempo real, altamente determinísticos e de baixíssima latência, fundamentados em **Sistemas Especialistas Baseados em Regras** (Rule-Based Expert Systems). Essa abordagem computacional avançada permite estruturar o conhecimento heurístico de operadores experientes e especialistas em segurança de processos em uma base formal de produção, viabilizando a tomada de decisões autônomas e mitigando riscos operacionais críticos em tempo hábil.
 
 Formalmente, um Sistema Baseado em Regras é modelado pela tripla:
 
