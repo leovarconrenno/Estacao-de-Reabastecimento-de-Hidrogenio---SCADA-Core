@@ -54,13 +54,4 @@ Uma Base de Conhecimento industrial para a Estação de Hidrogênio deve ser est
 1. **Consistência Semântica:** Não podem coexistir regras onde os mesmos antecedentes gerem conclusões mutuamente exclusivas ($A \rightarrow C$ e $A \rightarrow \neg C$).
 2. **Priorização por Severidade:** Regras associadas a vazamentos de $\text{H}_2$ ou risco de sobrepressão em vasos de 350/700 bar possuem prioridade máxima de execução ($\text{SIL 3} / \text{Prio} = 10$).
 
----
 
-## 4. Entregável da Aula 08 (Notebook Python)
-
-O notebook Python [`08 - Base de Conhecimento e Regras de Diagnostico.ipynb`](./08%20-%20Base%20de%20Conhecimento%20e%20Regras%20de%20Diagnostico.ipynb) implementa e valida o motor especialista para a planta:
-
-* **Estrutura de Diagnóstico em Python:**
-  1. **Base de Conhecimento (`regras_diagnostico`):** Mapeamento de sintomas observados para causas-raiz, severidade e ações corretivas.
-  2. **Motor de Diagnóstico (`diagnosticar`):** Motor de inferência por casamento de conjuntos de sintomas (`sintomas.issubset(sintomas_observados)`).
-  3. **Bateria de Cenários Operacionais:** Testes automatizados cobrindo Operação Nominal, Falha Elétrica do Sensor FT-101, Bloqueio Downstream, Cavitação de Bomba e Erro de Processo (pH).
