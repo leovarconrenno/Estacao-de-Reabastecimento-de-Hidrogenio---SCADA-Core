@@ -2,16 +2,16 @@
 
 ## 1. Fundamentos Matemáticos: Álgebra Proposicional e Operadores
 
-Na álgebra booleana de Boole-Shannon aplicada à automação de controle, definimos a estrutura algébrica $\langle \mathbb{B}, \land, \lor, \neg, 0, 1 \rangle$ onde $\mathbb{B} = \{0, 1\}$.
+Na álgebra booleana de Boole-Shannon aplicada à automação de controle industrial e aos sistemas instrumentados de segurança (SIS), definimos formalmente a estrutura algébrica $\langle \mathbb{B}, \land, \lor, \neg, 0, 1 \rangle$ onde o domínio booleano é restrito a $\mathbb{B} = \{0, 1\}$. Essa formulação matemática serve como base algorítmica para a tradução de estados físicos de campo em equações lógicas determinísticas[cite: 5, 6].
 
-Os operadores fundamentais e suas equivalências na computação e engenharia de controle são:
+Os operadores fundamentais, suas propriedades operacionais e suas respectivas equivalências na computação e na engenharia de controle de processos são estruturados da seguinte forma:
 
-1. **Negação ($\neg p$ / `NOT(p)`):** Inversão lógica (contatos NF — *Normally Closed*). Retorna a inversão do valor de verdade.
-2. **Conjunção ($p \land q$ / `AND(p, q)`):** Associação em **série** (todos os requisitos de segurança e processo devem ser satisfeitos simultaneamente).
-3. **Disjunção ($p \lor q$ / `OR(p, q)`):** Associação em **paralelo** (representa múltiplas condições de disparo de falha ou rotas redundantes).
-4. **Disjunção Exclusiva ($p \oplus q$ / `XOR(p, q)`):** $(p \land \neg q) \lor (\neg p \land q)$. Seletor de exclusividade mútua (ex.: Modo Automático vs. Modo Manual).
-5. **Implicação Lógica ($p \rightarrow q$ / `IMPLIES(p, q)`):** Equivalente a $\neg p \lor q$. Condicional de controle: "SE a condição/falha $p$ for verdadeira, ENTÃO a ação $q$ deve ser executada".
-6. **Bicondicional ($p \leftrightarrow q$ / `IFF(p, q)`):** Equivalência estrita de estados ($p == q$).
+1. **Negação ($\neg p$ / `NOT(p)`):** Inversão lógica estrita associada a contatos normalmente fechados (NF — *Normally Closed*). Retorna o complemento do valor de verdade, sendo indispensável para a implementação de lógicas de segurança baseadas no conceito de falha segura (*fail-safe*).
+2. **Conjunção ($p \land q$ / `AND(p, q)`):** Associação lógica em **série**, onde todos os permissivos de processo, intertravamentos de segurança e requisitos operacionais devem ser satisfeitos simultaneamente para que um atuador crítico seja liberado.
+3. **Disjunção ($p \lor q$ / `OR(p, q)`):** Associação lógica em **paralelo**, empregada para modelar múltiplas condições independentes de disparo de falha, eventos de *trip* ou rotas redundantes de emergência na planta.
+4. **Disjunção Exclusiva ($p \oplus q$ / `XOR(p, q)`):** Definida algebricamente por $(p \land \neg q) \lor (\neg p \land q)$. Atua como um seletor de exclusividade mútua, aplicado em lógicas de comutação estrita (ex.: seleção exclusiva entre o Modo Automático e o Modo Manual).
+5. **Implicação Lógica ($p \rightarrow q$ / `IMPLIES(p, q)`):** Equivalente formal à disjunção material $\neg p \lor q$. Representa a condicional fundamental de controle determinístico: "SE a condição de processo ou sinal de falha $p$ for verdadeira, ENTÃO a ação corretiva ou o intertravamento $q$ deve ser executado obrigatoriamente"[cite: 5, 6].
+6. **Bicondicional ($p \leftrightarrow q$ / `IFF(p, q)`):** Equivalência estrita de estados ($p == q$), utilizada para a validação contínua de feedback de concordância entre o comando digital emitido pelo CLP e o estado real reportado pelos elementos finais de campo.
 
 ---
 
