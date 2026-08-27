@@ -127,14 +127,3 @@ $$P_{disp} \land F_3 \equiv \mathbf{F} \lor \mathbf{F} \lor \mathbf{F} \lor \mat
 
 Isso prova formalmente que **$P_{disp}$ e $F_3$ são mutuamente exclusivos**, assegurando que o sistema SCADA-Core nunca entrará em estado indeterminado ou inconsistente.
 
----
-
-## 4. Entregável da Aula 04 (Notebook Python)
-
-O arquivo [`04 - Logica Proposicional Conectivos e Permissivos.ipynb`](./04%20-%20Logica%20Proposicional%20Conectivos%20e%20Permissivos.ipynb) implementa computacionalmente:
-
-1. **Módulo de Operadores Lógicos Fundamentais:** Implementação em Python de `NOT`, `AND`, `OR`, `XOR`, `IMPLIES` e `IFF`.
-2. **Função de Trip do Banco de Armazenamento (`trip_banco_armazenamento`):** Simulação de cenários de sobrepressão, sobretemperatura, vazamento e emergência com relatório via Pandas DataFrame.
-3. **Função de Permissivo do Dispensador (`permissivo_dispensador`):** Avaliação dinâmica dos permissivos e trips do setor 300.
-4. **Gerador Automático de Tabela-Verdade:** Varredura exaustiva de 512 estados lógicos com relatórios de segurança.
-5. **Provador de Exclusividade Mútua:** Validação formal da contradição de segurança entre permissivo e trip.
