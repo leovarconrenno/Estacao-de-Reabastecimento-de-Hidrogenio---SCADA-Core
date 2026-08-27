@@ -79,24 +79,3 @@ Estas são as proposições que representam os estados de comando enviados pelo 
 
 ### Setor 300: Atuadores de Dispensação
 * $v_{3,1}$: Válvula solenoide do bico dispensador (XV-301) no estado ABERTA
-
----
-
-## 4. Fundamentos Teóricos e Conceituais da Arquitetura de Controle
-
-### 4.1 Abstração Lógica e Modelagem de Estados Discretos
-A representação formal de processos industriais por meio de proposições lógicas constitui a base fundamental para a engenharia de automação moderna. A conversão sistemática de grandezas físicas contínuas em variáveis binárias permite a implementação de malhas de controle e intertravamentos robustos. Esse método garante que a planta opere sob critérios determinísticos, eliminando ambiguidades interpretativas e assegurando que o sistema de controle responda de maneira previsível e segura diante de variações operacionais ou distúrbios externos.
-
-### 4.2 Filosofia de Segurança Integrada e Lógica de Permissivos
-A operação de sistemas envolvendo fluidos sob alta pressão exige uma filosofia estrita baseada em permissivos de partida e restrições intertravadas. Nenhum estado ativo de atuação pode ser estabelecido sem a validação prévia de todas as condições de integridade estrutural e ambiental. Essa abordagem assegura que desvios operacionais ou falhas incipientes na instrumentação sejam tratados de forma preventiva, acionando rotinas de segurança antes que qualquer condição crítica afete a integridade física dos equipamentos ou dos operadores.
-
-### 4.3 Padronização e Rastreabilidade de Instrumentação
-A consistência na identificação de instrumentos e malhas de controle é indispensável para a manutenibilidade e escalabilidade de projetos de automação industrial. A correlação direta entre os elementos físicos dispostos no campo e as respectivas variáveis lógicas no ambiente computacional do controlador lógico programável (CLP) viabiliza auditorias técnicas eficientes e simplifica futuras expansões da arquitetura de supervisão e controle.
-
-## 5. Diretrizes Complementares de Confiabilidade e Gestão Operacional
-
-### 5.1 Confiabilidade de Redes e Sistemas Supervisórios
-A resiliência operacional de uma planta industrial depende diretamente da integridade da comunicação entre os dispositivos de campo e as estações de operação do sistema supervisório (SCADA). A redundância estrutural no tratamento e na exibição das variáveis lógicas assegura que a equipe de operação disponha de informações claras, consistentes e em tempo real para a tomada de decisões estratégicas e o gerenciamento de contingências.
-
-### 5.2 Documentação Técnica e Boas Práticas de Engenharia
-A manutenção de um repositório documental detalhado, coeso e estruturado reflete o rigor metodológico aplicado no desenvolvimento de projetos de controle e automação. A especificação minuciosa dos insumos lógicos e utilitários facilita o entendimento conceitual por equipes multidisciplinares, otimizando tanto as etapas de comissionamento quanto as revisões periódicas de engenharia de processo.
