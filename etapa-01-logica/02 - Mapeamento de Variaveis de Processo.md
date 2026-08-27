@@ -1,6 +1,6 @@
 # Mapeamento de Variáveis de Processo para Proposições Lógicas
 
-Na automação industrial (norma ISA-5.1), instrumentos e atuadores emitem e recebem sinais discretos (binários: $0$ = Falso / $1$ = Verdadeiro). 
+Na automação industrial (norma ISA-5.1), instrumentos e atuadores emitem e recebem sinais discretos (binários: $0$ = Falso / $1$ = Verdadeiro), permitindo a tradução de condições físicas de campo em variáveis lógicas estruturadas para o processamento em sistemas de controle e intertravamento.
 
 ![Estação de reabastecimento](/etapa-01-logica/projeto2.png)
 
