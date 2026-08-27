@@ -68,14 +68,3 @@ Se for impossível encontrar uma valoração de variáveis que torne todas as pr
    $$P \rightarrow Q, \; \neg P \not\vdash \neg Q$$
    *Exemplo errôneo:* "Se houver vazamento de gás ($P$), evacue a área ($Q$). Não há vazamento de gás ($\neg P$). Logo, não evacue a área ($\neg Q$)." $\rightarrow$ **Inválido**, pois a evacuação pode ser exigida por incêndio ou sobreaquecimento.
 
----
-
-## 5. Entregável da Aula 07 (Notebook Python)
-
-O notebook Python [`07 - Validade e Inferencia Logica na Seguranca.ipynb`](./07%20-%20Validade%20e%20Inferencia%20Logica%20na%20Seguranca.ipynb) implementa e demonstra computacionalmente os conceitos apresentados neste documento:
-
-* **Módulo `ProvadorDedutivoFormal` em Python:**
-  1. Motor de verificação de argumentos por **Tabela-Verdade Exaustiva** ($2^n$ estados).
-  2. Motor de verificação por **Refutação e Contradição** ($\{P_1, \dots, P_k, \neg C\} \equiv \mathbf{F}$).
-  3. Verificador de esquemas canônicos nomeados (Modus Ponens, Modus Tollens, Silogismo Hipotético, Resolução Proposicional).
-  4. Bateria de testes automatizados com relatório formatado cobrindo intertravamentos de segurança e detecção de falácias industriais.
