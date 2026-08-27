@@ -2,23 +2,22 @@
 
 ## 1. Fundamentos Matemáticos: Formas Canônicas e Minimização
 
-Na álgebra proposicional de Boole-Shannon, qualquer função booleana $f(x_1, x_2, \dots, x_n)$ de $n$ variáveis de processo pode ser representada em duas formas canônicas padronizadas:
+Na álgebra proposicional de Boole-Shannon aplicada diretamente à engenharia de automação de processos industriais e aos sistemas instrumentados de segurança (SIS), qualquer função booleana $f(x_1, x_2, \dots, x_n)$ de $n$ variáveis discretas de processo pode ser representada analiticamente em duas formas canônicas padronizadas e complementares. Essa modelagem matemática formal garante a consistência combinacional e a rastreabilidade total das equações de intertravamento implementadas nos controladores lógicos programáveis (CLPs):
 
 1. **Forma Normal Disjuntiva (FND / Soma de Produtos — SOP):**
-   - Expressa como a **disjunção ($\lor$) de mintermos** (conjunções contendo todas as $n$ variáveis na forma direta ou negada).
+   - Expressa matematicamente como a **disjunção ($\lor$) de mintermos** (conjunções lógicas contendo estritamente todas as $n$ variáveis de entrada, seja na forma direta ou negada).
    - $$f = \bigvee_{m \in \text{Mintermos}} m$$
-   - Representa o mapeamento exaustivo de todos os estados de entrada em que a saída do sistema de controle é **Verdadeira ($1$)** (permissivo liberado ou trip ativado).
+   - Representa o mapeamento exaustivo e direto de todos os estados operacionais de campo em que a saída do sistema de controle ou do intertravamento é estritamente **Verdadeira ($1$)**, sinalizando permissivos de partida liberados ou condições ativas de trip e alarme na planta.
 
 2. **Forma Normal Conjuntiva (FNC / Produto de Somas — POS):**
-   - Expressa como a **conjunção ($\land$) de maxtermos** (disjunções contendo todas as $n$ variáveis na forma direta ou negada).
+   - Expressa matematicamente como a **conjunção ($\land$) de maxtermos** (disjunções lógicas estruturadas com todas as $n$ variáveis do sistema em sua forma direta ou negada).
    - $$f = \bigwedge_{M \in \text{Maxtermos}} M$$
-   - Representa o isolamento de todas as combinações de falha em que a saída é **Falsa ($0$)**.
+   - Representa o isolamento analítico de todas as combinações indesejadas de falha ou desvios em que a saída lógica avalia como **Falsa ($0$)**, sendo altamente aplicada na validação de restrições normativas de segurança operacional.
 
 3. **Minimização Booleana por Adjacência Lógica (Algoritmo de Quine-McCluskey):**
-   - Utiliza a propriedade fundamental de redução por adjacência lógica:
+   - Utiliza a propriedade algébrica fundamental de redução por adjacência lógica e eliminação de termos redundantes para otimizar o consumo de memória e o tempo de varredura (*scan time*) do CLP:
      $$(A \land B) \lor (A \land \neg B) \equiv A \land (B \lor \neg B) \equiv A \land \mathbf{T} \equiv A$$
-   - O algoritmo identifica pares de termos que diferem por exatamente $1\text{ bit}$ (distância de Hamming = 1), combina-os eliminando a variável redundante (substituída pelo caractere *don't care* `-`) e extrai os **implicantes primos**. Em seguida, seleciona a **cobertura mínima essencial** de mintermos.
-
+   - O algoritmo computacional identifica sistematicamente pares de termos lógicos que diferem por exatamente $1\text{ bit}$ (distância de Hamming igual a 1), combina-os eliminando a variável redundante correspondente (substituída computacionalmente pelo caractere *don't care* `-`) e extrai iterativamente os **implicantes primos**. Por fim, o motor seleciona a **cobertura mínima essencial** de mintermos, garantindo máxima eficiência de processamento e robustez em sistemas supervisórios de alta criticidade.
 ---
 
 ## 2. Aplicação em Engenharia: Otimização do Tempo de Scan no SCADA e CLP
@@ -96,18 +95,3 @@ equivalente = all(
 
 Essa verificação garante que nenhuma condição de segurança foi alterada, suprimida ou indevidamente combinada durante o processo de otimização booleana.
 
----
-
-## 5. Entregável da Aula 05 (Notebook Python)
-
-O arquivo [`05 - Formas Normais e Otimizacao Booleana.ipynb`](./05%20-%20Formas%20Normais%20e%20Otimizacao%20Booleana.ipynb) disponibiliza:
-
-1. **Classe `OtimizadorBooleano`:**
-   - `extrair_mintermos_maxtermos()`: Varredura de funções e tabelas-verdade.
-   - `formatar_fnd_canonico()` e `formatar_fnc_canonico()`: Geração de formas canônicas completas.
-   - `minimizar_fnd()` e `minimizar_fnc()`: Otimização por Quine-McCluskey (combinação por adjacência lógica + cobertura mínima).
-   - `avaliar_fnd_minimizada()`: Motor de testes de equivalência lógica.
-2. **Casos de Teste Industriais:**
-   - Validação com exemplo de 3 variáveis.
-   - Otimização do Trip $F_{1,X}$ (Setor 100, 4 variáveis).
-   - Otimização do Permissivo $P_{disp}$ (Setor 300, 9 variáveis, 512 estados).
