@@ -2,7 +2,7 @@
 
 ## 1. Fundamentos Matemáticos: Argumentos Dedutivos, Validade e Tautologias
 
-Na engenharia de controle e segurança de processos industriais (*Safety Instrumented Systems - SIS* / IEC 61511 e IEC 61508), a tomada de decisão crítica de parada de emergência (*Emergency Shutdown - ESD*) deve ser fundamentada na **Validade Lógica Dedutiva**.
+Na engenharia de controle e segurança de processos industriais (Safety Instrumented Systems - SIS / IEC 61511 e IEC 61508), a tomada de decisão crítica de parada de emergência (Emergency Shutdown - ESD) deve ser fundamentada rigorosamente na **Validade Lógica Dedutiva**, assegurando que transições de estados perigosos para desvios operacionais catastróficos acionem rotinas determinísticas de intertravamento livre de ambiguidades e falhas sistêmicas.
 
 ### 1.1. Definição Formal de Argumento e Validade
 
