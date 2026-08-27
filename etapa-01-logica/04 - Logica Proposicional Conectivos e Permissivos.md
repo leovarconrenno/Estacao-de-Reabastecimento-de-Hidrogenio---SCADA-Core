@@ -2,7 +2,7 @@
 
 ## 1. Fundamentos Matemáticos: Álgebra Proposicional e Operadores
 
-Na álgebra booleana de Boole-Shannon aplicada à automação de controle industrial e aos sistemas instrumentados de segurança (SIS), definimos formalmente a estrutura algébrica $\langle \mathbb{B}, \land, \lor, \neg, 0, 1 \rangle$ onde o domínio booleano é restrito a $\mathbb{B} = \{0, 1\}$. Essa formulação matemática serve como base algorítmica para a tradução de estados físicos de campo em equações lógicas determinísticas[cite: 5, 6].
+Na álgebra booleana de Boole-Shannon aplicada à automação de controle industrial e aos sistemas instrumentados de segurança (SIS), definimos formalmente a estrutura algébrica $\langle \mathbb{B}, \land, \lor, \neg, 0, 1 \rangle$ onde o domínio booleano é restrito a $\mathbb{B} = \{0, 1\}$. Essa formulação matemática serve como base algorítmica para a tradução de estados físicos de campo em equações lógicas determinísticas.
 
 Os operadores fundamentais, suas propriedades operacionais e suas respectivas equivalências na computação e na engenharia de controle de processos são estruturados da seguinte forma:
 
@@ -10,7 +10,7 @@ Os operadores fundamentais, suas propriedades operacionais e suas respectivas eq
 2. **Conjunção ($p \land q$ / `AND(p, q)`):** Associação lógica em **série**, onde todos os permissivos de processo, intertravamentos de segurança e requisitos operacionais devem ser satisfeitos simultaneamente para que um atuador crítico seja liberado.
 3. **Disjunção ($p \lor q$ / `OR(p, q)`):** Associação lógica em **paralelo**, empregada para modelar múltiplas condições independentes de disparo de falha, eventos de *trip* ou rotas redundantes de emergência na planta.
 4. **Disjunção Exclusiva ($p \oplus q$ / `XOR(p, q)`):** Definida algebricamente por $(p \land \neg q) \lor (\neg p \land q)$. Atua como um seletor de exclusividade mútua, aplicado em lógicas de comutação estrita (ex.: seleção exclusiva entre o Modo Automático e o Modo Manual).
-5. **Implicação Lógica ($p \rightarrow q$ / `IMPLIES(p, q)`):** Equivalente formal à disjunção material $\neg p \lor q$. Representa a condicional fundamental de controle determinístico: "SE a condição de processo ou sinal de falha $p$ for verdadeira, ENTÃO a ação corretiva ou o intertravamento $q$ deve ser executado obrigatoriamente"[cite: 5, 6].
+5. **Implicação Lógica ($p \rightarrow q$ / `IMPLIES(p, q)`):** Equivalente formal à disjunção material $\neg p \lor q$. Representa a condicional fundamental de controle determinístico: "SE a condição de processo ou sinal de falha $p$ for verdadeira, ENTÃO a ação corretiva ou o intertravamento $q$ deve ser executado obrigatoriamente".
 6. **Bicondicional ($p \leftrightarrow q$ / `IFF(p, q)`):** Equivalência estrita de estados ($p == q$), utilizada para a validação contínua de feedback de concordância entre o comando digital emitido pelo CLP e o estado real reportado pelos elementos finais de campo.
 
 ---
