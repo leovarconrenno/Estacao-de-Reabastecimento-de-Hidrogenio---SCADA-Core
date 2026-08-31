@@ -1,10 +1,10 @@
 # Aula 07: Validade de Argumentos e Inferência Lógica na Segurança de Processos
 
-## 1. Fundamentos Matemáticos: Argumentos Dedutivos, Validade e Tautologias
+## 1. Fundamentos Matemáticos: Argumentos Dedutivos, Validade e Tautologias.
 
 Na engenharia de controle e segurança de processos industriais (Safety Instrumented Systems - SIS / IEC 61511 e IEC 61508), a tomada de decisão crítica de parada de emergência (Emergency Shutdown - ESD) deve ser fundamentada rigorosamente na **Validade Lógica Dedutiva**, assegurando que transições de estados perigosos para desvios operacionais catastróficos acionem rotinas determinísticas de intertravamento livre de ambiguidades e falhas sistêmicas.
 
-### 1.1. Definição Formal de Argumento e Validade
+### 1.1. Definição Formal de Argumento e Validade.
 
 Um **argumento dedutivo** é uma estrutura formal composta por um conjunto finito de premissas $\{P_1, P_2, \dots, P_k\}$ e uma conclusão $C$, denotado formalmente por:
 
@@ -31,7 +31,7 @@ graph TD
 
 ---
 
-## 2. Tabela de Regras Canônicas de Inferência Lógica Aplicadas à Automação
+## 2. Tabela de Regras Canônicas de Inferência Lógica Aplicadas à Automação.
 
 As regras de inferência são esquemas sintáticos de transformação válidos que garantem que, a partir de premissas verdadeiras, a conclusão inferida seja infalivelmente verdadeira.
 
@@ -46,7 +46,7 @@ As regras de inferência são esquemas sintáticos de transformação válidos q
 
 ---
 
-## 3. Teorema da Refutação e Prova por Contradição (*Reductio ad Absurdum*)
+## 3. Teorema da Refutação e Prova por Contradição (*Reductio ad Absurdum*).
 
 Na validação automatizada de sistemas críticos por solucionadores SAT (*SAT Solvers*), a validade do argumento $P_1, P_2, \dots, P_k \vdash C$ é provada por **refutação**:
 
@@ -56,7 +56,7 @@ Se for impossível encontrar uma valoração de variáveis que torne todas as pr
 
 ---
 
-## 4. Falácias Formais Comuns em Projetos de Automação
+## 4. Falácias Formais Comuns em Projetos de Automação.
 
 É fundamental distinguir argumentos dedutivos válidos de **falácias lógicas**, que frequentemente causam acidentes industriais graves quando incorporadas em lógicas de CLP:
 

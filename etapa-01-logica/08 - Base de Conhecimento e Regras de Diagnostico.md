@@ -1,6 +1,6 @@
 # Aula 08: Sistemas Especialistas — Base de Conhecimento e Regras de Diagnóstico
 
-## 1. Fundamentos Matemáticos: Arquitetura de Sistemas Baseados em Regras (RBS)
+## 1. Fundamentos Matemáticos: Arquitetura de Sistemas Baseados em Regras (RBS).
 
 Na **Estação de Reabastecimento de Hidrogênio** (SCADA-Core), a ocorrência de anomalias operacionais, desvios de processo ou falhas de instrumentos em campo exige diagnósticos automáticos de causa-raiz em tempo real, altamente determinísticos e de baixíssima latência, fundamentados em **Sistemas Especialistas Baseados em Regras** (Rule-Based Expert Systems). Essa abordagem computacional avançada permite estruturar o conhecimento heurístico de operadores experientes e especialistas em segurança de processos em uma base formal de produção, viabilizando a tomada de decisões autônomas e mitigando riscos operacionais críticos em tempo hábil.
 
@@ -33,7 +33,7 @@ graph TD
 
 ---
 
-## 2. Catálogo Especialista de Falhas da Estação de Reabastecimento de Hidrogênio
+## 2. Catálogo Especialista de Falhas da Estação de Reabastecimento de Hidrogênio.
 
 A base de conhecimento cobre os cenários operacionais e de falha mais críticos do sistema SCADA-Core:
 
@@ -48,7 +48,7 @@ A base de conhecimento cobre os cenários operacionais e de falha mais críticos
 
 ---
 
-## 3. Resolução de Conflitos e Inconsistências na Base
+## 3. Resolução de Conflitos e Inconsistências na Base.
 
 Uma Base de Conhecimento industrial para a Estação de Hidrogênio deve ser estritamente livre de **contradições** e **redundâncias**:
 1. **Consistência Semântica:** Não podem coexistir regras onde os mesmos antecedentes gerem conclusões mutuamente exclusivas ($A \rightarrow C$ e $A \rightarrow \neg C$).
