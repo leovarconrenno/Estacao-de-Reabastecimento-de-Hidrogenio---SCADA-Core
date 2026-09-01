@@ -1,0 +1,62 @@
+<div class="page-content-wrapper">
+
+  <header class="page-header">
+    <div class="badge-tag">DOCUMENTAÇÃO TÉCNICA · UNIFEI</div>
+    <h1 class="page-title">Sobre a Estação de Reabastecimento de H₂</h1>
+    <p class="page-subtitle">
+      Concepção, arquitetura de controle supervisório e fundamentação matemática do projeto SCADA-Core.
+    </p>
+  </header>
+
+  <div class="prose-body">
+    
+    <section class="doc-card">
+      <h2 class="doc-section-title">
+        <span class="icon">🚀</span> O que é o Projeto?
+      </h2>
+      <p>
+        A <strong>Estação de Reabastecimento de Hidrogênio (SCADA Core)</strong> é uma solução de engenharia voltada para o controle, supervisão e diagnóstico em tempo real de infraestruturas de dispensação de hidrogênio gasoso de ultra-alta pressão (<strong>350 bar e 700 bar</strong>).
+      </p>
+      <p>
+        O reabastecimento de veículos movidos a célula de combustível (FCEV) exige controle rigoroso de taxas de compressão (<em>Average Pressure Ramp Rate - APRR</em>), monitoramento de temperatura do gás para evitar superaquecimento no receptáculo (resfriamento a <strong>-40 °C</strong> pelo chiller) e resposta a vazamentos em conformidade com as normas <strong>SAE J2601</strong>, <strong>SAE J2799</strong> e <strong>IEC 61508</strong> (SIL 3).
+      </p>
+    </section>
+
+    <section class="doc-card">
+      <h2 class="doc-section-title">
+        <span class="icon">🎓</span> Contexto Acadêmico &amp; Metodologia
+      </h2>
+      <p>
+        Desenvolvido no curso de <strong>Engenharia de Controle e Automação</strong> da <strong>Universidade Federal de Itajubá (UNIFEI)</strong>, o projeto fundamenta-se na metodologia <strong>Problem-Based Learning (PBL)</strong>.
+      </p>
+      <p>
+        Em vez de tratar a teoria de forma isolada, os conceitos de <strong>Matemática Discreta</strong> são aplicados diretamente na resolução de desafios de automação industrial crítica:
+      </p>
+      <ul class="doc-bullet-list">
+        <li><strong>Lógica Proposicional:</strong> Tradução de variáveis analógicas e digitais de campo (norma ISA-5.1) em proposições booleanas de permissivo e trip.</li>
+        <li><strong>Sistemas Especialistas (RBS):</strong> Motores de inferência com Cláusulas de Horn para identificação determinística da causa-raiz de falhas.</li>
+        <li><strong>Grafos e Autômatos Finitos:</strong> Modelagem de fluxo de fluidos em malhas de alta pressão e transições determinísticas de estados operacionais.</li>
+        <li><strong>Árvores de Falhas (FTA):</strong> Quantificação de confiabilidade (RAMS) e determinação de Conjuntos Mínimos de Corte (<em>Minimal Cut Sets</em>).</li>
+      </ul>
+    </section>
+
+    <section class="doc-card">
+      <h2 class="doc-section-title">
+        <span class="icon">📦</span> Repositório e Código-Fonte
+      </h2>
+      <p>
+        Todo o desenvolvimento é gerenciado de forma aberta no GitHub, contendo os cadernos Jupyter, scripts de validação de tautologias, matrizes de intertravamento e esquemáticos P&amp;ID.
+      </p>
+      <div style="margin-top: 1.25rem;">
+        <a href="https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="primary-action-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+          </svg>
+          Acessar Repositório no GitHub &rarr;
+        </a>
+      </div>
+    </section>
+
+  </div>
+
+</div>

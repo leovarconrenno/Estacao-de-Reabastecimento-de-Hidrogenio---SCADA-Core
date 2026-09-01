@@ -1,0 +1,68 @@
+<div class="page-content-wrapper">
+
+  <header class="page-header">
+    <div class="badge-tag">AULA 00 · FUNDAMENTOS</div>
+    <h1 class="page-title">00 — Introdução ao SCADA e Mapeamento de Insumos</h1>
+    <p class="page-subtitle">
+      Visão geral do processo de reabastecimento de hidrogênio e classificação de matérias-primas e utilidades físicas.
+    </p>
+  </header>
+
+  <div class="prose-body">
+    
+    <section class="doc-card">
+      <h2 class="doc-section-title">
+        <span class="icon">⚡</span> 1. Insumos Primários e Utilidades Físicas
+      </h2>
+      <p>
+        Antes da abstração em variáveis booleanas, o processo físico da Estação de Reabastecimento depende de quatro fluxos materiais e energéticos primordiais:
+      </p>
+      <div class="table-responsive">
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th>Insumo Físico</th>
+              <th>Função no Processo</th>
+              <th>Setor Principal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Gás Hidrogênio ($H_2$)</strong></td>
+              <td>Matéria-prima comprimida de alta pureza (99.97%) para dispensação veicular</td>
+              <td>Setores 100, 200, 300</td>
+            </tr>
+            <tr>
+              <td><strong>Energia Elétrica</strong></td>
+              <td>Alimentação dos motores dos compressores, bombas do chiller e painel CLP</td>
+              <td>Geral / Subestação</td>
+            </tr>
+            <tr>
+              <td><strong>Fluido Refrigerante / Glicol</strong></td>
+              <td>Troca térmica no Chiller para resfriamento de $H_2$ até $T \leq -40^\circ\text{C}$</td>
+              <td>Setor 200</td>
+            </tr>
+            <tr>
+              <td><strong>Gás Nitrogênio ($N_2$) / Ar</strong></td>
+              <td>Atuação pneumática de válvulas e linhas de purga/inertização de segurança</td>
+              <td>Setor 100 e 300</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="doc-card">
+      <h2 class="doc-section-title">
+        <span class="icon">📊</span> 2. Arquitetura em 3 Setores Operacionais
+      </h2>
+      <ul class="doc-bullet-list">
+        <li><strong>Setor 100 (Armazenamento em Cascata):</strong> Bancos de cilindros em 3 patamares de pressão: Baixa Pressão ($P \approx 350\text{ bar}$), Média Pressão ($P \approx 700\text{ bar}$) e Alta Pressão ($P \approx 1000\text{ bar}$).</li>
+        <li><strong>Setor 200 (Condicionamento):</strong> Trocador de calor criogênico garantindo pré-resfriamento rápido conforme categoria T40 (SAE J2601).</li>
+        <li><strong>Setor 300 (Dispensador):</strong> Bico de acoplamento com breakaway mecânico BV-301 e comunicação infravermelha bidirecional J2799.</li>
+      </ul>
+    </section>
+
+  </div>
+
+</div>

@@ -1,0 +1,32 @@
+<div class="page-content-wrapper">
+
+  <header class="page-header">
+    <div class="badge-tag">AULA 02 · GRAFOS &amp; AUTÔMATOS</div>
+    <h1 class="page-title">02 — Grafos de Estados &amp; Controle em Cascata</h1>
+    <p class="page-subtitle">
+      Modelagem formal do chaveamento dos bancos de 350, 700 e 1000 bar via Autômatos Finitos Determinísticos (DFA).
+    </p>
+  </header>
+
+  <div class="prose-body">
+    
+    <section class="doc-card">
+      <h2 class="doc-section-title">
+        <span class="icon">🔄</span> 1. Máquina de Estados Finita da Estação
+      </h2>
+      <p>
+        O ciclo operacional da estação de reabastecimento é modelado como um grafo dirigido de estados $G = (V, E)$, onde os vértices representam modos operacionais seguros:
+      </p>
+      <ul class="doc-bullet-list">
+        <li><strong>S0 - Standby &amp; Inicialização:</strong> Verificação de integridade e comunicações de campo.</li>
+        <li><strong>S1 - Leak Check (Teste de Estanqueidade):</strong> Pequeno pulso de pressão de 50 bar para verificação de vazamento na mangueira.</li>
+        <li><strong>S2 - Cascata LP (350 bar):</strong> Alimentação inicial pelo banco de baixa pressão até equalização.</li>
+        <li><strong>S3 - Cascata MP (700 bar):</strong> Elevação da pressão veicular pelo banco intermediário.</li>
+        <li><strong>S4 - Cascata HP (1000 bar):</strong> Enchimento final até atingir 700 bar (SOC 100%).</li>
+        <li><strong>S5 - Emergency Trip:</strong> Estado absorvente acionado em caso de anomalia crítica.</li>
+      </ul>
+    </section>
+
+  </div>
+
+</div>

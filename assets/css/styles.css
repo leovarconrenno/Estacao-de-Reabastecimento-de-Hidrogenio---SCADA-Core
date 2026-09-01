@@ -1,0 +1,978 @@
+/* ==========================================================================
+   H2-SCADA Documentation Landing Page Stylesheet
+   Layout: TOPBAR (navbar) + SIDEBAR (índice estreito ~230px) + CONTEÚDO PRINCIPAL
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Variáveis Globais de Cores e Temas (Dark / Light)
+   -------------------------------------------------------------------------- */
+:root {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Menlo, Monaco, Consolas, monospace;
+
+  /* Tema Escuro (Padrão) */
+  --bg-primary: #0f172a;       /* Slate 900 */
+  --bg-secondary: #1e293b;     /* Slate 800 */
+  --bg-hover: #334155;         /* Slate 700 */
+  --bg-card: #1e293b;
+  --bg-card-elevated: #243248;
+
+  --text-primary: #e2e8f0;     /* Slate 200 */
+  --text-muted: #94a3b8;       /* Slate 400 */
+  --text-subtle: #64748b;      /* Slate 500 */
+
+  --accent: #2dd4bf;           /* Teal 400 */
+  --accent-hover: #14b8a6;     /* Teal 500 */
+  --accent-dim: rgba(45, 212, 191, 0.1);
+  --accent-glow: rgba(45, 212, 191, 0.25);
+  --border: #334155;
+  --border-light: rgba(148, 163, 184, 0.12);
+
+  --topbar-height: 56px;
+  --sidebar-width: 240px;
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 16px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 30px -3px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px -2px rgba(45, 212, 191, 0.2);
+}
+
+/* Tema Claro */
+[data-theme="light"] {
+  --bg-primary: #f8fafc;       /* Slate 50 */
+  --bg-secondary: #ffffff;     /* White */
+  --bg-hover: #f1f5f9;         /* Slate 100 */
+  --bg-card: #ffffff;
+  --bg-card-elevated: #f8fafc;
+
+  --text-primary: #0f172a;     /* Slate 900 */
+  --text-muted: #475569;       /* Slate 600 */
+  --text-subtle: #64748b;      /* Slate 500 */
+
+  --accent: #0d9488;           /* Teal 600 */
+  --accent-hover: #0f766e;     /* Teal 700 */
+  --accent-dim: rgba(13, 148, 136, 0.1);
+  --accent-glow: rgba(13, 148, 136, 0.2);
+  --border: #e2e8f0;
+  --border-light: rgba(148, 163, 184, 0.25);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 15px -1px rgba(13, 148, 136, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset e Estilos Globais
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* --------------------------------------------------------------------------
+   3. TOPBAR (Navbar Horizontal no Topo)
+   -------------------------------------------------------------------------- */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height);
+  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.brand-badge {
+  font-family: var(--font-mono);
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: var(--accent);
+  background-color: var(--accent-dim);
+  border: 1px solid var(--accent);
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 10px rgba(45, 212, 191, 0.15);
+}
+
+.brand-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.brand-title .unifei-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 0.4rem;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.nav-github-link:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.theme-toggle-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--accent);
+  background-color: var(--bg-hover);
+}
+
+.mobile-toggle-btn {
+  display: none;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+/* --------------------------------------------------------------------------
+   4. LAYOUT PRINCIPAL: SIDEBAR + CONTEÚDO
+   -------------------------------------------------------------------------- */
+.app-container {
+  display: flex;
+  margin-top: var(--topbar-height);
+  min-height: calc(100vh - var(--topbar-height));
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   5. SIDEBAR (Índice Estreito à Esquerda ~240px)
+   -------------------------------------------------------------------------- */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: var(--topbar-height);
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  padding: 1.25rem 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, background-color 0.2s ease;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.nav-group {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  width: 100%;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.nav-link:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-link.active {
+  background-color: var(--accent-dim);
+  border-left-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 0.75rem 1rem;
+  opacity: 0.6;
+}
+
+/* Seção Colapsável de Aulas */
+.nav-collapsible {
+  display: flex;
+  flex-direction: column;
+}
+
+.collapsible-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 1rem;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.collapsible-header:hover {
+  color: var(--accent);
+}
+
+.collapsible-chevron {
+  transition: transform 0.2s ease;
+  color: var(--text-subtle);
+}
+
+.collapsible-header[aria-expanded="false"] .collapsible-chevron {
+  transform: rotate(-90deg);
+}
+
+.nav-group-aulas {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-left: 0.5rem;
+  transition: max-height 0.25s ease, opacity 0.2s ease;
+  max-height: 500px;
+  opacity: 1;
+}
+
+.nav-group-aulas.is-collapsed {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.nav-link-aula {
+  font-family: var(--font-mono);
+  font-size: 0.775rem;
+  padding: 0.45rem 0.85rem;
+}
+
+/* --------------------------------------------------------------------------
+   6. CONTEÚDO PRINCIPAL (Área Scrollável)
+   -------------------------------------------------------------------------- */
+.main-content {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  padding: 2.5rem 2.5rem 4rem;
+  min-height: calc(100vh - var(--topbar-height));
+  display: flex;
+  justify-content: center;
+}
+
+.main-content-inner {
+  width: 100%;
+  max-width: 960px;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.badge-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  background-color: var(--accent-dim);
+  border: 1px solid var(--accent);
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.page-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.content-section {
+  margin-bottom: 3.5rem;
+}
+
+.section-title-wrap {
+  margin-bottom: 1.25rem;
+}
+
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.section-title .icon {
+  font-size: 1.2rem;
+}
+
+.section-desc {
+  font-size: 0.925rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   7. BLOCO 1: DIAGRAMA INTERATIVO (Draw.io / SVG) & LEGENDA
+   -------------------------------------------------------------------------- */
+.diagram-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.diagram-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-glow);
+}
+
+.diagram-viewport {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diagram-viewport svg {
+  width: 100%;
+  height: auto;
+  max-height: 520px;
+  display: block;
+}
+
+/* Legenda do Diagrama */
+.diagram-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-teal { background-color: #2dd4bf; box-shadow: 0 0 6px rgba(45, 212, 191, 0.4); }
+.dot-blue { background-color: #38bdf8; box-shadow: 0 0 6px rgba(56, 189, 248, 0.4); }
+.dot-amber { background-color: #f59e0b; box-shadow: 0 0 6px rgba(245, 158, 11, 0.4); }
+.dot-red { background-color: #ef4444; box-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
+
+/* Estilos de Nós Interativos no SVG */
+.interactive-node {
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  outline: none;
+}
+
+.interactive-node:hover,
+.interactive-node:focus {
+  filter: drop-shadow(0 0 8px #2dd4bf);
+}
+
+/* --------------------------------------------------------------------------
+   8. TOOLTIP FLUTUANTE CUSTOMIZADO (Seguindo o Cursor)
+   -------------------------------------------------------------------------- */
+.custom-diagram-tooltip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--accent);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.825rem;
+  line-height: 1.5;
+  box-shadow: var(--shadow-lg), 0 0 15px rgba(45, 212, 191, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  max-width: 320px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.custom-diagram-tooltip.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.tooltip-header {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.35rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(45, 212, 191, 0.2);
+  padding-bottom: 0.25rem;
+}
+
+.tooltip-body {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.tooltip-body li {
+  font-size: 0.775rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. BLOCO 2: EQUIPE / MEMBROS GITHUB API & SKELETON LOADING
+   -------------------------------------------------------------------------- */
+.contributors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.contributor-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.contributor-card:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+.contributor-avatar-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--accent), #38bdf8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contributor-avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--bg-primary);
+}
+
+.contributor-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.contributor-login {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  word-break: break-word;
+}
+
+.external-icon {
+  opacity: 0;
+  color: var(--accent);
+  transition: opacity 0.2s ease;
+}
+
+.contributor-card:hover .external-icon {
+  opacity: 1;
+}
+
+.contributor-stats {
+  font-size: 0.775rem;
+  color: var(--text-muted);
+}
+
+.commit-count {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.contributor-badge {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  margin-top: 0.35rem;
+  letter-spacing: 0.02em;
+}
+
+.contributor-badge.top-contributor {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.contributor-badge.member-badge {
+  background-color: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+/* Skeleton Loading Animation */
+.skeleton-card {
+  pointer-events: none;
+}
+
+.skeleton-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-hover);
+  animation: pulseShimmer 1.5s infinite ease-in-out;
+}
+
+.skeleton-text {
+  border-radius: 4px;
+  background: var(--bg-hover);
+  animation: pulseShimmer 1.5s infinite ease-in-out;
+}
+
+.skeleton-title {
+  width: 70%;
+  height: 14px;
+}
+
+.skeleton-subtitle {
+  width: 50%;
+  height: 10px;
+}
+
+@keyframes pulseShimmer {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+/* Fallback de Colaboradores */
+.contributors-fallback-card {
+  grid-column: 1 / -1;
+  background-color: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.fallback-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.fallback-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+}
+
+.fallback-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.fallback-btn {
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   10. ESTILOS DE DOCUMENTAÇÃO (Sobre e Aulas)
+   -------------------------------------------------------------------------- */
+.prose-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.doc-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.doc-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.doc-card p {
+  color: var(--text-muted);
+  font-size: 0.925rem;
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.doc-card p:last-child {
+  margin-bottom: 0;
+}
+
+.doc-card strong {
+  color: var(--text-primary);
+}
+
+.doc-bullet-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.doc-bullet-list li {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  position: relative;
+  padding-left: 1.25rem;
+}
+
+.doc-bullet-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+/* Tabelas de Documentação */
+.table-responsive {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.doc-table th {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.doc-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.doc-table tr:hover td {
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.doc-table code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background-color: var(--accent-dim);
+  color: var(--accent);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* Bloco de Código */
+.code-block {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.85rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.825rem;
+  color: var(--text-primary);
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+
+.primary-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--accent);
+  color: #0f172a;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(45, 212, 191, 0.25);
+}
+
+.primary-action-btn:hover {
+  background-color: var(--accent-hover);
+  color: #0f172a;
+  transform: translateY(-1px);
+}
+
+/* Estado de Loading e Erro */
+.page-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 0;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.page-error-card {
+  background-color: var(--bg-card);
+  border: 1px solid #ef4444;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Overlay do Drawer Mobile */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 35;
+}
+
+.drawer-overlay.is-visible {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   11. RESPONSIVIDADE (MOBILE & TABLET)
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .brand-title .unifei-tag {
+    display: none;
+  }
+
+  .mobile-toggle-btn {
+    display: inline-flex;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+    width: 260px;
+  }
+
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1.5rem 1.25rem 3rem;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .contributors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-github-link span {
+    display: none;
+  }
+
+  .contributors-grid {
+    grid-template-columns: 1fr;
+  }
+}

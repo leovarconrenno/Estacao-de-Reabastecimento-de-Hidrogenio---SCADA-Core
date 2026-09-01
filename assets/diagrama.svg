@@ -1,0 +1,214 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" width="100%" height="100%" class="scada-svg-mimic" role="img" aria-label="Mimico do Processo SCADA - Estação H2">
+  <defs>
+    <!-- Gradientes do Tanque e Tubulações -->
+    <linearGradient id="tankBodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="30%" stop-color="#334155" />
+      <stop offset="70%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="h2LevelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#0d9488" stop-opacity="0.95" />
+    </linearGradient>
+
+    <linearGradient id="compressorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <filter id="glowTeal" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Clip Path para o Nível de H2 no Tanque Cilíndrico -->
+    <clipPath id="tankClip">
+      <rect x="360" y="100" width="180" height="260" rx="40" />
+    </clipPath>
+  </defs>
+
+  <!-- Fundo do Mimico -->
+  <rect x="0" y="0" width="900" height="500" rx="12" fill="#020817" stroke="#1e3a4a" stroke-width="2" />
+
+  <!-- Grade de Fundo Sutil (Industrial SCADA Grid) -->
+  <g stroke="#1e293b" stroke-width="0.75" opacity="0.35">
+    <line x1="0" y1="100" x2="900" y2="100" />
+    <line x1="0" y1="200" x2="900" y2="200" />
+    <line x1="0" y1="300" x2="900" y2="300" />
+    <line x1="0" y1="400" x2="900" y2="400" />
+    <line x1="150" y1="0" x2="150" y2="500" />
+    <line x1="300" y1="0" x2="300" y2="500" />
+    <line x1="450" y1="0" x2="450" y2="500" />
+    <line x1="600" y1="0" x2="600" y2="500" />
+    <line x1="750" y1="0" x2="750" y2="500" />
+  </g>
+
+  <!-- ====================================================================
+       TUBULAÇÕES DE PROCESSO (LINHA DE ENTRADA E SAÍDA)
+       ==================================================================== -->
+  <!-- Linha de Entrada: Suprimento -> Compressor -> V-101 -> Tanque -->
+  <g id="linha-entrada-bg" stroke="#1e293b" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 60 230 L 150 230 L 150 230 L 290 230 L 360 230" />
+  </g>
+  <g id="linha-entrada" stroke="#2dd4bf" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pipe-flow-active">
+    <path d="M 60 230 L 150 230 L 150 230 L 290 230 L 360 230" />
+  </g>
+
+  <!-- Linha de Saída: Tanque -> V-201 -> F-301 -> Dispensador H70 -->
+  <g id="linha-saida-bg" stroke="#1e293b" stroke-width="12" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 540 230 L 650 230 L 740 230 L 820 230 L 820 320" />
+  </g>
+  <g id="linha-saida" stroke="#2dd4bf" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round" class="pipe-flow-active">
+    <path d="M 540 230 L 650 230 L 740 230 L 820 230 L 820 320" />
+  </g>
+
+
+  <!-- ====================================================================
+       COMPRESSOR DE ALTA PRESSÃO K-501
+       ==================================================================== -->
+  <g id="compressor-k501" class="interactive-element is-active" data-sensor="Compressor K-501: Compressor de H₂ Multiestágio | T-201 monitorado em tempo real | Intertravamento Trip em T > 90°C" tabindex="0">
+    <!-- Base e Carcaça -->
+    <circle cx="150" cy="230" r="42" fill="url(#compressorGrad)" stroke="#2dd4bf" stroke-width="3" />
+    <circle cx="150" cy="230" r="34" fill="#0f172a" stroke="#334155" stroke-width="1.5" />
+    
+    <!-- Rotor Giratório do Compressor -->
+    <g id="rotor-k501" class="compressor-rotor rotating">
+      <circle cx="150" cy="230" r="7" fill="#2dd4bf" />
+      <path d="M 150 200 L 150 260 M 120 230 L 180 230 M 129 209 L 171 251 M 129 251 L 171 209" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" />
+    </g>
+
+    <text x="150" y="295" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#e2e8f0" text-anchor="middle">K-501</text>
+    <text x="150" y="312" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#94a3b8" text-anchor="middle">Compressor H₂</text>
+  </g>
+
+  <!-- ====================================================================
+       VÁLVULA DE ENTRADA V-101
+       ==================================================================== -->
+  <g id="valvula-v101" class="interactive-element valve-open" data-sensor="Válvula Solenoide V-101: Entrada do Tanque | Status: ABERTA | Bloqueio automático por sobrepressão ESD" tabindex="0">
+    <!-- Corpo da Válvula (Duplo Triângulo) -->
+    <polygon points="265,215 295,245 295,215 265,245" fill="#2dd4bf" stroke="#0d9488" stroke-width="2" class="valve-body" />
+    <!-- Atuador Solenoide -->
+    <rect x="273" y="195" width="14" height="15" rx="3" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" class="valve-actuator" />
+    <line x1="280" y1="210" x2="280" y2="230" stroke="#2dd4bf" stroke-width="2" />
+    
+    <text x="280" y="265" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">V-101</text>
+    <text id="status-v101" x="280" y="280" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#2dd4bf" text-anchor="middle">ABERTA</text>
+  </g>
+
+
+  <!-- ====================================================================
+       TANQUE DE ARMAZENAMENTO DE H2 (TANQUE-H2) COM NÍVEL DINÂMICO
+       ==================================================================== -->
+  <g id="tanque-h2" class="interactive-element" data-sensor="Tanque TK-401 (H₂ Storage): Capacidade Nominal 300 bar | Nível medido por LT-401 | Pressão por P-101 | Alívio PSV-401" tabindex="0">
+    <!-- Sombra e Contorno Exterior do Tanque -->
+    <rect x="360" y="100" width="180" height="260" rx="40" fill="url(#tankBodyGrad)" stroke="#334155" stroke-width="3" />
+    
+    <!-- Nível de H2 Animado (Clipado na forma do tanque) -->
+    <g clip-path="url(#tankClip)">
+      <rect id="h2-level-fill" x="360" y="191" width="180" height="169" fill="url(#h2LevelGrad)" />
+      <!-- Linha de Interface de Nível com Brilho -->
+      <line id="h2-level-line" x1="360" y1="191" x2="540" y2="191" stroke="#5eead4" stroke-width="2.5" opacity="0.8" />
+    </g>
+
+    <!-- Borda Frontal do Vaso -->
+    <rect x="360" y="100" width="180" height="260" rx="40" fill="none" stroke="#2dd4bf" stroke-width="2" opacity="0.8" />
+
+    <!-- Graduação de Nível lateral (Escala %) -->
+    <g stroke="#94a3b8" stroke-width="1.5" opacity="0.6" font-family="'JetBrains Mono', monospace" font-size="9" fill="#94a3b8">
+      <line x1="370" y1="130" x2="380" y2="130" /><text x="385" y="133">100%</text>
+      <line x1="370" y1="175" x2="376" y2="175" /><text x="385" y="178">75%</text>
+      <line x1="370" y1="230" x2="380" y2="230" /><text x="385" y="233">50%</text>
+      <line x1="370" y1="285" x2="376" y2="285" /><text x="385" y="288">25%</text>
+      <line x1="370" y1="330" x2="380" y2="330" /><text x="385" y="333">0%</text>
+    </g>
+
+    <!-- Rótulos do Tanque -->
+    <text x="450" y="150" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="800" fill="#e2e8f0" text-anchor="middle" letter-spacing="1">TK-401</text>
+    <text x="450" y="170" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#5eead4" text-anchor="middle">H₂ STORAGE</text>
+
+    <!-- Display de Nível no Centro do Tanque -->
+    <g transform="translate(415, 240)">
+      <rect x="0" y="0" width="70" height="30" rx="6" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+      <text id="mimic-level-val" x="35" y="20" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#2dd4bf" text-anchor="middle">65 %</text>
+    </g>
+  </g>
+
+
+  <!-- ====================================================================
+       VÁLVULA DE SAÍDA V-201
+       ==================================================================== -->
+  <g id="valvula-v201" class="interactive-element valve-open" data-sensor="Válvula Solenoide V-201: Saída para Dispensador | Status: ABERTA | Intertravamento Trip em P > 250 bar" tabindex="0">
+    <polygon points="625,215 655,245 655,215 625,245" fill="#2dd4bf" stroke="#0d9488" stroke-width="2" class="valve-body" />
+    <rect x="633" y="195" width="14" height="15" rx="3" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" class="valve-actuator" />
+    <line x1="640" y1="210" x2="640" y2="230" stroke="#2dd4bf" stroke-width="2" />
+    
+    <text x="640" y="265" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">V-201</text>
+    <text id="status-v201" x="640" y="280" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#2dd4bf" text-anchor="middle">ABERTA</text>
+  </g>
+
+
+  <!-- ====================================================================
+       DISPENSADOR VEICULAR (DISP-700)
+       ==================================================================== -->
+  <g id="dispensador-disp700" class="interactive-element" data-sensor="Dispensador H70: Bico de Abastecimento Veicular | Pressão de Trabalho: 350/700 bar | Protocolo SAE J2601" tabindex="0">
+    <rect x="780" y="320" width="80" height="110" rx="8" fill="#1e293b" stroke="#2dd4bf" stroke-width="2" />
+    <rect x="795" y="335" width="50" height="28" rx="4" fill="#0f172a" stroke="#334155" stroke-width="1" />
+    <text x="820" y="353" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#2dd4bf" text-anchor="middle">H70</text>
+    <text x="820" y="385" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="#e2e8f0" text-anchor="middle">DISPENSER</text>
+    <text x="820" y="400" font-family="'JetBrains Mono', monospace" font-size="9" fill="#94a3b8" text-anchor="middle">SAE J2601</text>
+    <!-- Bico Dispensador -->
+    <path d="M 820 410 L 820 430 L 840 430" stroke="#2dd4bf" stroke-width="3" stroke-linecap="round" fill="none" />
+  </g>
+
+
+  <!-- ====================================================================
+       SENSORES E BADGES FLUTUANTES COM TELEMETRIA EM TEMPO REAL
+       ==================================================================== -->
+
+  <!-- Sensor de Pressão P-101 (Topo do Tanque) -->
+  <g id="sensor-p101" class="interactive-element" data-sensor="Transmissor de Pressão P-101: Medição no Vaso TK-401 | Faixa: 0–300 bar | Setpoints: Normal < 200 | Atenção: 200–250 | Crítico > 250 bar" tabindex="0">
+    <circle cx="450" cy="55" r="22" fill="#0f172a" stroke="#2dd4bf" stroke-width="2.5" />
+    <line x1="450" y1="77" x2="450" y2="100" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="3,2" />
+    <text x="450" y="52" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#e2e8f0" text-anchor="middle">P-101</text>
+    
+    <!-- Badge Flutuante de Valor P-101 -->
+    <g transform="translate(485, 38)">
+      <rect id="badge-bg-p101" x="0" y="0" width="85" height="26" rx="5" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+      <text id="mimic-val-p101" x="42" y="17" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#2dd4bf" text-anchor="middle">150 bar</text>
+    </g>
+  </g>
+
+  <!-- Sensor de Temperatura T-201 (Compressor K-501) -->
+  <g id="sensor-t201" class="interactive-element" data-sensor="Transmissor de Temperatura T-201: Temperatura do Compressor K-501 | Faixa: 0–120 °C | Alarme > 70 °C | Trip Crítico > 90 °C" tabindex="0">
+    <circle cx="150" cy="130" r="20" fill="#0f172a" stroke="#2dd4bf" stroke-width="2" />
+    <line x1="150" y1="150" x2="150" y2="188" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="3,2" />
+    <text x="150" y="127" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="800" fill="#e2e8f0" text-anchor="middle">T-201</text>
+
+    <!-- Badge Flutuante de Valor T-201 -->
+    <g transform="translate(180, 115)">
+      <rect id="badge-bg-t201" x="0" y="0" width="75" height="26" rx="5" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+      <text id="mimic-val-t201" x="37" y="17" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#2dd4bf" text-anchor="middle">45 °C</text>
+    </g>
+  </g>
+
+  <!-- Sensor de Vazão F-301 (Linha de Saída) -->
+  <g id="sensor-f301" class="interactive-element" data-sensor="Medidor de Vazão Mássica F-301: Fluxo de Dispensação de H₂ | Faixa: 0–100 kg/min | Monitoramento de taxa de abastecimento" tabindex="0">
+    <circle cx="730" cy="170" r="20" fill="#0f172a" stroke="#2dd4bf" stroke-width="2" />
+    <line x1="730" y1="190" x2="730" y2="230" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="3,2" />
+    <text x="730" y="167" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="800" fill="#e2e8f0" text-anchor="middle">F-301</text>
+
+    <!-- Badge Flutuante de Valor F-301 -->
+    <g transform="translate(760, 155)">
+      <rect id="badge-bg-f301" x="0" y="0" width="95" height="26" rx="5" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+      <text id="mimic-val-f301" x="47" y="17" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#2dd4bf" text-anchor="middle">30 kg/min</text>
+    </g>
+  </g>
+
+  <!-- Painel de Rodapé do Mimico -->
+  <g transform="translate(20, 445)">
+    <rect x="0" y="0" width="860" height="35" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+    <text x="15" y="22" font-family="'JetBrains Mono', monospace" font-size="11" fill="#94a3b8">SCADA CORE V2.4 • PROTOCOLO: <tspan fill="#2dd4bf">OPC-UA (TCP/4840)</tspan> • STATUS: <tspan id="mimic-status-text" fill="#4ade80">ONLINE / OPERAÇÃO NORMAL</tspan></text>
+  </g>
+</svg>
