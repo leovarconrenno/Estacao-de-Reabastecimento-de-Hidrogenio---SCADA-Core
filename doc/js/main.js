@@ -1,19 +1,18 @@
 /**
- * SCADA Core - Estação de Reabastecimento de Hidrogênio
- * Controlador Principal: Tema, Simulador SCADA, Mimico SVG, Alarmes e GitHub API
+ * SCADA Core - Estação de Reabastecimento de Hidrogênio (UNIFEI)
+ * Baseado no P&ID oficial: projeto2.drawio (Setores 100, 200 e 300)
  */
 
 (function () {
   'use strict';
 
   // --------------------------------------------------------------------------
-  // 1. Alternância de Tema (Dark / Light) com LocalStorage
+  // 1. Gerenciador de Tema (Dark / Light) com LocalStorage
   // --------------------------------------------------------------------------
   const STORAGE_KEY = 'h2scada_theme_pref';
 
   function initTheme() {
     const saved = localStorage.getItem(STORAGE_KEY);
-    // Padrão dark theme conforme solicitado
     const activeTheme = saved ? saved : 'dark';
 
     if (activeTheme === 'dark') {
@@ -73,7 +72,7 @@
   }
 
   // --------------------------------------------------------------------------
-  // 3. Tooltip Flutuante dos Sensores (SVG)
+  // 3. Tooltip Flutuante dos Sensores
   // --------------------------------------------------------------------------
   let tooltipEl = null;
 
@@ -147,341 +146,333 @@
   }
 
   // --------------------------------------------------------------------------
-  // 4. Simulador SCADA Interativo
+  // 4. Simulador SCADA da Planta H₂ Real (Setores 100, 200, 300)
   // --------------------------------------------------------------------------
   const simState = {
-    p101: 150,    // Pressão (0-300 bar)
-    t201: 45,     // Temperatura (0-120 °C)
-    f301: 30,     // Vazão (0-100 kg/min)
-    lt401: 65,    // Nível (0-100 %)
-    k501: true,   // Compressor (on/off)
-    v101: true,   // Válvula Entrada (aberta/fechada)
-    v201: true    // Válvula Saída (aberta/fechada)
+    // Setor 100: Armazenamento
+    pt101: 350,   // Banco 1 (0-500 bar)
+    pt102: 650,   // Banco 2 (0-800 bar)
+    pt103: 950,   // Banco 3 (0-1100 bar)
+    cascadeSelect: 'LP', // 'LP', 'MP', 'HP'
+    xv101: true,
+    xv102: true,
+    xv103: true,
+    esd100: false, // Parada de Emergência
+
+    // Setor 200: Condicionamento
+    tt201: -42,   // Temperatura de saída do Chiller (-50 a +20 °C)
+    m201: true,   // Motor do Chiller
+    xv201: true,  // Válvula Chiller
+
+    // Setor 300: Dispensador
+    pt301: 520,   // Pressão no veículo (0-700 bar)
+    tt301: 28,    // Temperatura no receptáculo (-40 a 90 °C)
+    xv301: true,  // Válvula Bico Dispensador
+    j2799Com: true // Comunicação IR
   };
 
   let activeAlarms = [];
-  const MAX_LOG_ENTRIES = 30;
+  const MAX_LOG_ENTRIES = 35;
 
   function initSimulator() {
-    const sliderP101 = document.getElementById('slider-p101');
-    const sliderT201 = document.getElementById('slider-t201');
-    const sliderF301 = document.getElementById('slider-f301');
-    const sliderLT401 = document.getElementById('slider-lt401');
+    // Sliders
+    const sliderPT101 = document.getElementById('slider-pt101');
+    const sliderPT102 = document.getElementById('slider-pt102');
+    const sliderPT103 = document.getElementById('slider-pt103');
+    const sliderTT201 = document.getElementById('slider-tt201');
+    const sliderPT301 = document.getElementById('slider-pt301');
+    const sliderTT301 = document.getElementById('slider-tt301');
 
-    const toggleK501 = document.getElementById('toggle-k501');
-    const toggleV101 = document.getElementById('toggle-v101');
-    const toggleV201 = document.getElementById('toggle-v201');
+    // Toggles & Selectors
+    const selectCascade = document.getElementById('select-cascade');
+    const toggleXV101 = document.getElementById('toggle-xv101');
+    const toggleXV102 = document.getElementById('toggle-xv102');
+    const toggleXV103 = document.getElementById('toggle-xv103');
+    const toggleM201 = document.getElementById('toggle-m201');
+    const toggleXV201 = document.getElementById('toggle-xv201');
+    const toggleXV301 = document.getElementById('toggle-xv301');
+    const toggleESD = document.getElementById('toggle-esd');
 
     const btnInjectFault = document.getElementById('btn-inject-fault');
     const btnClearLog = document.getElementById('btn-clear-log');
 
-    if (!sliderP101) return; // Não está na página
+    if (!sliderPT101) return;
 
-    // Sliders Listeners
-    sliderP101.addEventListener('input', (e) => {
-      simState.p101 = parseInt(e.target.value, 10);
+    // Listeners de Sliders
+    sliderPT101.addEventListener('input', (e) => {
+      simState.pt101 = parseInt(e.target.value, 10);
       updateSimulator();
     });
 
-    sliderT201.addEventListener('input', (e) => {
-      simState.t201 = parseInt(e.target.value, 10);
+    sliderPT102.addEventListener('input', (e) => {
+      simState.pt102 = parseInt(e.target.value, 10);
       updateSimulator();
     });
 
-    sliderF301.addEventListener('input', (e) => {
-      simState.f301 = parseInt(e.target.value, 10);
+    sliderPT103.addEventListener('input', (e) => {
+      simState.pt103 = parseInt(e.target.value, 10);
       updateSimulator();
     });
 
-    sliderLT401.addEventListener('input', (e) => {
-      simState.lt401 = parseInt(e.target.value, 10);
+    sliderTT201.addEventListener('input', (e) => {
+      simState.tt201 = parseInt(e.target.value, 10);
       updateSimulator();
     });
 
-    // Toggles Listeners
-    toggleK501.addEventListener('change', (e) => {
-      simState.k501 = e.target.checked;
+    sliderPT301.addEventListener('input', (e) => {
+      simState.pt301 = parseInt(e.target.value, 10);
       updateSimulator();
     });
 
-    toggleV101.addEventListener('change', (e) => {
-      simState.v101 = e.target.checked;
+    sliderTT301.addEventListener('input', (e) => {
+      simState.tt301 = parseInt(e.target.value, 10);
       updateSimulator();
     });
 
-    toggleV201.addEventListener('change', (e) => {
-      simState.v201 = e.target.checked;
-      updateSimulator();
-    });
+    // Listeners de Toggles
+    if (selectCascade) {
+      selectCascade.addEventListener('change', (e) => {
+        simState.cascadeSelect = e.target.value;
+        updateSimulator();
+      });
+    }
 
-    // Injetar Falha Aleatória
+    if (toggleXV101) {
+      toggleXV101.addEventListener('change', (e) => {
+        simState.xv101 = e.target.checked;
+        updateSimulator();
+      });
+    }
+
+    if (toggleXV102) {
+      toggleXV102.addEventListener('change', (e) => {
+        simState.xv102 = e.target.checked;
+        updateSimulator();
+      });
+    }
+
+    if (toggleXV103) {
+      toggleXV103.addEventListener('change', (e) => {
+        simState.xv103 = e.target.checked;
+        updateSimulator();
+      });
+    }
+
+    if (toggleM201) {
+      toggleM201.addEventListener('change', (e) => {
+        simState.m201 = e.target.checked;
+        updateSimulator();
+      });
+    }
+
+    if (toggleXV201) {
+      toggleXV201.addEventListener('change', (e) => {
+        simState.xv201 = e.target.checked;
+        updateSimulator();
+      });
+    }
+
+    if (toggleXV301) {
+      toggleXV301.addEventListener('change', (e) => {
+        simState.xv301 = e.target.checked;
+        updateSimulator();
+      });
+    }
+
+    if (toggleESD) {
+      toggleESD.addEventListener('change', (e) => {
+        simState.esd100 = e.target.checked;
+        updateSimulator();
+      });
+    }
+
     if (btnInjectFault) {
       btnInjectFault.addEventListener('click', injectRandomFault);
     }
 
-    // Limpar Log
     if (btnClearLog) {
       btnClearLog.addEventListener('click', () => {
         const logBox = document.getElementById('alarm-log-box');
         if (logBox) {
           logBox.innerHTML = '';
-          addLogEntry('ok', 'Log reiniciado pelo operador. Sistema em monitoramento contínuo.');
+          addLogEntry('ok', 'Log limpo pelo operador. Sistema em supervisão contínua.');
         }
       });
     }
 
-    // Inicialização do Log
-    addLogEntry('ok', 'Sistema SCADA Core inicializado. Todos os parâmetros nominais.');
+    addLogEntry('ok', 'Planta SCADA-Core H₂ inicializada. Setores 100, 200 e 300 operando.');
     updateSimulator();
   }
 
   function updateSimulator() {
-    // 1. Atualizar badges numéricas do painel de controle
-    const valBadgeP101 = document.getElementById('val-badge-p101');
-    const valBadgeT201 = document.getElementById('val-badge-t201');
-    const valBadgeF301 = document.getElementById('val-badge-f301');
-    const valBadgeLT401 = document.getElementById('val-badge-lt401');
+    // 1. Atualizar badges numéricas do painel
+    const valPT101 = document.getElementById('val-badge-pt101');
+    const valPT102 = document.getElementById('val-badge-pt102');
+    const valPT103 = document.getElementById('val-badge-pt103');
+    const valTT201 = document.getElementById('val-badge-tt201');
+    const valPT301 = document.getElementById('val-badge-pt301');
+    const valTT301 = document.getElementById('val-badge-tt301');
 
-    if (valBadgeP101) {
-      valBadgeP101.textContent = `${simState.p101} bar`;
-      valBadgeP101.className = `slider-val-badge ${simState.p101 > 250 ? 'val-danger' : simState.p101 > 200 ? 'val-warning' : 'val-normal'}`;
+    if (valPT101) {
+      valPT101.textContent = `${simState.pt101} bar`;
+      valPT101.className = `slider-val-badge ${simState.pt101 > 400 ? 'val-danger' : 'val-normal'}`;
     }
 
-    if (valBadgeT201) {
-      valBadgeT201.textContent = `${simState.t201} °C`;
-      valBadgeT201.className = `slider-val-badge ${simState.t201 > 90 ? 'val-danger' : simState.t201 > 70 ? 'val-warning' : 'val-normal'}`;
+    if (valPT102) {
+      valPT102.textContent = `${simState.pt102} bar`;
+      valPT102.className = `slider-val-badge ${simState.pt102 > 700 ? 'val-danger' : 'val-normal'}`;
     }
 
-    if (valBadgeF301) {
-      valBadgeF301.textContent = `${simState.f301} kg/min`;
+    if (valPT103) {
+      valPT103.textContent = `${simState.pt103} bar`;
+      valPT103.className = `slider-val-badge ${simState.pt103 > 1000 ? 'val-danger' : 'val-normal'}`;
     }
 
-    if (valBadgeLT401) {
-      valBadgeLT401.textContent = `${simState.lt401} %`;
+    if (valTT201) {
+      valTT201.textContent = `${simState.tt201} °C`;
+      valTT201.className = `slider-val-badge ${simState.tt201 > -40 ? 'val-warning' : 'val-normal'}`;
     }
 
-    // 2. Atualizar Mimico SVG
-    updateSvgMimic();
+    if (valPT301) {
+      valPT301.textContent = `${simState.pt301} bar`;
+    }
 
-    // 3. Avaliar Lógica de Alarmes e Intertravamentos
-    evaluateAlarmsAndInterlocks();
+    if (valTT301) {
+      valTT301.textContent = `${simState.tt301} °C`;
+      valTT301.className = `slider-val-badge ${simState.tt301 > 85 ? 'val-danger' : 'val-normal'}`;
+    }
+
+    // 2. Avaliar Lógica de Intertravamento e Alarmes
+    evaluateSafetyLogic();
   }
 
-  function updateSvgMimic() {
-    // Nível do Tanque no SVG (#h2-level-fill)
-    // O tanque vai de Y=100 (topo = 100%) a Y=360 (base = 0%) -> altura total 260px
-    const levelFill = document.getElementById('h2-level-fill');
-    const levelLine = document.getElementById('h2-level-line');
-    const mimicLevelVal = document.getElementById('mimic-level-val');
-
-    if (levelFill && levelLine) {
-      const maxHeight = 260;
-      const height = (simState.lt401 / 100) * maxHeight;
-      const y = 360 - height;
-
-      levelFill.setAttribute('y', y);
-      levelFill.setAttribute('height', height);
-      levelLine.setAttribute('y1', y);
-      levelLine.setAttribute('y2', y);
-    }
-
-    if (mimicLevelVal) {
-      mimicLevelVal.textContent = `${simState.lt401} %`;
-    }
-
-    // Compressor K-501 (Animação de rotação)
-    const rotor = document.getElementById('rotor-k501');
-    if (rotor) {
-      if (simState.k501) {
-        rotor.classList.add('rotating');
-      } else {
-        rotor.classList.remove('rotating');
-      }
-    }
-
-    // Válvula V-101 e Linha de Entrada
-    const statusV101 = document.getElementById('status-v101');
-    const linhaEntrada = document.getElementById('linha-entrada');
-    if (statusV101 && linhaEntrada) {
-      if (simState.v101) {
-        statusV101.textContent = 'ABERTA';
-        statusV101.setAttribute('fill', '#2dd4bf');
-        linhaEntrada.setAttribute('stroke', '#2dd4bf');
-        linhaEntrada.classList.add('pipe-flow-active');
-      } else {
-        statusV101.textContent = 'FECHADA';
-        statusV101.setAttribute('fill', '#64748b');
-        linhaEntrada.setAttribute('stroke', '#475569');
-        linhaEntrada.classList.remove('pipe-flow-active');
-      }
-    }
-
-    // Válvula V-201 e Linha de Saída
-    const statusV201 = document.getElementById('status-v201');
-    const linhaSaida = document.getElementById('linha-saida');
-    if (statusV201 && linhaSaida) {
-      if (simState.v201) {
-        statusV201.textContent = 'ABERTA';
-        statusV201.setAttribute('fill', '#2dd4bf');
-        linhaSaida.setAttribute('stroke', '#2dd4bf');
-        linhaSaida.classList.add('pipe-flow-active');
-      } else {
-        statusV201.textContent = 'FECHADA';
-        statusV201.setAttribute('fill', '#64748b');
-        linhaSaida.setAttribute('stroke', '#475569');
-        linhaSaida.classList.remove('pipe-flow-active');
-      }
-    }
-
-    // Badges dos Sensores no SVG
-    const mimicValP101 = document.getElementById('mimic-val-p101');
-    const badgeBgP101 = document.getElementById('badge-bg-p101');
-    if (mimicValP101 && badgeBgP101) {
-      mimicValP101.textContent = `${simState.p101} bar`;
-      const color = simState.p101 > 250 ? '#ef4444' : simState.p101 > 200 ? '#f59e0b' : '#2dd4bf';
-      mimicValP101.setAttribute('fill', color);
-      badgeBgP101.setAttribute('stroke', color);
-    }
-
-    const mimicValT201 = document.getElementById('mimic-val-t201');
-    const badgeBgT201 = document.getElementById('badge-bg-t201');
-    if (mimicValT201 && badgeBgT201) {
-      mimicValT201.textContent = `${simState.t201} °C`;
-      const color = simState.t201 > 90 ? '#ef4444' : simState.t201 > 70 ? '#f59e0b' : '#2dd4bf';
-      mimicValT201.setAttribute('fill', color);
-      badgeBgT201.setAttribute('stroke', color);
-    }
-
-    const mimicValF301 = document.getElementById('mimic-val-f301');
-    if (mimicValF301) {
-      mimicValF301.textContent = `${simState.f301} kg/min`;
-    }
-  }
-
-  function evaluateAlarmsAndInterlocks() {
+  function evaluateSafetyLogic() {
     const previousAlarms = [...activeAlarms];
     activeAlarms = [];
 
     let hasCritical = false;
     let hasWarning = false;
 
-    // 1. Condição: Pressão > 250 bar -> CRÍTICO + ESD (Fecha válvulas)
-    if (simState.p101 > 250) {
+    // Regra 1: Parada de Emergência ESD-100
+    if (simState.esd100) {
       hasCritical = true;
       activeAlarms.push({
-        id: 'P101_HIGH_CRIT',
+        id: 'ESD_ACTIVE',
         level: 'crit',
-        msg: `🔴 CRÍTICO — P-101: Sobrepressão perigosa (${simState.p101} bar > 250 bar). Intertravamento ESD acionado (fechamento preventivo das válvulas).`
+        msg: `🔴 EMERGÊNCIA (ESD-100): Parada manual de emergência disparada! Trip geral de todas as válvulas solenoides e sirene ALM-101 ativada.`
       });
 
-      // Atuação automática (ESD)
-      if (simState.v101 || simState.v201) {
-        simState.v101 = false;
-        simState.v201 = false;
-        const t1 = document.getElementById('toggle-v101');
-        const t2 = document.getElementById('toggle-v201');
-        if (t1) t1.checked = false;
-        if (t2) t2.checked = false;
-        updateSvgMimic();
-      }
-    } else if (simState.p101 > 200) {
-      hasWarning = true;
-      activeAlarms.push({
-        id: 'P101_HIGH_WARN',
-        level: 'warn',
-        msg: `🟡 ATENÇÃO — P-101: Pressão de armazenamento elevada (${simState.p101} bar > 200 bar).`
-      });
+      // Atuação de Trip Geral
+      simState.xv101 = false;
+      simState.xv102 = false;
+      simState.xv103 = false;
+      simState.xv201 = false;
+      simState.xv301 = false;
+      updateCheckboxes();
     }
 
-    // 2. Condição: Temperatura > 90°C -> CRÍTICO + Desliga Compressor
-    if (simState.t201 > 90) {
+    // Regra 2: Sobrepressão Banco 1 LP (p1,1: P > 400 bar)
+    if (simState.pt101 > 400) {
       hasCritical = true;
       activeAlarms.push({
-        id: 'T201_HIGH_CRIT',
+        id: 'PT101_TRIP',
         level: 'crit',
-        msg: `🔴 CRÍTICO — T-201: Superaquecimento do Compressor K-501 (${simState.t201}°C > 90°C). Desarme térmico automático acionado.`
+        msg: `🔴 CRÍTICO (PT-101): Sobrepressão no Banco 1 LP (${simState.pt101} bar > 400 bar). Trip na válvula XV-101 e sinalizador SL-101.`
       });
+      simState.xv101 = false;
+      updateCheckboxes();
+    }
 
-      // Atuação automática: Desligar compressor
-      if (simState.k501) {
-        simState.k501 = false;
-        const tk = document.getElementById('toggle-k501');
-        if (tk) tk.checked = false;
-        updateSvgMimic();
-      }
-    } else if (simState.t201 > 70) {
+    // Regra 3: Sobrepressão Banco 2 MP (p1,2: P > 700 bar)
+    if (simState.pt102 > 700) {
+      hasCritical = true;
+      activeAlarms.push({
+        id: 'PT102_TRIP',
+        level: 'crit',
+        msg: `🔴 CRÍTICO (PT-102): Sobrepressão no Banco 2 MP (${simState.pt102} bar > 700 bar). Trip na válvula XV-102 e sinalizador SL-102.`
+      });
+      simState.xv102 = false;
+      updateCheckboxes();
+    }
+
+    // Regra 4: Sobrepressão Banco 3 HP (p1,3: P > 1000 bar)
+    if (simState.pt103 > 1000) {
+      hasCritical = true;
+      activeAlarms.push({
+        id: 'PT103_TRIP',
+        level: 'crit',
+        msg: `🔴 CRÍTICO (PT-103): Sobrepressão no Banco 3 HP (${simState.pt103} bar > 1000 bar). Trip na válvula XV-103 e sinalizador SL-103.`
+      });
+      simState.xv103 = false;
+      updateCheckboxes();
+    }
+
+    // Regra 5: Temperatura de Saída do Chiller (t2,1: T > -40 °C)
+    if (simState.tt201 > -40) {
       hasWarning = true;
       activeAlarms.push({
-        id: 'T201_HIGH_WARN',
+        id: 'TT201_WARN',
         level: 'warn',
-        msg: `🟡 ATENÇÃO — T-201: Temperatura do compressor acima do setpoint (${simState.t201}°C > 70°C).`
+        msg: `🟡 ATENÇÃO (TT-201): Temperatura do Chiller inadequada (${simState.tt201}°C > -40°C). Permissivo de abastecimento SAE J2601 não atendido.`
       });
     }
 
-    // 3. Condição: Nível < 10% -> ATENÇÃO
-    if (simState.lt401 < 10) {
-      hasWarning = true;
+    // Regra 6: Superaquecimento no Veículo (t3,1: T > 85 °C)
+    if (simState.tt301 > 85) {
+      hasCritical = true;
       activeAlarms.push({
-        id: 'LT401_LOW_WARN',
-        level: 'warn',
-        msg: `🟡 ATENÇÃO — LT-401: Nível crítico de esvaziamento do banco (${simState.lt401}% < 10%).`
+        id: 'TT301_TRIP',
+        level: 'crit',
+        msg: `🔴 CRÍTICO (TT-301): Superaquecimento no tanque do veículo (${simState.tt301}°C > 85°C). Trip imediato da válvula de injeção XV-301.`
       });
+      simState.xv301 = false;
+      updateCheckboxes();
     }
 
-    // 4. Condição: V-201 aberta + Compressor desligado -> ATENÇÃO (Inconsistência)
-    if (simState.v201 && !simState.k501 && simState.f301 > 0) {
-      hasWarning = true;
-      activeAlarms.push({
-        id: 'INCONSISTENCY_WARN',
-        level: 'warn',
-        msg: `🟡 ATENÇÃO — V-201 aberta com Compressor K-501 desligado. Risco de perda de pressão na linha.`
-      });
-    }
-
-    // Atualizar Banner de Status Geral
+    // Atualizar Status Banner
     const banner = document.getElementById('sim-status-banner');
     const counter = document.getElementById('sim-alarm-counter');
-    const mimicStatusText = document.getElementById('mimic-status-text');
 
     if (banner && counter) {
       counter.textContent = `Alarmes Ativos: ${activeAlarms.length}`;
 
       if (hasCritical) {
         banner.className = 'sim-status-banner status-crit';
-        banner.textContent = '🔴 FALHA CRÍTICA — INTERTRAVAMENTO ATIVO';
-        if (mimicStatusText) {
-          mimicStatusText.setAttribute('fill', '#f87171');
-          mimicStatusText.textContent = 'TRIP DE SEGURANÇA / FALHA CRÍTICA';
-        }
+        banner.textContent = '🔴 TRIP DE SEGURANÇA SIL 3 ATIVO';
       } else if (hasWarning) {
         banner.className = 'sim-status-banner status-warn';
         banner.textContent = '🟡 ATENÇÃO — CONDIÇÃO ANÔMALA';
-        if (mimicStatusText) {
-          mimicStatusText.setAttribute('fill', '#fbbf24');
-          mimicStatusText.textContent = 'ALERTA / ATENÇÃO NECESSÁRIA';
-        }
       } else {
         banner.className = 'sim-status-banner status-ok';
-        banner.textContent = '🟢 OPERANDO NORMALMENTE';
-        if (mimicStatusText) {
-          mimicStatusText.setAttribute('fill', '#4ade80');
-          mimicStatusText.textContent = 'ONLINE / OPERAÇÃO NORMAL';
-        }
+        banner.textContent = '🟢 PLANTA OPERANDO NORMALMENTE';
       }
     }
 
-    // Registrar novos alarmes no log
+    // Registrar no log
     activeAlarms.forEach(alarm => {
-      const alreadyLogged = previousAlarms.some(prev => prev.id === alarm.id);
-      if (!alreadyLogged) {
+      const exists = previousAlarms.some(prev => prev.id === alarm.id);
+      if (!exists) {
         addLogEntry(alarm.level, alarm.msg);
       }
     });
 
-    // Se todos os alarmes sumiram e antes havia alarme
     if (activeAlarms.length === 0 && previousAlarms.length > 0) {
-      addLogEntry('ok', '🟢 NORMALIZAÇÃO — Todos os parâmetros retornaram às faixas seguras de operação.');
+      addLogEntry('ok', '🟢 NORMALIZAÇÃO — Todos os parâmetros operacionais dentro das faixas nominais.');
     }
+  }
+
+  function updateCheckboxes() {
+    const t1 = document.getElementById('toggle-xv101');
+    const t2 = document.getElementById('toggle-xv102');
+    const t3 = document.getElementById('toggle-xv103');
+    const t201 = document.getElementById('toggle-xv201');
+    const t301 = document.getElementById('toggle-xv301');
+
+    if (t1) t1.checked = simState.xv101;
+    if (t2) t2.checked = simState.xv102;
+    if (t3) t3.checked = simState.xv103;
+    if (t201) t201.checked = simState.xv201;
+    if (t301) t301.checked = simState.xv301;
   }
 
   function addLogEntry(level, message) {
@@ -489,13 +480,12 @@
     if (!logBox) return;
 
     const timeStr = new Date().toLocaleTimeString('pt-BR');
-    const entryEl = document.createElement('div');
-    entryEl.className = `log-entry ${level}`;
-    entryEl.innerHTML = `<span style="opacity: 0.65;">[${timeStr}]</span> ${message}`;
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${level}`;
+    entry.innerHTML = `<span style="opacity: 0.65;">[${timeStr}]</span> ${message}`;
 
-    logBox.insertBefore(entryEl, logBox.firstChild);
+    logBox.insertBefore(entry, logBox.firstChild);
 
-    // Limita tamanho do log
     while (logBox.children.length > MAX_LOG_ENTRIES) {
       logBox.removeChild(logBox.lastChild);
     }
@@ -504,44 +494,70 @@
   function injectRandomFault() {
     const faults = [
       () => {
-        // Sobrepressão
-        simState.p101 = 285;
-        const s = document.getElementById('slider-p101');
-        if (s) s.value = 285;
+        // Sobrepressão Banco 1
+        simState.pt101 = 440;
+        const s = document.getElementById('slider-pt101');
+        if (s) s.value = 440;
       },
       () => {
-        // Superaquecimento
-        simState.t201 = 105;
-        const s = document.getElementById('slider-t201');
-        if (s) s.value = 105;
+        // Sobrepressão Banco 3
+        simState.pt103 = 1060;
+        const s = document.getElementById('slider-pt103');
+        if (s) s.value = 1060;
       },
       () => {
-        // Nível Baixo
-        simState.lt401 = 5;
-        const s = document.getElementById('slider-lt401');
-        if (s) s.value = 5;
+        // Falha no Chiller
+        simState.tt201 = -15;
+        const s = document.getElementById('slider-tt201');
+        if (s) s.value = -15;
       },
       () => {
-        // Inconsistência de Saída
-        simState.k501 = false;
-        simState.v201 = true;
-        simState.f301 = 65;
-        const tK = document.getElementById('toggle-k501');
-        const tV = document.getElementById('toggle-v201');
-        const sF = document.getElementById('slider-f301');
-        if (tK) tK.checked = false;
-        if (tV) tV.checked = true;
-        if (sF) sF.value = 65;
+        // Superaquecimento no Veículo
+        simState.tt301 = 89;
+        const s = document.getElementById('slider-tt301');
+        if (s) s.value = 89;
+      },
+      () => {
+        // Parada de Emergência
+        simState.esd100 = true;
+        const s = document.getElementById('toggle-esd');
+        if (s) s.checked = true;
       }
     ];
 
-    const randomFault = faults[Math.floor(Math.random() * faults.length)];
-    randomFault();
+    const fn = faults[Math.floor(Math.random() * faults.length)];
+    fn();
     updateSimulator();
   }
 
   // --------------------------------------------------------------------------
-  // 5. GitHub API - Colaboradores da Equipe
+  // 5. Carregador de Diagrama SVG
+  // --------------------------------------------------------------------------
+  async function loadSvgDiagrams() {
+    const containers = [
+      document.getElementById('sim-diagram-viewport'),
+      document.getElementById('diagrama-static-viewport')
+    ];
+
+    for (const container of containers) {
+      if (container && !container.querySelector('svg')) {
+        try {
+          const res = await fetch('assets/diagrama.svg');
+          if (res.ok) {
+            const svgContent = await res.text();
+            container.innerHTML = svgContent;
+          }
+        } catch (e) {
+          console.warn('Diagrama carregado com fallback');
+        }
+      }
+    }
+
+    attachTooltips();
+  }
+
+  // --------------------------------------------------------------------------
+  // 6. GitHub API - Colaboradores da Equipe
   // --------------------------------------------------------------------------
   const CONTRIBUTORS_API = 'https://api.github.com/repos/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/contributors';
   const REPO_URL = 'https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core';
@@ -550,7 +566,6 @@
     const container = document.getElementById('team-contributors-grid');
     if (!container) return;
 
-    // Renderiza skeletons
     container.innerHTML = `
       <div class="skeleton-contributor"><div class="skeleton-avatar"></div><div class="skeleton-line skeleton-name"></div><div class="skeleton-line skeleton-sub"></div></div>
       <div class="skeleton-contributor"><div class="skeleton-avatar"></div><div class="skeleton-line skeleton-name"></div><div class="skeleton-line skeleton-sub"></div></div>
@@ -596,35 +611,13 @@
   }
 
   // --------------------------------------------------------------------------
-  // 6. Carregador do Diagrama Estático (Modo Leitura)
-  // --------------------------------------------------------------------------
-  async function loadStaticDiagram() {
-    const container = document.getElementById('diagrama-static-viewport');
-    if (!container) return;
-
-    if (!container.querySelector('svg')) {
-      try {
-        const res = await fetch('assets/diagrama.svg');
-        if (res.ok) {
-          const svgText = await res.text();
-          container.innerHTML = svgText;
-          attachTooltips();
-        }
-      } catch (e) {
-        console.warn('Diagrama estático carregado com fallback.');
-      }
-    }
-  }
-
-  // --------------------------------------------------------------------------
-  // 7. Inicialização no DOMContentLoaded
+  // 7. Inicialização
   // --------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initMobileMenu();
-    attachTooltips();
+    loadSvgDiagrams();
     initSimulator();
-    loadStaticDiagram();
     loadContributors();
   });
 
