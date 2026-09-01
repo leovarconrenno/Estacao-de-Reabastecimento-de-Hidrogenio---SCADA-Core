@@ -559,8 +559,8 @@
   // --------------------------------------------------------------------------
   // 6. GitHub API - Colaboradores da Equipe
   // --------------------------------------------------------------------------
-  const CONTRIBUTORS_API = 'https://api.github.com/repos/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/contributors';
-  const REPO_URL = 'https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core';
+  const CONTRIBUTORS_API = 'https://api.github.com/repos/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/contributors';
+  const REPO_URL = 'https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core';
 
   async function loadContributors() {
     const container = document.getElementById('team-contributors-grid');
