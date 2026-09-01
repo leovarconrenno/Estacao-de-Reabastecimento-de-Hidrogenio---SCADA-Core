@@ -6,6 +6,7 @@
 const CONFIG = {
   repoUrl: "https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core",
   contributorsApiUrl: "https://api.github.com/repos/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/contributors",
+  statsApiUrl: "https://api.github.com/repos/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/stats/contributors",
   projectTitle: "Estação de Reabastecimento de H₂",
   academicContext: "Engenharia de Controle e Automação — UNIFEI"
 };

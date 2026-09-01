@@ -651,6 +651,24 @@ a:hover {
   color: var(--accent);
 }
 
+.contributor-loc-stats {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.loc-added {
+  color: #22c55e;
+}
+
+.loc-removed {
+  color: #ef4444;
+}
+
 .contributor-badge {
   font-family: var(--font-mono);
   font-size: 0.65rem;
