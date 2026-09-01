@@ -7,7 +7,7 @@
 # <img src="assets/images/hydrogen.gif" height="32px" />  Estação de Reabastecimento de Hidrogênio <img src="assets/images/hydrogen.gif" height="32px" />
 
 [SITE](https://leovarconrenno.github.io/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/) &bull;
-[SLIDE](Estacao_H2_SCADA_Core.pptx)
+[SLIDE](assets/slide/Estacao_H2_SCADA_Core.pdf)
 
 ## INTRODUÇÂO
 
