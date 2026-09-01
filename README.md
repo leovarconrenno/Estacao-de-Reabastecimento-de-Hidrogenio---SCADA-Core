@@ -4,11 +4,10 @@
 [LUCA AUGUSTO](mailto:d2024004671@unifei.edu.br) &bull;
 [LEO VARGAS](mailto:d2024006120@unifei.edu.br)
 
-# <img src="hydrogen.gif" height="32px" />  Estação de Reabastecimento de Hidrogênio <img src="hydrogen.gif" height="32px" />
+# <img src="assets/images/hydrogen.gif" height="32px" />  Estação de Reabastecimento de Hidrogênio <img src="assets/images/hydrogen.gif" height="32px" />
 
-[Site](https://leovarconrenno.github.io/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/)
-
-[slide](Estacao_H2_SCADA_Core.pptx)
+[SITE](https://leovarconrenno.github.io/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/) &bull;
+[SLIDE](assets/slide/Estacao_H2_SCADA_Core.pdf)
 
 ## INTRODUÇÂO
 
