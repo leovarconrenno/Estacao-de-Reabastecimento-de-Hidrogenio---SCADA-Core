@@ -1,0 +1,459 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 950" width="100%" height="100%" class="scada-svg-pandid" role="img" aria-label="P&ID Oficial da Estação de Reabastecimento de Hidrogênio SCADA-Core">
+  <defs>
+    <!-- Gradientes dos Tanques e Setores -->
+    <linearGradient id="tankGradLP" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="50%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="chillerGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#0c4a6e" stop-opacity="0.6" />
+    </linearGradient>
+
+    <linearGradient id="sisPanelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020817" />
+    </linearGradient>
+
+    <filter id="glowTealPnid" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Fundo Geral do Diagrama Industrial -->
+  <rect x="0" y="0" width="1600" height="950" fill="#020817" stroke="#1e3a4a" stroke-width="2" rx="12" />
+
+  <!-- ====================================================================
+       LIMITES DOS SETORES (DASHED BOXES CONFORME PROJETO2.DRAWIO)
+       ==================================================================== -->
+  
+  <!-- SETOR 100: ARMAZENAMENTO & SISTEMA DE SEGURANÇA SIS -->
+  <g id="sector-100">
+    <rect x="25" y="20" width="940" height="905" rx="12" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="6,4" opacity="0.6" />
+    <rect x="40" y="30" width="220" height="38" rx="6" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+    <text x="150" y="55" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="800" fill="#2dd4bf" text-anchor="middle">SETOR 100</text>
+    <text x="275" y="55" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#94a3b8">ARMAZENAMENTO EM CASCATA &amp; SIS</text>
+  </g>
+
+  <!-- SETOR 200: CONDICIONAMENTO (CHILLER) -->
+  <g id="sector-200">
+    <rect x="990" y="20" width="585" height="425" rx="12" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6,4" opacity="0.6" />
+    <rect x="1005" y="30" width="180" height="38" rx="6" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="1095" y="55" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="800" fill="#38bdf8" text-anchor="middle">SETOR 200</text>
+    <text x="1200" y="55" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#94a3b8">CONDICIONAMENTO (-40 °C)</text>
+  </g>
+
+  <!-- SETOR 300: DISPENSAÇÃO & VEÍCULO -->
+  <g id="sector-300">
+    <rect x="990" y="465" width="585" height="460" rx="12" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="6,4" opacity="0.6" />
+    <rect x="1005" y="475" width="180" height="38" rx="6" fill="#0f172a" stroke="#a855f7" stroke-width="1.5" />
+    <text x="1095" y="500" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="800" fill="#c084fc" text-anchor="middle">SETOR 300</text>
+    <text x="1200" y="500" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="#94a3b8">DISPENSAÇÃO &amp; J2799 IR</text>
+  </g>
+
+
+  <!-- ====================================================================
+       SETOR 100: TUBULAÇÕES PRINCIPAIS DE ENTRADA E DISTRIBUIÇÃO
+       ==================================================================== -->
+  
+  <!-- Barramento de Suprimento H2 (Inlet Header) -->
+  <g class="pipe-lines">
+    <!-- Entrada Suprimento -->
+    <path d="M 80 80 L 80 430" stroke="#38bdf8" stroke-width="4" fill="none" />
+    <text x="80" y="70" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#38bdf8" text-anchor="middle">Suprimento H₂</text>
+    <polygon points="80,100 75,90 85,90" fill="#38bdf8" />
+
+    <!-- Ramal Banco 1 (LP) -->
+    <path id="pipe-in-lp" d="M 80 140 L 150 140" stroke="#38bdf8" stroke-width="4" fill="none" />
+    <path d="M 210 140 L 280 140" stroke="#38bdf8" stroke-width="4" fill="none" />
+
+    <!-- Ramal Banco 2 (MP) -->
+    <path id="pipe-in-mp" d="M 80 270 L 150 270" stroke="#38bdf8" stroke-width="4" fill="none" />
+    <path d="M 210 270 L 280 270" stroke="#38bdf8" stroke-width="4" fill="none" />
+
+    <!-- Ramal Banco 3 (HP) -->
+    <path id="pipe-in-hp" d="M 80 400 L 150 400" stroke="#38bdf8" stroke-width="4" fill="none" />
+    <path d="M 210 400 L 280 400" stroke="#38bdf8" stroke-width="4" fill="none" />
+  </g>
+
+
+  <!-- ====================================================================
+       VÁLVULAS DE CORTE DE ENTRADA: XV-101, XV-102, XV-103
+       ==================================================================== -->
+  
+  <!-- Válvula XV-101 (Entrada Banco 1 LP) -->
+  <g id="valvula-xv101" class="interactive-element" data-sensor="XV-101 (Válvula Solenoide de Corte Rápido): Entrada do Banco 1 (Baixa Pressão) | Estado: v1,1 | Acionada pelo SIS" tabindex="0">
+    <polygon points="160,128 180,140 160,152" fill="#2dd4bf" stroke="#0d9488" stroke-width="1.5" />
+    <polygon points="200,128 180,140 200,152" fill="#2dd4bf" stroke="#0d9488" stroke-width="1.5" />
+    <rect x="173" y="112" width="14" height="14" rx="2" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+    <line x1="180" y1="126" x2="180" y2="140" stroke="#2dd4bf" stroke-width="1.5" />
+    <text x="180" y="172" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">XV-101</text>
+  </g>
+
+  <!-- Válvula XV-102 (Entrada Banco 2 MP) -->
+  <g id="valvula-xv102" class="interactive-element" data-sensor="XV-102 (Válvula Solenoide de Corte Rápido): Entrada do Banco 2 (Média Pressão) | Estado: v1,2 | Acionada pelo SIS" tabindex="0">
+    <polygon points="160,258 180,270 160,282" fill="#2dd4bf" stroke="#0d9488" stroke-width="1.5" />
+    <polygon points="200,258 180,270 200,282" fill="#2dd4bf" stroke="#0d9488" stroke-width="1.5" />
+    <rect x="173" y="242" width="14" height="14" rx="2" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+    <line x1="180" y1="256" x2="180" y2="270" stroke="#2dd4bf" stroke-width="1.5" />
+    <text x="180" y="302" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">XV-102</text>
+  </g>
+
+  <!-- Válvula XV-103 (Entrada Banco 3 HP) -->
+  <g id="valvula-xv103" class="interactive-element" data-sensor="XV-103 (Válvula Solenoide de Corte Rápido): Entrada do Banco 3 (Alta Pressão) | Estado: v1,3 | Acionada pelo SIS" tabindex="0">
+    <polygon points="160,388 180,400 160,412" fill="#2dd4bf" stroke="#0d9488" stroke-width="1.5" />
+    <polygon points="200,388 180,400 200,412" fill="#2dd4bf" stroke="#0d9488" stroke-width="1.5" />
+    <rect x="173" y="372" width="14" height="14" rx="2" fill="#0f172a" stroke="#2dd4bf" stroke-width="1.5" />
+    <line x1="180" y1="386" x2="180" y2="400" stroke="#2dd4bf" stroke-width="1.5" />
+    <text x="180" y="432" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">XV-103</text>
+  </g>
+
+
+  <!-- ====================================================================
+       OS 3 BANCOS DE ARMAZENAMENTO EM CASCATA (LP, MP, HP)
+       ==================================================================== -->
+  
+  <!-- BANCO 1: BAIXA PRESSÃO (LP - 350 bar) -->
+  <g id="banco-lp" class="interactive-element" data-sensor="Banco 1 (Baixa Pressão): Armazenamento LP | P_operacional = 350 bar | Permissivo p1,4 | Trip p1,1 (>400 bar)" tabindex="0">
+    <rect x="280" y="105" width="310" height="70" rx="14" fill="url(#tankGradLP)" stroke="#2dd4bf" stroke-width="2.5" />
+    <text x="435" y="136" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="800" fill="#2dd4bf" text-anchor="middle">BANCO DE ARMAZENAMENTO 1</text>
+    <text x="435" y="156" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#94a3b8" text-anchor="middle">(Baixa Pressão · 350 bar)</text>
+  </g>
+
+  <!-- BANCO 2: MÉDIA PRESSÃO (MP - 700 bar) -->
+  <g id="banco-mp" class="interactive-element" data-sensor="Banco 2 (Média Pressão): Armazenamento MP | P_operacional = 700 bar | Permissivo p1,5 | Trip p1,2 (>700 bar)" tabindex="0">
+    <rect x="280" y="235" width="310" height="70" rx="14" fill="url(#tankGradLP)" stroke="#2dd4bf" stroke-width="2.5" />
+    <text x="435" y="266" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="800" fill="#2dd4bf" text-anchor="middle">BANCO DE ARMAZENAMENTO 2</text>
+    <text x="435" y="286" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#94a3b8" text-anchor="middle">(Média Pressão · 700 bar)</text>
+  </g>
+
+  <!-- BANCO 3: ALTA PRESSÃO (HP - 1000 bar) -->
+  <g id="banco-hp" class="interactive-element" data-sensor="Banco 3 (Alta Pressão): Armazenamento HP | P_operacional = 1000 bar | Permissivo p1,6 | Trip p1,3 (>1000 bar)" tabindex="0">
+    <rect x="280" y="365" width="310" height="70" rx="14" fill="url(#tankGradLP)" stroke="#2dd4bf" stroke-width="2.5" />
+    <text x="435" y="396" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="800" fill="#2dd4bf" text-anchor="middle">BANCO DE ARMAZENAMENTO 3</text>
+    <text x="435" y="416" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#94a3b8" text-anchor="middle">(Alta Pressão · 1000 bar)</text>
+  </g>
+
+
+  <!-- ====================================================================
+       INSTRUMENTOS DE CAMPO NOS BANCOS (PT, TT, AT, PSV)
+       ==================================================================== -->
+  
+  <!-- Instrumentação Banco 1 -->
+  <!-- PT-101 (Pressão Máx LP) -->
+  <g id="sensor-pt101" class="interactive-element" data-sensor="PT-101 (Transmissor de Pressão): Banco 1 | Proposição p1,1 | Trip quando P > 400 bar" tabindex="0">
+    <circle cx="330" cy="75" r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+    <line x1="330" y1="93" x2="330" y2="105" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="330" y="78" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#f59e0b" text-anchor="middle">PT-101</text>
+  </g>
+
+  <!-- TT-101 (Temp Banco 1) -->
+  <g id="sensor-tt101" class="interactive-element" data-sensor="TT-101 (Transmissor de Temperatura): Banco 1 | Proposição t1,1 | Trip quando T > 85°C (358 K)" tabindex="0">
+    <circle cx="390" cy="75" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+    <line x1="390" y1="93" x2="390" y2="105" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="390" y="78" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#38bdf8" text-anchor="middle">TT-101</text>
+  </g>
+
+  <!-- AT-101 (Detector de Gás Banco 1) -->
+  <g id="sensor-at101" class="interactive-element" data-sensor="AT-101 (Detector de Vazamento H₂): Banco 1 | Proposição g1,1 | Alarme C > 25% LIE (1% vol)" tabindex="0">
+    <circle cx="450" cy="75" r="18" fill="#0f172a" stroke="#ef4444" stroke-width="2" />
+    <line x1="450" y1="93" x2="450" y2="105" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="450" y="78" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ef4444" text-anchor="middle">AT-101</text>
+  </g>
+
+  <!-- PSV-101 (Válvula Alívio LP) -->
+  <g id="sensor-psv101" class="interactive-element" data-sensor="PSV-101 (Válvula de Alívio de Pressão): Banco 1 | Proposição r1,1 | Disparo Mecânico de Segurança" tabindex="0">
+    <polygon points="510,85 520,65 530,85" fill="#ef4444" stroke="#fca5a5" stroke-width="1.5" />
+    <line x1="520" y1="85" x2="520" y2="105" stroke="#ef4444" stroke-width="1.5" />
+    <text x="520" y="60" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ef4444" text-anchor="middle">PSV-101</text>
+  </g>
+
+  <!-- PT-104 (Pressão de Operação LP) -->
+  <g id="sensor-pt104" class="interactive-element" data-sensor="PT-104 (Transmissor de Pressão Desejada): Banco 1 | Proposição p1,4 | Permissivo P > 350 bar" tabindex="0">
+    <circle cx="570" cy="75" r="18" fill="#0f172a" stroke="#10b981" stroke-width="2" />
+    <line x1="570" y1="93" x2="570" y2="105" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="570" y="78" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#10b981" text-anchor="middle">PT-104</text>
+  </g>
+
+
+  <!-- Instrumentação Banco 2 -->
+  <!-- PT-102 -->
+  <g id="sensor-pt102" class="interactive-element" data-sensor="PT-102 (Transmissor de Pressão): Banco 2 | Proposição p1,2 | Trip quando P > 700 bar" tabindex="0">
+    <circle cx="330" cy="205" r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+    <line x1="330" y1="223" x2="330" y2="235" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="330" y="208" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#f59e0b" text-anchor="middle">PT-102</text>
+  </g>
+
+  <!-- TT-102 -->
+  <g id="sensor-tt102" class="interactive-element" data-sensor="TT-102 (Transmissor de Temperatura): Banco 2 | Proposição t1,2 | Trip quando T > 85°C" tabindex="0">
+    <circle cx="390" cy="205" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+    <line x1="390" y1="223" x2="390" y2="235" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="390" y="208" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#38bdf8" text-anchor="middle">TT-102</text>
+  </g>
+
+  <!-- AT-102 -->
+  <g id="sensor-at102" class="interactive-element" data-sensor="AT-102 (Detector de Vazamento H₂): Banco 2 | Proposição g1,2 | Alarme C > 25% LIE" tabindex="0">
+    <circle cx="450" cy="205" r="18" fill="#0f172a" stroke="#ef4444" stroke-width="2" />
+    <line x1="450" y1="223" x2="450" y2="235" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="450" y="208" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ef4444" text-anchor="middle">AT-102</text>
+  </g>
+
+  <!-- PSV-102 -->
+  <g id="sensor-psv102" class="interactive-element" data-sensor="PSV-102 (Válvula de Alívio de Pressão): Banco 2 | Proposição r1,2 | Disparo de Segurança" tabindex="0">
+    <polygon points="510,215 520,195 530,215" fill="#ef4444" stroke="#fca5a5" stroke-width="1.5" />
+    <line x1="520" y1="215" x2="520" y2="235" stroke="#ef4444" stroke-width="1.5" />
+    <text x="520" y="190" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ef4444" text-anchor="middle">PSV-102</text>
+  </g>
+
+  <!-- PT-105 -->
+  <g id="sensor-pt105" class="interactive-element" data-sensor="PT-105 (Transmissor de Pressão Desejada): Banco 2 | Proposição p1,5 | Permissivo P > 650 bar" tabindex="0">
+    <circle cx="570" cy="205" r="18" fill="#0f172a" stroke="#10b981" stroke-width="2" />
+    <line x1="570" y1="223" x2="570" y2="235" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="570" y="208" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#10b981" text-anchor="middle">PT-105</text>
+  </g>
+
+
+  <!-- Instrumentação Banco 3 -->
+  <!-- PT-103 -->
+  <g id="sensor-pt103" class="interactive-element" data-sensor="PT-103 (Transmissor de Pressão): Banco 3 | Proposição p1,3 | Trip quando P > 1000 bar" tabindex="0">
+    <circle cx="330" cy="335" r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+    <line x1="330" y1="353" x2="330" y2="365" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="330" y="338" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#f59e0b" text-anchor="middle">PT-103</text>
+  </g>
+
+  <!-- TT-103 -->
+  <g id="sensor-tt103" class="interactive-element" data-sensor="TT-103 (Transmissor de Temperatura): Banco 3 | Proposição t1,3 | Trip quando T > 85°C" tabindex="0">
+    <circle cx="390" cy="335" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+    <line x1="390" y1="353" x2="390" y2="365" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="390" y="338" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#38bdf8" text-anchor="middle">TT-103</text>
+  </g>
+
+  <!-- AT-103 -->
+  <g id="sensor-at103" class="interactive-element" data-sensor="AT-103 (Detector de Vazamento H₂): Banco 3 | Proposição g1,3 | Alarme C > 25% LIE" tabindex="0">
+    <circle cx="450" cy="335" r="18" fill="#0f172a" stroke="#ef4444" stroke-width="2" />
+    <line x1="450" y1="353" x2="450" y2="365" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="450" y="338" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ef4444" text-anchor="middle">AT-103</text>
+  </g>
+
+  <!-- PSV-103 -->
+  <g id="sensor-psv103" class="interactive-element" data-sensor="PSV-103 (Válvula de Alívio de Pressão): Banco 3 | Proposição r1,3 | Disparo de Segurança" tabindex="0">
+    <polygon points="510,345 520,325 530,345" fill="#ef4444" stroke="#fca5a5" stroke-width="1.5" />
+    <line x1="520" y1="345" x2="520" y2="365" stroke="#ef4444" stroke-width="1.5" />
+    <text x="520" y="320" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ef4444" text-anchor="middle">PSV-103</text>
+  </g>
+
+  <!-- PT-106 -->
+  <g id="sensor-pt106" class="interactive-element" data-sensor="PT-106 (Transmissor de Pressão Desejada): Banco 3 | Proposição p1,6 | Permissivo P > 950 bar" tabindex="0">
+    <circle cx="570" cy="335" r="18" fill="#0f172a" stroke="#10b981" stroke-width="2" />
+    <line x1="570" y1="353" x2="570" y2="365" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="570" y="338" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#10b981" text-anchor="middle">PT-106</text>
+  </g>
+
+
+  <!-- ====================================================================
+       VÁLVULA DIRECIONAL 4/3 VIAS DE CASCATA: XV-104
+       ==================================================================== -->
+  
+  <!-- Linhas de Saída dos 3 bancos convergindo para a XV-104 -->
+  <path d="M 590 140 L 720 140 L 720 255 L 750 255" stroke="#2dd4bf" stroke-width="3" fill="none" />
+  <path d="M 590 270 L 750 270" stroke="#2dd4bf" stroke-width="3" fill="none" />
+  <path d="M 590 400 L 720 400 L 720 285 L 750 285" stroke="#2dd4bf" stroke-width="3" fill="none" />
+
+  <!-- XV-104 (Válvula Direcional de Chaveamento 4/3 vias) -->
+  <g id="valvula-xv104" class="interactive-element" data-sensor="XV-104: Válvula Direcional 4/3 Vias (Duplo Solenoide YV-104A/B) | YV-104A: Seleciona Banco 1 (LP) | YV-104B: Seleciona Banco 3 (HP) | Posição Neutra (v1,4): Seleciona Banco 2 (MP)" tabindex="0">
+    <rect x="750" y="240" width="70" height="60" rx="6" fill="#0f172a" stroke="#2dd4bf" stroke-width="2" />
+    <!-- Simbologia 4/3 vias -->
+    <path d="M 760 255 L 810 270 M 760 285 L 810 270 M 760 270 L 810 270" stroke="#2dd4bf" stroke-width="1.5" />
+    <!-- Bobinas Solenoides A e B -->
+    <rect x="740" y="255" width="10" height="15" rx="2" fill="#38bdf8" stroke="#0284c7" />
+    <rect x="820" y="255" width="10" height="15" rx="2" fill="#38bdf8" stroke="#0284c7" />
+    <text x="785" y="320" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="800" fill="#2dd4bf" text-anchor="middle">XV-104</text>
+    <text x="785" y="335" font-family="'Inter', sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">4/3 Vias Cascata</text>
+  </g>
+
+  <!-- Linha de Saída do Setor 100 para o Setor 200 -->
+  <path id="pipe-cascade-out" d="M 820 270 L 1020 270" stroke="#2dd4bf" stroke-width="5" fill="none" />
+  <polygon points="980,270 965,263 965,277" fill="#2dd4bf" />
+
+
+  <!-- ====================================================================
+       SISTEMA DE SEGURANÇA E ALARME (SIS) - INFERIOR SETOR 100
+       ==================================================================== -->
+  <g id="sis-panel">
+    <!-- Painel SIS -->
+    <rect x="180" y="520" width="460" height="380" rx="10" fill="url(#sisPanelGrad)" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,3" />
+    <rect x="200" y="535" width="420" height="30" rx="4" fill="#1e293b" />
+    <text x="410" y="555" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="800" fill="#ef4444" text-anchor="middle">SISTEMA INSTRUMENTADO DE SEGURANÇA (SIS / SIL 3)</text>
+
+    <!-- Botão de Parada de Emergência ESD-100 -->
+    <g id="sensor-esd100" class="interactive-element" data-sensor="ESD-100 (Botão de Emergência Manual): Parada geral da planta | Proposição e1,1 | Despressurização e corte das válvulas" tabindex="0">
+      <circle cx="250" cy="620" r="24" fill="#ef4444" stroke="#fca5a5" stroke-width="3" />
+      <circle cx="250" cy="620" r="14" fill="#b91c1c" />
+      <text x="250" y="660" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#ef4444" text-anchor="middle">ESD-100</text>
+      <text x="250" y="673" font-family="'Inter', sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Parada Emergência</text>
+    </g>
+
+    <!-- Sirene Geral ALM-101 -->
+    <g id="actuator-alm101" class="interactive-element" data-sensor="ALM-101 (Sirene / Alarme Geral da Planta): Alarme acústico/visual de evacuação | Proposição a1,1" tabindex="0">
+      <polygon points="340,610 365,595 365,645 340,630" fill="#f59e0b" stroke="#fbbf24" stroke-width="1.5" />
+      <rect x="330" y="615" width="10" height="10" fill="#0f172a" stroke="#f59e0b" />
+      <text x="350" y="660" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#f59e0b" text-anchor="middle">ALM-101</text>
+      <text x="350" y="673" font-family="'Inter', sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Sirene Geral</text>
+    </g>
+
+    <!-- Sinalizadores Luminosos SL-101, SL-102, SL-103 -->
+    <g id="actuator-sl101" class="interactive-element" data-sensor="SL-101 (Luz Sinalizadora): Alarme do Banco 1 (LP) | Proposição s1,1" tabindex="0">
+      <circle cx="440" cy="620" r="14" fill="#f59e0b" stroke="#fbbf24" stroke-width="2" />
+      <text x="440" y="650" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#e2e8f0" text-anchor="middle">SL-101</text>
+    </g>
+
+    <g id="actuator-sl102" class="interactive-element" data-sensor="SL-102 (Luz Sinalizadora): Alarme do Banco 2 (MP) | Proposição s1,2" tabindex="0">
+      <circle cx="510" cy="620" r="14" fill="#f59e0b" stroke="#fbbf24" stroke-width="2" />
+      <text x="510" y="650" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#e2e8f0" text-anchor="middle">SL-102</text>
+    </g>
+
+    <g id="actuator-sl103" class="interactive-element" data-sensor="SL-103 (Luz Sinalizadora): Alarme do Banco 3 (HP) | Proposição s1,3" tabindex="0">
+      <circle cx="580" cy="620" r="14" fill="#f59e0b" stroke="#fbbf24" stroke-width="2" />
+      <text x="580" y="650" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#e2e8f0" text-anchor="middle">SL-103</text>
+    </g>
+
+    <!-- Linhas de Comunicação Lógica do SIS -->
+    <g stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3" opacity="0.6">
+      <path d="M 250 596 L 250 480 M 350 595 L 350 480" />
+      <text x="410" y="740" font-family="'JetBrains Mono', monospace" font-size="10" fill="#94a3b8" text-anchor="middle">LÓGICA BOOLEANA · MATRIZ DE INTERTRAVAMENTOS SIL 3</text>
+      <text x="410" y="760" font-family="'JetBrains Mono', monospace" font-size="9" fill="#2dd4bf" text-anchor="middle">TRIP AUTOMÁTICO SE P &gt; 400/700/1000 bar OU T &gt; 85°C OU VAZAMENTO</text>
+    </g>
+  </g>
+
+
+  <!-- ====================================================================
+       SETOR 200: CONDICIONAMENTO & CHILLER (-40 °C)
+       ==================================================================== -->
+  
+  <!-- Válvula de Entrada do Chiller XV-201 -->
+  <g id="valvula-xv201" class="interactive-element" data-sensor="XV-201 (Válvula de Entrada do Chiller): Bloqueio de alimentação | Estado: v2,1 | Permissivo para resfriamento" tabindex="0">
+    <polygon points="1020,258 1040,270 1020,282" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5" />
+    <polygon points="1060,258 1040,270 1060,282" fill="#38bdf8" stroke="#0284c7" stroke-width="1.5" />
+    <rect x="1033" y="242" width="14" height="14" rx="2" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+    <line x1="1040" y1="256" x2="1040" y2="270" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="1040" y="302" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">XV-201</text>
+  </g>
+
+  <!-- Unidade Chiller / Trocador de Calor HEX-201 -->
+  <g id="chiller-unit" class="interactive-element" data-sensor="Chiller / Pré-Resfriador HEX-201: Categoria T40 (SAE J2601) | Motor M-201 | Resfria o fluxo até T &lt;= -40°C" tabindex="0">
+    <rect x="1120" y="160" width="280" height="170" rx="12" fill="url(#chillerGrad2)" stroke="#38bdf8" stroke-width="2.5" />
+    
+    <!-- Serpentina Criogênica do Chiller -->
+    <path d="M 1060 270 L 1150 270 C 1170 270, 1170 220, 1190 220 C 1210 220, 1210 280, 1230 280 C 1250 280, 1250 220, 1270 220 C 1290 220, 1290 270, 1340 270 L 1400 270" fill="none" stroke="#7dd3fc" stroke-width="3.5" stroke-linecap="round" />
+
+    <text x="1260" y="190" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="800" fill="#38bdf8" text-anchor="middle">PRÉ-RESFRIADOR (CHILLER)</text>
+    <text x="1260" y="310" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#bae6fd" text-anchor="middle">-40 °C · SAE J2601 Categoria T40</text>
+  </g>
+
+  <!-- Motor M-201 do Chiller -->
+  <g id="chiller-m201" class="interactive-element" data-sensor="M-201 (Contator do Motor do Chiller): Potência de refrigeração | Estado: m2,1 | Permissivo de partida" tabindex="0">
+    <circle cx="1350" cy="115" r="20" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+    <text x="1350" y="119" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="800" fill="#38bdf8" text-anchor="middle">M-201</text>
+    <line x1="1350" y1="135" x2="1350" y2="160" stroke="#38bdf8" stroke-width="1.5" />
+  </g>
+
+  <!-- Sensor TT-201 (Temperatura Saída do Chiller) -->
+  <g id="sensor-tt201" class="interactive-element" data-sensor="TT-201 (Transmissor de Temperatura de Saída): Proposição t2,1 | Permissivo Válido quando T &lt;= -40°C" tabindex="0">
+    <circle cx="1180" cy="115" r="20" fill="#0f172a" stroke="#06b6d4" stroke-width="2" />
+    <line x1="1180" y1="135" x2="1180" y2="160" stroke="#06b6d4" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="1180" y="119" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="800" fill="#06b6d4" text-anchor="middle">TT-201</text>
+  </g>
+
+  <!-- Sensor PT-201 (Pressão do Buffer de Condicionamento) -->
+  <g id="sensor-pt201" class="interactive-element" data-sensor="PT-201 (Transmissor de Pressão): Buffer do Chiller | Proposição p2,1 | Faixa operacional nominal" tabindex="0">
+    <circle cx="1260" cy="115" r="20" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+    <line x1="1260" y1="135" x2="1260" y2="160" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,2" />
+    <text x="1260" y="119" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="800" fill="#f59e0b" text-anchor="middle">PT-201</text>
+  </g>
+
+  <!-- Linha de Saída do Chiller para o Setor 300 -->
+  <path id="pipe-chiller-to-disp" d="M 1400 270 L 1480 270 L 1480 540 L 1420 540" stroke="#38bdf8" stroke-width="4.5" fill="none" />
+  <polygon points="1440,540 1455,533 1455,547" fill="#38bdf8" />
+
+
+  <!-- ====================================================================
+       SETOR 300: DISPENSAÇÃO, ACIDENTES & VEÍCULO
+       ==================================================================== -->
+  
+  <!-- Válvula Solenoide Principal de Abastecimento XV-301 -->
+  <g id="valvula-xv301" class="interactive-element" data-sensor="XV-301 (Válvula Solenoide do Bico Dispensador): Controle de Injeção no Veículo | Estado: v3,1 | Trip imediato por sobretemperatura ou vazamento" tabindex="0">
+    <polygon points="1380,528 1400,540 1380,552" fill="#a855f7" stroke="#7e22ce" stroke-width="1.5" />
+    <polygon points="1420,528 1400,540 1420,552" fill="#a855f7" stroke="#7e22ce" stroke-width="1.5" />
+    <rect x="1393" y="512" width="14" height="14" rx="2" fill="#0f172a" stroke="#a855f7" stroke-width="1.5" />
+    <line x1="1400" y1="526" x2="1400" y2="540" stroke="#a855f7" stroke-width="1.5" />
+    <text x="1400" y="572" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#e2e8f0" text-anchor="middle">XV-301</text>
+  </g>
+
+  <!-- Linha para Válvula Breakaway BV-301 -->
+  <path d="M 1380 540 L 1320 540" stroke="#a855f7" stroke-width="4.5" fill="none" />
+
+  <!-- Válvula Breakaway BV-301 -->
+  <g id="valve-bv301" class="interactive-element" data-sensor="BV-301 (Válvula Breakaway Mecânica): Desacoplamento rápido em caso de arrancada acidental do veículo | Proposição bv3,1" tabindex="0">
+    <rect x="1250" y="515" width="70" height="50" rx="6" fill="#1e293b" stroke="#a855f7" stroke-width="2" />
+    <text x="1285" y="538" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#c084fc" text-anchor="middle">BV-301</text>
+    <text x="1285" y="552" font-family="'Inter', sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Breakaway</text>
+  </g>
+
+  <!-- Bico de Abastecimento para o Veículo -->
+  <path d="M 1250 540 L 1190 540 L 1190 620 L 1190 640" stroke="#a855f7" stroke-width="4.5" fill="none" />
+
+  <!-- Sensor PT-301 & TT-301 (Bico Dispensador) -->
+  <g id="sensor-pt301" class="interactive-element" data-sensor="PT-301 (Transmissor de Pressão de Abastecimento): Medição de enchimento | Proposição p3,1 | Setpoint = 700 bar" tabindex="0">
+    <circle cx="1340" cy="620" r="18" fill="#0f172a" stroke="#f59e0b" stroke-width="2" />
+    <text x="1340" y="623" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#f59e0b" text-anchor="middle">PT-301</text>
+  </g>
+
+  <g id="sensor-tt301" class="interactive-element" data-sensor="TT-301 (Transmissor de Temperatura Receptáculo): Monitora aquecimento | Proposição t3,1 | Limite máximo = 85°C" tabindex="0">
+    <circle cx="1400" cy="620" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2" />
+    <text x="1400" y="623" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#38bdf8" text-anchor="middle">TT-301</text>
+  </g>
+
+  <!-- VEÍCULO (FCEV) -->
+  <g id="vehicle-unit" class="interactive-element" data-sensor="Veículo a Célula de Combustível (FCEV): Tanque Tipo IV 700 bar | Receptáculo com interface IR SAE J2799" tabindex="0">
+    <rect x="1300" y="690" width="220" height="190" rx="16" fill="#1e293b" stroke="#38bdf8" stroke-width="2.5" />
+    <text x="1410" y="725" font-family="'JetBrains Mono', monospace" font-size="16" font-weight="800" fill="#38bdf8" text-anchor="middle">VEÍCULO (FCEV)</text>
+    
+    <!-- Tanque Onboard do Veículo -->
+    <rect x="1330" y="745" width="160" height="60" rx="14" fill="#0f172a" stroke="#2dd4bf" stroke-width="2" />
+    <text x="1410" y="775" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#2dd4bf" text-anchor="middle">Tanque H70 (700 bar)</text>
+    <text x="1410" y="792" font-family="'Inter', sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">SAE J2601 / SOC 100%</text>
+
+    <!-- Módulo COM-301 (Comunicação Infravermelha J2799) -->
+    <rect x="1330" y="820" width="160" height="40" rx="6" fill="#0f172a" stroke="#a855f7" stroke-width="1.5" />
+    <text x="1410" y="838" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="800" fill="#c084fc" text-anchor="middle">COM-301 (IR SAE-J2799)</text>
+    <text x="1410" y="852" font-family="'Inter', sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Comunicação Óptica de Dados</text>
+  </g>
+
+  <!-- Painel de Controle do Dispensador -->
+  <g id="dispenser-controller">
+    <rect x="1030" y="690" width="230" height="190" rx="10" fill="#0f172a" stroke="#a855f7" stroke-width="2" />
+    <text x="1145" y="720" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="800" fill="#c084fc" text-anchor="middle">CONTROLE DISPENSADOR</text>
+
+    <!-- Botão de Início de Abastecimento HS-301 -->
+    <g id="sensor-hs301" class="interactive-element" data-sensor="HS-301 (Botão de Comando): Início manual de abastecimento | Proposição h3,1 | Requer permissivos de segurança" tabindex="0">
+      <circle cx="1090" cy="770" r="18" fill="#10b981" stroke="#34d399" stroke-width="2" />
+      <text x="1090" y="773" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ffffff" text-anchor="middle">HS-301</text>
+      <text x="1090" y="802" font-family="'Inter', sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Start Dispense</text>
+    </g>
+
+    <!-- Detector de Vazamento na Área do Dispensador AT-301 -->
+    <g id="sensor-at301" class="interactive-element" data-sensor="AT-301 (Detector de Vazamento H₂ na Pista): Área do Dispensador | Proposição g3,1 | Trip SIL 3 imediato" tabindex="0">
+      <circle cx="1190" cy="770" r="18" fill="#ef4444" stroke="#f87171" stroke-width="2" />
+      <text x="1190" y="773" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="800" fill="#ffffff" text-anchor="middle">AT-301</text>
+      <text x="1190" y="802" font-family="'Inter', sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Detector Gás</text>
+    </g>
+
+    <!-- Linha de Comunicação Óptica J2799 entre Veículo e Dispensador -->
+    <path d="M 1260 840 L 1330 840" stroke="#a855f7" stroke-width="2" stroke-dasharray="4,3" />
+    <text x="1145" y="855" font-family="'JetBrains Mono', monospace" font-size="9" fill="#2dd4bf" text-anchor="middle">COMUNICAÇÃO J2799 ATIVA</text>
+  </g>
+
+</svg>
