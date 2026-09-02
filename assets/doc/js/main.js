@@ -560,7 +560,54 @@
   // 6. GitHub API - Colaboradores da Equipe
   // --------------------------------------------------------------------------
   const CONTRIBUTORS_API = 'https://api.github.com/repos/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/contributors';
+  const STATS_API = 'https://api.github.com/repos/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/stats/contributors';
   const REPO_URL = 'https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core';
+
+  /**
+   * Busca /stats/contributors e retorna um mapa { login: { additions, deletions } }.
+   * A API do GitHub pode responder 202 (estatísticas ainda sendo calculadas) na
+   * primeira chamada, então tentamos de novo algumas vezes antes de desistir.
+   * Qualquer falha aqui é silenciosa — apenas a linha de +/- não aparece.
+   */
+  async function fetchLocStatsMap(retries = 4, delayMs = 2000) {
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const res = await fetch(STATS_API, {
+          headers: { 'Accept': 'application/vnd.github.v3+json' }
+        });
+
+        if (res.status === 202) {
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+          continue;
+        }
+
+        if (!res.ok) return {};
+
+        const data = await res.json();
+        if (!Array.isArray(data)) return {};
+
+        const map = {};
+        data.forEach(entry => {
+          if (!entry || !entry.author || !entry.author.login) return;
+          const totals = (entry.weeks || []).reduce(
+            (acc, week) => {
+              acc.additions += week.a || 0;
+              acc.deletions += week.d || 0;
+              return acc;
+            },
+            { additions: 0, deletions: 0 }
+          );
+          map[entry.author.login] = totals;
+        });
+        return map;
+
+      } catch (err) {
+        console.warn('Falha ao buscar estatísticas de linhas dos colaboradores:', err);
+        return {};
+      }
+    }
+    return {};
+  }
 
   async function loadContributors() {
     const container = document.getElementById('team-contributors-grid');
@@ -574,7 +621,10 @@
     `;
 
     try {
-      const res = await fetch(CONTRIBUTORS_API);
+      const [res, locStatsMap] = await Promise.all([
+        fetch(CONTRIBUTORS_API),
+        fetchLocStatsMap()
+      ]);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
 
@@ -584,11 +634,20 @@
 
       let html = '';
       data.forEach(user => {
+        const stats = locStatsMap[user.login];
+        const locHtml = stats
+          ? `<span class="contributor-loc-stats">
+               <span class="loc-added">+${stats.additions.toLocaleString('pt-BR')}</span>
+               <span class="loc-removed">-${stats.deletions.toLocaleString('pt-BR')}</span>
+             </span>`
+          : '';
+
         html += `
           <a href="${user.html_url}" target="_blank" rel="noopener noreferrer" class="contributor-card" title="Ver perfil de ${user.login} no GitHub">
             <img src="${user.avatar_url}" alt="${user.login}" class="contributor-avatar" loading="lazy" />
             <span class="contributor-login">@${user.login}</span>
             <span class="contributor-commits"><strong>${user.contributions}</strong> ${user.contributions === 1 ? 'commit' : 'commits'}</span>
+            ${locHtml}
           </a>
         `;
       });
