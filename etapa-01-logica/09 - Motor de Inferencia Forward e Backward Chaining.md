@@ -33,3 +33,5 @@ O método `backward_chaining` implementa a busca recursiva descrita no Princípi
 O notebook valida o motor com três cenários sobre a mesma base de 14 regras. No primeiro, o *forward chaining* recebe os fatos de campo `p1_3` (sobrepressão no Tanque de Alta Pressão) e `v1_3` (válvula aberta) e encadeia corretamente até `TRIP_TANQUE_ALTA`, confirmado por asserções sobre o conjunto final de fatos. No segundo, o *backward chaining* investiga a meta `TRIP_TANQUE_MEDIA` a partir dos fatos `p1_2` e `v1_2`, provando-a com sucesso ao percorrer a cadeia `SOBREPRESSAO_TANQUE_MEDIA → TRIP_TANQUE_MEDIA`. No terceiro, a mesma busca é aplicada à meta `FUGA_H2_TANQUE_ALTA` sem que o fato de vazamento (`g1_3`) esteja presente no campo, e o motor corretamente reporta a meta como não provada, evidenciando a diferença entre ausência de evidência e violação de regra.
 
 Uma função auxiliar, `formatar_tabela`, converte cada trilha de auditoria (lista de dicionários) em uma tabela ASCII, usada para exibir de forma legível tanto o histórico de disparos do *forward chaining* quanto a árvore de decisão do *backward chaining* diretamente na saída do notebook.
+
+.
