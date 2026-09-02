@@ -1,4 +1,10 @@
+# Aula 10: Avaliação Integrada do Módulo 1 — Motor de Intertravamento e Diagnóstico
 
+## 1. Escopo e Diretrizes do Desafio de Engenharia
+
+Nesta avaliação integradora, consolido os conceitos do **Módulo 1: Lógica Formal & Sistemas Especialistas**, demonstrando o funcionamento conjunto do:
+1. Catálogo e telemetria de *Tags* ISA-5.1 (PT, TT, AT, XV, ESD, HS), com conversão de leituras físicas em proposições lógicas a partir dos limiares definidos na Aula 02 (Mapeamento de Variáveis de Processo).
+2. Base de conhecimento especialista (Aula 08) e motor de inferência *Forward Chaining* (Aula 09) para isolamento de causa-raiz.
 3. Motor de intertravamento consolidado num único ciclo de varredura (*scan cycle*), avaliando simultaneamente os Setores 100 (Armazenamento), 200 (Condicionamento) e 300 (Dispensação) da Estação de Reabastecimento de Hidrogênio.
 
 ---
