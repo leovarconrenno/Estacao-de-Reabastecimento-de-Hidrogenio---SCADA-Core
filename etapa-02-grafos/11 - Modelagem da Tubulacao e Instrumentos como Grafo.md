@@ -12,14 +12,14 @@ Onde:
 
 ```mermaid
 graph LR
-    E101["E-101: Eletrolisador"] -->|5m (XV-101)| C101["C-101: Compressor 1 Estágio"]
-    C101 -->|10m (XV-102)| TK101["TK-101: Tanque Baixa Pressão (LP)"]
-    C101 -->|15m (XV-103)| C102["C-102: Compressor 2 Estágio"]
-    C102 -->|8m (XV-104)| TK102["TK-102: Tanque Alta Pressão (HP)"]
-    TK101 -->|12m (XV-105)| MAN101["MAN-101: Manifold do Dispenser"]
-    TK102 -->|15m (XV-106)| MAN101
-    CH101["CH-101: Chiller (Resfriador)"] -->|6m (XV-107)| MAN101
-    MAN101 -->|4m (XV-108)| D101["D-101: Dispenser (Bico de Abastecimento)"]
+    E101["E-101: Eletrolisador"] -->|"5m (XV-101)"| C101["C-101: Compressor 1 Estagio"]
+    C101 -->|"10m (XV-102)"| TK101["TK-101: Tanque Baixa Pressao (LP)"]
+    C101 -->|"15m (XV-103)"| C102["C-102: Compressor 2 Estagio"]
+    C102 -->|"8m (XV-104)"| TK102["TK-102: Tanque Alta Pressao (HP)"]
+    TK101 -->|"12m (XV-105)"| MAN101["MAN-101: Manifold do Dispenser"]
+    TK102 -->|"15m (XV-106)"| MAN101
+    CH101["CH-101: Chiller (Resfriador)"] -->|"6m (XV-107)"| MAN101
+    MAN101 -->|"4m (XV-108)"| D101["D-101: Dispenser (Bico de Abastecimento)"]
 ```
 
 ---
