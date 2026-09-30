@@ -1,0 +1,38 @@
+Setor,Tag,Variável Física,Proposição,Valor Booleano,Status
+100 - Armazenamento,PT-101,Pressão tanque baixa pressão,"p_{1,1}",False,NORMAL/INATIVO
+100 - Armazenamento,PT-104,Pressão desejada tanque baixa,"p_{1,4}",True,CRÍTICO/ATIVO
+100 - Armazenamento,TT-101,Temp. tanque baixa pressão,"t_{1,1}",False,NORMAL/INATIVO
+100 - Armazenamento,AT-101,Detector de Gás H2 (Baixa),"g_{1,1}",False,NORMAL/INATIVO
+100 - Armazenamento,PSV-101,Válvula de Alívio (Baixa),"r_{1,1}",False,NORMAL/INATIVO
+100 - Armazenamento,XV-101,Válvula Corte Rápido (Baixa),"v_{1,1}",True,CRÍTICO/ATIVO
+100 - Armazenamento,SL-101,Sinalizador / Luz (Baixa),"s_{1,1}",False,NORMAL/INATIVO
+100 - Armazenamento,PT-102,Pressão tanque média pressão,"p_{1,2}",False,NORMAL/INATIVO
+100 - Armazenamento,PT-105,Pressão desejada tanque média,"p_{1,5}",True,CRÍTICO/ATIVO
+100 - Armazenamento,TT-102,Temp. tanque média pressão,"t_{1,2}",False,NORMAL/INATIVO
+100 - Armazenamento,AT-102,Detector de Gás H2 (Média),"g_{1,2}",False,NORMAL/INATIVO
+100 - Armazenamento,PSV-102,Válvula de Alívio (Média),"r_{1,2}",False,NORMAL/INATIVO
+100 - Armazenamento,XV-102,Válvula Corte Rápido (Média),"v_{1,2}",True,CRÍTICO/ATIVO
+100 - Armazenamento,SL-102,Sinalizador / Luz (Média),"s_{1,2}",False,NORMAL/INATIVO
+100 - Armazenamento,PT-103,Pressão tanque alta pressão,"p_{1,3}",False,NORMAL/INATIVO
+100 - Armazenamento,PT-106,Pressão desejada tanque alta,"p_{1,6}",True,CRÍTICO/ATIVO
+100 - Armazenamento,TT-103,Temp. tanque alta pressão,"t_{1,3}",False,NORMAL/INATIVO
+100 - Armazenamento,AT-103,Detector de Gás H2 (Alta),"g_{1,3}",False,NORMAL/INATIVO
+100 - Armazenamento,PSV-103,Válvula de Alívio (Alta),"r_{1,3}",False,NORMAL/INATIVO
+100 - Armazenamento,XV-103,Válvula Corte Rápido (Alta),"v_{1,3}",True,CRÍTICO/ATIVO
+100 - Armazenamento,SL-103,Sinalizador / Luz (Alta),"s_{1,3}",False,NORMAL/INATIVO
+100 - Armazenamento,XV-104,Seleção de Tanque (Direcional),"v_{1,4}",True,CRÍTICO/ATIVO
+100 - Armazenamento,YV-104A,Bobina Solenoide A (Baixa),"y_{1,4a}",False,NORMAL/INATIVO
+100 - Armazenamento,YV-104B,Bobina Solenoide B (Alta),"y_{1,4b}",True,CRÍTICO/ATIVO
+100 - Armazenamento,ALM-101,Alarme Geral / Buzzer,"a_{1,1}",False,NORMAL/INATIVO
+100 - Armazenamento,ESD-100,Parada de Emergência Manual,"e_{1,1}",False,NORMAL/INATIVO
+200 - Condicionamento,TT-201,Temp. Saída Pré-resfriador,"t_{2,1}",True,CRÍTICO/ATIVO
+200 - Condicionamento,PT-201,Pressão do Buffer,"p_{2,1}",True,CRÍTICO/ATIVO
+200 - Condicionamento,M-201,Contator Motor Chiller,"m_{2,1}",True,CRÍTICO/ATIVO
+200 - Condicionamento,XV-201,Válvula Entrada Chiller,"v_{2,1}",True,CRÍTICO/ATIVO
+300 - Dispensador,HS-301,Início de Abastecimento,"h_{3,1}",False,NORMAL/INATIVO
+300 - Dispensador,COM-301,Comunicação IR (J2799),"c_{3,1}",True,CRÍTICO/ATIVO
+300 - Dispensador,BV-301,Válvula Ruptura (Breakaway),"bv_{3,1}",True,CRÍTICO/ATIVO
+300 - Dispensador,XV-301,Alimentação Bico Dispensador,"v_{3,1}",True,CRÍTICO/ATIVO
+300 - Dispensador,PT-301,Pressão no Nozzle (Veículo),"p_{3,1}",True,CRÍTICO/ATIVO
+300 - Dispensador,TT-301,Temp. Recepção Veículo,"t_{3,1}",False,NORMAL/INATIVO
+300 - Dispensador,AT-301,Detector Gás (Dispensador),"g_{3,1}",False,NORMAL/INATIVO
