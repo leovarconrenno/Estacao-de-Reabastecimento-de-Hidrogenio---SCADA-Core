@@ -20,13 +20,13 @@ Onde:
 ```mermaid
 graph TD
     subgraph "Arquitetura do Sistema Especialista SCADA-Core (Estação H₂)"
-        TLM["Telemetria de Campo (4..20mA / PT-101, FT-101, AT-101)"] --> MAP["Mapeador de Proposições"]
+        TLM["Telemetria de Campo (4..20mA / PT-101, TT-101, AT-101)"] --> MAP["Mapeador de Proposições"]
         MAP --> FATOS["Base de Fatos Dinâmica F(t)"]
         FATOS --> MATCHER["Motor de Casamento de Padrões (Pattern Matching)"]
         REGRAS["Base de Conhecimento R (Regras Especialistas de H₂)"] --> MATCHER
         MATCHER --> AGENDA["Conjunto de Conflito / Agenda de Disparos"]
-        AGENDA --> ARBITR["Arbitrador de Conflitos (Prioridade SIL 3)"]
-        ARBITR --> EXEC["Execução / Inferência de Causa-Raiz e Ações"]
+        ARBITR["Arbitrador de Conflitos (Prioridade SIL 3)"] --> EXEC["Execução / Inferência de Causa-Raiz e Ações"]
+        AGENDA --> ARBITR
         EXEC --> DIAG["Relatório de Causa-Raiz e Ação Corretiva Recomendada"]
     end
 ```
@@ -53,3 +53,31 @@ A base de conhecimento cobre os cenários operacionais e de falha mais críticos
 Uma Base de Conhecimento industrial para a Estação de Hidrogênio deve ser estritamente livre de **contradições** e **redundâncias**:
 1. **Consistência Semântica:** Não podem coexistir regras onde os mesmos antecedentes gerem conclusões mutuamente exclusivas ($A \rightarrow C$ e $A \rightarrow \neg C$).
 2. **Priorização por Severidade:** Regras associadas a vazamentos de $\text{H}_2$ ou risco de sobrepressão em vasos de 350/700 bar possuem prioridade máxima de execução ($\text{SIL 3} / \text{Prio} = 10$).
+
+---
+
+## 4. Verificação Formal de Consistência e Não-Circularidade das Regras
+
+Para garantir que o motor de inferência opere em tempo real com determinismo temporal e segurança intrínseca, a base de conhecimento de regras de produção $\mathcal{R}$ deve satisfazer formalmente dois critérios fundamentais:
+
+### 4.1 Critério de Consistência Semântica (Ausência de Contradições)
+Uma base de regras é dita consistente se, a partir de qualquer conjunto válido de fatos de campo $\mathcal{F} \subseteq \mathcal{U}_{\text{fatos}}$, não é possível inferir simultaneamente uma conclusão e a sua negação lógica:
+
+$$\forall \mathcal{F}_{\text{válido}}, \quad \mathcal{R}(\mathcal{F}) \not\vdash (C \land \neg C)$$
+
+Formalmente, para quaisquer regras $R_j, R_k \in \mathcal{R}$:
+$$\text{Se } \bigwedge A_j \subseteq \mathcal{F} \implies C_j \quad \text{e} \quad \bigwedge A_k \subseteq \mathcal{F} \implies C_k$$
+não pode ocorrer a condição contraditória $C_j \iff \neg C_k$. Em caso de ativação de regras com premissas concorrentes (ex.: comando manual de liberação versus alarme de vazamento de $\text{H}_2$), aplica-se a estratégia de resolução de conflitos $\mathcal{E}$, garantindo que o consequente de maior severidade de segurança (SIL 3) iniba o permissivo antagônico, mantendo a consistência do sistema.
+
+### 4.2 Critério de Acyclicidade e Não-Circularidade (Garantia de Terminação)
+A base de regras $\mathcal{R}$ define naturalmente um Grafo Direcionado de Dependências $\mathcal{G} = (\mathcal{V}, \mathcal{E})$, onde:
+- Os vértices $\mathcal{V}$ são as proposições e diagnósticos da planta ($\mathcal{V} = \mathcal{U}_{\text{fatos}}$).
+- Existe uma aresta direcionada $(u, v) \in \mathcal{E}$ se a proposição $u$ figura como antecedente de uma regra $R_i$ cujo consequente é $v$ ($u \in \text{Antecedentes}(R_i) \land v = \text{Consequente}(R_i)$).
+
+Para que o motor de inferência *Forward Chaining* convirja ao ponto fixo em tempo finito e sem laços infinitos, o grafo $\mathcal{G}$ deve ser estritamente um **Grafo Acíclico Direcionado (DAG)**:
+
+$$\nexists (v_1, v_2, \dots, v_m, v_1) \subseteq \mathcal{E}$$
+
+A ausência de circularidade assegura que:
+1. O algoritmo atinge a saturação de novos fatos em no máximo $|\mathcal{R}|$ iterações.
+2. A complexidade de tempo de execução no ciclo de varredura (*scan cycle*) é estritamente $\mathcal{O}(|\mathcal{R}| \cdot |\mathcal{F}|)$, garantindo previsibilidade de tempo real determinístico.

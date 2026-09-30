@@ -4,7 +4,7 @@ No contexto do controle lógico de processos da Estação de Reabastecimento de 
 
 ## A. Intertrava de Trip de Emergência do Banco de Armazenamento (Setor 100)
 
-A válvula de corte rápido do banco de armazenamento ($v_{1,X}$, XV-10X {1-3}) deve ser imediatamente FECHADA ($\neg v_{1,X}$) e o alarme geral acionado ($a_1$)e a respectiva sinalização ($s\_{1,X}$ ,SL-10X) caso haja sobrepressão, sobretemperatura, vazamento de gás ou acionamento manual de emergência.
+A válvula de corte rápido do banco de armazenamento ($v_{1,X}$, XV-10X {1-3}) deve ser imediatamente FECHADA ($\neg v_{1,X}$), o alarme geral acionado ($a_1$) e a respectiva sinalização ($s_{1,X}$, SL-10X) caso haja sobrepressão, sobretemperatura, vazamento de gás ou acionamento manual de emergência.
 
 * **Condição de Falha / Evento Crítico ($F_1$):**
 
@@ -12,19 +12,19 @@ $$F_{1,X}  \equiv p_{1,X} \lor t_{1,X} \lor g_{1,X} \lor e_1$$
 
 * **Equação Lógica de Intertravamento:**
 
-$$F_{1,X} \rightarrow (\neg v_{1,X} \land S{1,x} \land a_1)$$
+$$F_{1,X} \rightarrow (\neg v_{1,X} \land S_{1,X} \land a_1)$$
 
 $$F_{1,X}  \equiv F_1 $$
 
 Adicionalmente, a válvula de alívio ($r_1$, PSV-101) atua especificamente em caso de sobrepressão, de forma independente do fechamento de $v_1$:
 
-$$p_{1,x} C r_{1,x}$$
+$$p_{1,x} \rightarrow r_{1,x}$$
 
 * **Exemplo para o tanque 1**
 
 $$F_{1,1}  \equiv p_{1,1} \lor t_{1,1} \lor g_{1,1} \lor e_1$$
 
-$$F_{1,1} \rightarrow (\neg v_{1,1} \land S{1,1} \land a_1)$$
+$$F_{1,1} \rightarrow (\neg v_{1,1} \land S_{1,1} \land a_1)$$
 
 $$p_{1,1} \rightarrow r_{1,1}$$
 
@@ -38,23 +38,25 @@ $$p_{1,6} \land \neg p_{1,5} \rightarrow (\neg v_{1,3} \land v_{1,2} \land \neg 
 
 $$p_{1,6} \land p_{1,5} \land \neg p_{1,4} \rightarrow (\neg v_{1,3} \land \neg v_{1,2} \land v_{1,1})$$
 
-## C. loop do chiller do chiller (Setor 200)
+## C. Loop do Chiller (Setor 200)
 
-enquanto a pressão e a tempuratura não forem suficientes  o chiller deve manter ligado até acumular a pressão e a temperatura adequada
+Enquanto a pressão e a temperatura não forem suficientes, o chiller deve se manter ligado até acumular a pressão e a temperatura adequadas:
 
-$$ XV_{3,1} \rightarrow (p_{2,1} \land t_{2,1})
+$$\neg(p_{2,1} \land t_{2,1}) \rightarrow \text{chiller\_ligado}$$
+
+$$(p_{2,1} \land t_{2,1}) \rightarrow \neg \text{chiller\_ligado}$$
 
 ### D. Permissivo de Abertura do Dispensador / Início de Abastecimento (Setor 300)
 
-A válvula de dispensação ($v_{3,1}$, XV-301) só pode abrir se: o operador tiver acionado o comando de início ($h_{3,1}$), a comunicação com o veículo estiver estabelecida ($c_{3,1}$), o acoplamento breakaway estiver íntegro ($bv_{3,1}$), o condicionamento do gás estiver adequado (pré-resfriamento $t_{3,1}$, pressão de buffer $p_{3,1}$ e chiller operacional $m_{2,1}$), e não houver vazamento de H₂ em nenhuma das duas zonas de detecção ($g_{1,X}$, $g_{3,1}$) nem parada de emergência ativa ($e_1$).
+A válvula de dispensação ($v_{3,1}$, XV-301) só pode abrir se: o operador tiver acionado o comando de início ($h_{3,1}$), a comunicação com o veículo estiver estabelecida ($c_{3,1}$), o acoplamento breakaway estiver íntegro ($b_{3,1}$), não houver vazamento de H₂ na área do dispensador ($\neg g_{3,1}$), e o condicionamento de temperatura do gás pelo chiller estiver adequado ($t_{2,1}$).
 
-* **Condição de Permissivo de Abertura ($P_{disp}$):**
+* **Condição de Permissivo de Abertura ($P_{\text{disp}}$):**
 
-$$P_{disp} \equiv h_{3,1} \land c_{3,1} \land bv_{3,1} \land \not t_{3,1} \land p_{3,1} \land m_{2,1} \land \lnot g_{1,X} \land \lnot g_{3,1} \land \lnot e_1$$
+$$P_{\text{disp}} \equiv h_{3,1} \land c_{3,1} \land b_{3,1} \land \neg g_{3,1} \land t_{2,1}$$
 
 * **Regra Operacional:**
 
-$$P_{disp} \rightarrow v_{3,1}$$
+$$P_{\text{disp}} \rightarrow v_{3,1}$$
 
 ## E. Trip de Abastecimento — Fechamento Imediato do Dispensador (Setor 300)
 
@@ -81,7 +83,7 @@ Para demonstrar ao motor do SCADA-Core que a planta nunca entrará em estado de 
 
 $$S_{risco,1} \equiv p_{1,X} \land v_{1,X}$$
 
-Da regra de intertravamento A, sabe-se que $F_{1,X} \rightarrow (\neg v_{1,X} \land a_{1,1})$, e que $p_{1,X} \rightarrow F_{1,X}$ (pois $p_{1,X}$ é um dos disjuntos de $F_{1,X}$). Por silogismo hipotético, obtém-se a regra derivada implementada no controlador:
+Da regra de intertravamento A, sabe-se que $F_{1,X} \rightarrow (\neg v_{1,X} \land S_{1,X} \land a_1)$, e que $p_{1,X} \rightarrow F_{1,X}$ (pois $p_{1,X}$ é um dos disjuntos de $F_{1,X}$). Por silogismo hipotético, obtém-se a regra derivada implementada no controlador:
 
 $$p_{1,X} \rightarrow \neg v_{1,X}$$
 
