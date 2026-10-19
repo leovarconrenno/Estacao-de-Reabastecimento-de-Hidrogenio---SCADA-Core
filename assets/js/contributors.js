@@ -48,53 +48,6 @@
   }
 
   /**
-   * Busca /stats/contributors e retorna um mapa { login: { additions, deletions } }.
-   * A API do GitHub pode responder 202 (ainda calculando) na primeira chamada,
-   * então tentamos novamente algumas vezes antes de desistir.
-   * Falhas aqui nunca quebram o card principal — apenas a linha de +/- some.
-   */
-  async function fetchLocStatsMap(retries = 4, delayMs = 2000) {
-    for (let attempt = 0; attempt < retries; attempt++) {
-      try {
-        const response = await fetch(CONFIG.statsApiUrl, {
-          headers: { 'Accept': 'application/vnd.github.v3+json' }
-        });
-
-        if (response.status === 202) {
-          // GitHub está processando as estatísticas nos bastidores, aguarda e repete
-          await new Promise(resolve => setTimeout(resolve, delayMs));
-          continue;
-        }
-
-        if (!response.ok) return {};
-
-        const data = await response.json();
-        if (!Array.isArray(data)) return {};
-
-        const statsMap = {};
-        data.forEach(entry => {
-          if (!entry || !entry.author || !entry.author.login) return;
-          const totals = (entry.weeks || []).reduce(
-            (acc, week) => {
-              acc.additions += week.a || 0;
-              acc.deletions += week.d || 0;
-              return acc;
-            },
-            { additions: 0, deletions: 0 }
-          );
-          statsMap[entry.author.login] = totals;
-        });
-        return statsMap;
-
-      } catch (error) {
-        console.warn('Falha ao buscar estatísticas de linhas dos colaboradores:', error);
-        return {};
-      }
-    }
-    return {};
-  }
-
-  /**
    * Carrega os colaboradores do repositório no GitHub
    */
   window.loadContributors = async function () {
@@ -104,14 +57,11 @@
     renderSkeletons(container, 4);
 
     try {
-      const [response, locStatsMap] = await Promise.all([
-        fetch(CONFIG.contributorsApiUrl, {
-          headers: {
-            'Accept': 'application/vnd.github.v3+json'
-          }
-        }),
-        fetchLocStatsMap()
-      ]);
+      const response = await fetch(CONFIG.contributorsApiUrl, {
+        headers: {
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
 
       if (!response.ok) {
         throw new Error(`Erro na API do GitHub: status ${response.status}`);
@@ -150,11 +100,6 @@
               <div class="contributor-stats">
                 <span class="commit-count">${member.contributions}</span> ${member.contributions === 1 ? 'contribuição' : 'contribuições'}
               </div>
-              ${locStatsMap[member.login] ? `
-              <div class="contributor-loc-stats">
-                <span class="loc-added">+${locStatsMap[member.login].additions.toLocaleString('pt-BR')}</span>
-                <span class="loc-removed">-${locStatsMap[member.login].deletions.toLocaleString('pt-BR')}</span>
-              </div>` : ''}
               ${badgeHtml}
             </div>
           </a>

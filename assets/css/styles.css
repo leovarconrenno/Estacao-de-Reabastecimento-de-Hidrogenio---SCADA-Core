@@ -976,3 +976,51 @@ a:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* ====================================================================
+   ETAPA 02 — GRAFOS
+   ==================================================================== */
+.components-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.component-card {
+  background-color: var(--bg-card, #0f172a);
+  border: 1px solid var(--border-color, #1e293b);
+  border-radius: var(--radius-md, 8px);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.2));
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.component-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg, 0 10px 15px rgba(0,0,0,0.3));
+  border-color: var(--primary-light, #38bdf8);
+}
+
+.component-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.component-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main, #f8fafc);
+  margin-bottom: 0.5rem;
+}
+
+.component-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted, #94a3b8);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
