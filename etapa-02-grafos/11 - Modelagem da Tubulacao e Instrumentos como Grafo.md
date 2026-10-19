@@ -119,3 +119,34 @@ No projeto industrial de estações de hidrogênio, certos subsistemas críticos
 ## 5. Entregável da Aula 11
 
 * **Classe `GrafoTubulacao` em Python:** Estrutura orientada a objetos com suporte a nós ISA-5.1, inserção de tubulações com peso e válvula associada, e exportação das matrizes de adjacência para o sistema SCADA da Estação de Reabastecimento de Hidrogênio.
+
+---
+
+## 6. Mapeamento da Instrumentação ISA-5.1 e Matriz de Dados SCADA
+
+A tabela abaixo consolida os nós do grafo com a norma de instrumentação ISA-5.1 e os parâmetros de processo monitorados pelo SCADA Core:
+
+| Tag do Equipamento | Nome do Equipamento | Função no Processo H₂ | Pressão Operacional | $\deg^-$ | $\deg^+$ | Válvulas Associadas na Saída |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **E-101** | Eletrolisador PEM | Geração por Eletrólise da Água | 30 bar | 0 | 1 | `XV-101` |
+| **C-101** | Compressor 1º Estágio | Elevação de Pressão Intermediária | 30 bar $\rightarrow$ 350 bar | 1 | 2 | `XV-102`, `XV-103` |
+| **C-102** | Compressor 2º Estágio | Elevação de Pressão Final | 350 bar $\rightarrow$ 700 bar | 1 | 1 | `XV-104` |
+| **TK-101** | Banco de Estocagem LP | Armazenamento Cascata LP | 350 bar | 1 | 1 | `XV-105` |
+| **TK-102** | Banco de Estocagem HP | Armazenamento Cascata HP | 700 bar | 1 | 1 | `XV-106` |
+| **CH-101** | Chiller Criogênico | Pré-resfriamento a $-40^\circ\text{C}$ | 700 bar | 0 | 1 | `XV-107` |
+| **MAN-101** | Manifold de Dosagem | Seleção Sequencial de Carga | 350 / 700 bar | 3 | 1 | `XV-108` |
+| **D-101** | Dispenser Veicular | Injeção no Veículo (SAE J2601) | 700 bar máximo | 1 | 0 | N/A (Acoplador Bico H35/H70) |
+
+---
+
+## 7. Análise Numérica da Extensão de Tubulações por Rota de Abastecimento
+
+A partir dos comprimentos $L_i$ associados às arestas no grafo, determina-se a extensão física total necessária para conectar a geração até a dispensação pelas duas rotas operacionais principais:
+
+* **Rota de Baixa Pressão (Alimentação Direta LP - 350 bar):**
+  $$\text{Caminho LP: } E\text{-}101 \xrightarrow{5\text{m}} C\text{-}101 \xrightarrow{10\text{m}} TK\text{-}101 \xrightarrow{12\text{m}} MAN\text{-}101 \xrightarrow{4\text{m}} D\text{-}101$$
+  $$\text{Comprimento Total (LP)} = 5 + 10 + 12 + 4 = 31\text{ metros}$$
+
+* **Rota de Alta Pressão (Alimentação Recomprimida HP - 700 bar):**
+  $$\text{Caminho HP: } E\text{-}101 \xrightarrow{5\text{m}} C\text{-}101 \xrightarrow{15\text{m}} C\text{-}102 \xrightarrow{8\text{m}} TK\text{-}102 \xrightarrow{15\text{m}} MAN\text{-}101 \xrightarrow{4\text{m}} D\text{-}101$$
+  $$\text{Comprimento Total (HP)} = 5 + 15 + 8 + 15 + 4 = 47\text{ metros}$$
