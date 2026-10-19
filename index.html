@@ -1,4 +1,4 @@
-<!assets/docTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,6 @@
   <meta property="og:title" content="Estação de Reabastecimento de Hidrogênio — SCADA Core">
   <meta property="og:description" content="Landing page e simulador interativo SCADA Core para Estação de Reabastecimento de H₂. UNIFEI.">
   <meta property="og:type" content="website">
-  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
 
   <title>Estação de Reabastecimento de Hidrogênio — SCADA Core</title>
 
@@ -18,7 +17,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Folha de Estilos Customizada -->
-  <link rel="stylesheet" href="assets/doc/css/styles.css">
+  <link rel="stylesheet" href="doc/css/styles.css">
 </head>
 <body>
 
@@ -40,12 +39,13 @@
         <li><a href="#simulador" class="nav-link">🎛️ Simulador</a></li>
         <li><a href="#componentes" class="nav-link">⚙️ Componentes</a></li>
         <li><a href="#diagrama" class="nav-link">📐 Diagrama</a></li>
+        <li><a href="#grafos" class="nav-link">📊 Grafos</a></li>
         <li><a href="#equipe" class="nav-link">👥 Equipe</a></li>
       </ul>
 
       <!-- Ações: Link GitHub + Toggle Tema + Botão Mobile -->
       <div class="nav-actions">
-        <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;" title="Repositório no GitHub">
+        <a href="https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;" title="Repositório no GitHub">
           🐙 GitHub
         </a>
         <button class="theme-toggle" type="button" aria-label="Alternar tema claro/escuro">☀️</button>
@@ -60,8 +60,9 @@
       <a href="#simulador" class="nav-link">🎛️ Simulador SCADA</a>
       <a href="#componentes" class="nav-link">⚙️ Componentes</a>
       <a href="#diagrama" class="nav-link">📐 Diagrama</a>
+      <a href="#grafos" class="nav-link">📊 Grafos — Etapa 02</a>
       <a href="#equipe" class="nav-link">👥 Equipe</a>
-      <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="nav-link" style="color: var(--primary-light);">
+      <a href="https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="nav-link" style="color: var(--primary-light);">
         🐙 Repositório GitHub &rarr;
       </a>
     </div>
@@ -106,7 +107,7 @@
           <span class="meta-icon">🐙</span>
           <div>
             <div class="meta-label">Repositório</div>
-            <div class="meta-value">GitHub (leovarconrenno : Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core)</div>
+            <div class="meta-value">GitHub (org: Automatica-Reabastecimento-H2-SCADA)</div>
           </div>
         </div>
       </div>
@@ -119,7 +120,7 @@
         <a href="#diagrama" class="btn btn-outline">
           📐 Ver Diagrama do Sistema
         </a>
-        <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+        <a href="https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
           🐙 Repositório GitHub
         </a>
       </div>
@@ -439,6 +440,110 @@
     </section>
 
 
+    <!-- ETAPA 02 — TEORIA DOS GRAFOS -->
+    <section class="section" id="grafos">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">📊 Etapa 02 — Teoria dos Grafos Aplicada ao SCADA</h2>
+          <p class="section-subtitle">
+            A malha hidráulica da Estação de H₂ é modelada como um dígrafo ponderado
+            <strong>G = (V, E, W)</strong> com 8 nós de processo e 8 arcos de tubulação,
+            permitindo que algoritmos clássicos de grafos operem em tempo real no SCADA Core
+            para roteamento de pressão, detecção de falhas e inspeção autônoma.
+          </p>
+        </div>
+        <div style="text-align:center; margin-bottom: 2.5rem;">
+          <a href="assets/slide/Etapa02_Grafos_SCADA_H2.html"
+             class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            🎞️ Ver Apresentação Completa — Etapa 02
+          </a>
+        </div>
+        <div class="components-grid">
+          <div class="component-card">
+            <div class="component-icon">🗺️</div>
+            <h3 class="component-name">Aula 11 — Dígrafo da Planta</h3>
+            <p class="component-desc">
+              Definição formal G=(V,E,W): 8 equipamentos de processo como vértices e 8 arcos de
+              tubulação de alta pressão. Válvulas XV-101 a XV-103, XV-104 (direcional cascata LP/MP/HP).
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/11%20-%20Modelagem%20da%20Tubulacao%20e%20Instrumentos%20como%20Grafo.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🧮</div>
+            <h3 class="component-name">Aula 12 — Matrizes e Balanço de Massa</h3>
+            <p class="component-desc">
+              Matriz de Incidência B ∈ {-1,0,+1}^(n×m) e resolução vetorial do balanço de massa
+              B·Q⃗ = S⃗ em regime permanente (30 kg/h de H₂ do eletrolisador ao dispensador).
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/12%20-%20Matrizes%20de%20Incidencia%20Adjacencia%20e%20Custos.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🔍</div>
+            <h3 class="component-name">Aula 13 — BFS e DFS</h3>
+            <p class="component-desc">
+              BFS encontra a rota com menor número de válvulas a comutar. DFS classifica arestas
+              para detecção de ciclos não mapeados na malha pressurizada de H₂.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/13%20-%20Algoritmos%20de%20Busca%20BFS%20e%20DFS%20em%20Tubulacoes.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">📍</div>
+            <h3 class="component-name">Aula 14 — Dijkstra e Roteamento Dinâmico</h3>
+            <p class="component-desc">
+              Dijkstra com heap binário seleciona o banco de pressão ativo:
+              LP (52 m) → ótimo, MP (52 m) → contingência 1, HP (57 m) → contingência 2. Protocolo SAE J2601.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/14%20-%20Menor%20Caminho%20Dijkstra%20e%20Roteamento%20Dinamico.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">⚠️</div>
+            <h3 class="component-name">Aula 15 — Simulação de Vazamentos</h3>
+            <p class="component-desc">
+              Detecção por AT-101/102/103, isolamento automático (W→∞) e recálculo de rota em &lt;1 ms.
+              Análise de pontes: XV-104→HEX-201→DISP-300→VEIC-300 são críticas sem redundância.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/15%20-%20Simulacao%20de%20Vazamentos%20e%20Desvio%20Automatico.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🔄</div>
+            <h3 class="component-name">Aula 16 — Circuito Euleriano e Inspeção por PIG</h3>
+            <p class="component-desc">
+              Hierholzer gera rota de robô PIG ultrassônico com cobertura 100% de todos os dutos
+              sem repetição de trechos. 10 tubulações inspecionadas em circuito fechado.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/16%20-%20Problemas%20Eulerianos%20e%20Inspecao%20de%20Infraestrutura.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🤖</div>
+            <h3 class="component-name">Aula 17 — TSP e Roteamento de AGV</h3>
+            <p class="component-desc">
+              Problema hamiltoniano: AGV de amostragem de pureza H₂ (SAE J2719).
+              Vizinho Mais Próximo (280 m) + refinamento 2-Opt → 260 m (redução de 7%).
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/17%20-%20Problemas%20Hamiltonianos%20e%20Roteamento%20de%20AGV.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🚛</div>
+            <h3 class="component-name">Aula 18 — Logística e Redes Multicamada</h3>
+            <p class="component-desc">
+              DAG de fluxo de materiais G_M (Portaria→FCEV, 154 m) e anel viário G_V (85 m).
+              Kahn garante ordenação topológica: XV-301 nunca abre antes de BV-301 e HEX-201.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/18%20-%20Grafos%20de%20Logistica%20de%20Insumos%20e%20Produtos%20Acabados.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
     <!-- SEÇÃO 5: EQUIPE DO PROJETO (GITHUB CONTRIBUTORS API) -->
     <section id="equipe" class="team-section">
       <div class="section-header">
@@ -473,7 +578,7 @@
       </div>
 
       <div>
-        <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">
+        <a href="https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.85rem;">
           🐙 Repositório GitHub
         </a>
       </div>
@@ -485,6 +590,6 @@
   <div id="custom-tooltip" class="custom-tooltip" role="tooltip" aria-hidden="true"></div>
 
   <!-- Script Principal -->
-  <script src="assets/doc/js/main.js"></script>
+  <script src="doc/js/main.js"></script>
 </body>
 </html>
