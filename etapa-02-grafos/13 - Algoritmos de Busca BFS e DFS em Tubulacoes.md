@@ -70,3 +70,26 @@ A implementação do motor de busca topológica aceita um conjunto `nos_bloquead
 ## 5. Entregável da Aula 13
 
 * **Motor de Busca Topológica em Python:** Implementação das classes `BFS_Router` e `DFS_PathFinder` com suporte a nós bloqueados e intertravamentos de segurança ISA-5.1 para a Estação de Reabastecimento de Hidrogênio.
+
+---
+
+## 6. Mapeamento de Estágios de Processo e Matriz de Distâncias Topológicas
+
+A aplicação do algoritmo BFS a partir da fonte primária (`E-101`) permite estratificar a planta em níveis de adjacência (número de válvulas/saltos). Esta estrutura determina a ordem de prioridade para a varredura de alarmes e isolamento lógico no SCADA:
+
+| Estágio (Saltos) | Equipamento(s) Mapeado(s) | Válvulas de Fronteira | Função no Controlo SCADA |
+| :--- | :--- | :--- | :--- |
+| **Estágio 0** | `E-101` (Eletrolisador PEM) | N/A | Nó Fonte (Geração Primária) |
+| **Estágio 1** | `C-101` (Compressor LP) | `XV-101` | Estágio Intermédio de Pressão (30 bar) |
+| **Estágio 2** | `TK-101` (Banco LP), `C-102` (Compressor HP) | `XV-102`, `XV-103` | Bifurcação de Armazenamento e Recompressão |
+| **Estágio 3** | `MAN-101` (Manifold), `TK-102` (Banco HP) | `XV-104`, `XV-105`, `XV-106`, `XV-107` | Dosagem e Armazenamento em Alta Pressão (700 bar) |
+| **Estágio 4** | `D-101` (Dispenser) | `XV-108` | Nó Sumidouro (Dispensação Final SAE J2601) |
+
+---
+
+## 7. Intertravamentos de Segurança SCADA via Descoberta de Rotas (DFS/BFS)
+
+Quando um sensor de vazamento de hidrogénio (`AT-101` ou `AT-301`) é acionado, o motor topológico executa a procura de rotas com a inserção imediata do equipamento afetado no conjunto `nos_bloqueados`:
+
+1. **Isolamento Seletivo por Corte Lógico:** A DFS identifica todas as subárvores dependentes do nó bloqueado e emite ordens de fecho automático para as válvulas ISA a montante e a jusante.
+2. **Reencaminhamento Dinâmico de Contingência:** A BFS recalcula instantaneamente a rota alternativa de menor comutação operacional, assegurando a continuidade da operação de abastecimento sem interromper o funcionamento da estação.
