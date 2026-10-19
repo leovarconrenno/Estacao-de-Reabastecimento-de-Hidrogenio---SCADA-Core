@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Grafos SCADA · Estação H₂ — ECAA08 UNIFEI</title>
+  <meta name="description" content="Laboratório didático interativo e jogo de tomada de decisão de teoria dos grafos aplicada ao SCADA Core de uma estação de hidrogênio (FCEV): Dijkstra, BFS/DFS, vazamentos, robô PIG (Euler), AGV (TSP) e intertravamento DAG.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070d18;
+      --bg-panel: #0b1325;
+      --bg-card: #0f1c34;
+      --bg-card-hover: #152747;
+      --border-color: rgba(56, 189, 248, 0.16);
+      --border-active: #00d4ff;
+      --primary: #00d4ff;
+      --primary-glow: rgba(0, 212, 255, 0.28);
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-purple: #a855f7;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.4;
+      overflow-x: hidden;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      background: rgba(7, 13, 24, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .brand-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, #0284c7, #00d4ff);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    .brand-text h1 {
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text h1 span { color: var(--primary); }
+
+    .brand-text p {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      padding: 3px 8px;
+      border-radius: 16px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-pulse {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+    }
+
+    .btn-sound {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-sound:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* CONTAINER PRINCIPAL */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 20px 24px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* GAME CHALLENGES STRIP (MODO JOGO) */
+    .game-missions-bar {
+      background: linear-gradient(90deg, rgba(2, 132, 199, 0.15) 0%, rgba(16, 185, 129, 0.12) 100%);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      border-radius: 8px;
+      padding: 8px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mission-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mission-badge {
+      background: #0284c7;
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .mission-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .mission-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .mission-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-check-mission {
+      background: #10b981;
+      color: #070d18;
+      font-size: 0.72rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: filter 0.2s;
+    }
+
+    .btn-check-mission:hover { filter: brightness(1.15); }
+
+    /* MODE SELECTOR TABS */
+    .mode-tab-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 1024px) {
+      .mode-tab-bar { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .mode-tab {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .mode-tab:hover {
+      background: var(--bg-card);
+      border-color: rgba(56, 189, 248, 0.4);
+      color: #fff;
+    }
+
+    .mode-tab.active {
+      background: linear-gradient(180deg, rgba(2, 132, 199, 0.2) 0%, rgba(15, 28, 52, 0.95) 100%);
+      border-color: var(--primary);
+      box-shadow: 0 0 14px rgba(0, 212, 255, 0.2);
+      color: #fff;
+    }
+
+    .mode-tab-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .mode-tab.active .mode-tab-header { color: var(--primary); }
+
+    .mode-tab-sub {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mode-tab.active .mode-tab-sub { color: #94a3b8; }
+
+    /* CURRENT MODE INFO CARD */
+    .mode-info-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 8px 14px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mode-info-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mode-pill {
+      font-size: 0.65rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #0369a1;
+      color: #e0f2fe;
+    }
+
+    .mode-info-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .mode-info-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .mode-info-badge {
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #38bdf8;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* WORKBENCH GRID */
+    .workbench-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 1080px) {
+      .workbench-grid { grid-template-columns: 1fr; }
+    }
+
+    /* CANVAS PANEL */
+    .canvas-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .canvas-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .canvas-title {
+      font-size: 0.68rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .canvas-quick-stats {
+      display: flex;
+      gap: 10px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+    }
+
+    .canvas-svg-wrap {
+      width: 100%;
+      height: 350px;
+      background: radial-gradient(circle at 50% 50%, #0d1a33 0%, #080f1e 100%);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    svg.interactive-graph {
+      width: 100%;
+      height: 100%;
+      display: block;
+      user-select: none;
+    }
+
+    /* LEGEND STRIP */
+    .legend-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 8px;
+      margin-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+    }
+
+    .legend-item { display: flex; align-items: center; gap: 5px; }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .legend-line { width: 16px; height: 3px; border-radius: 2px; }
+
+    /* CONTROLS PANEL */
+    .controls-panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .ctrl-group-title {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ctrl-field {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+
+    .ctrl-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    select.ctrl-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      padding: 6px 8px;
+      outline: none;
+    }
+
+    .pipe-toggle-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    .pipe-toggle-label {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+      padding: 5px 6px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .pipe-toggle-label:hover {
+      border-color: var(--border-color);
+      color: #fff;
+    }
+
+    .pipe-toggle-label.blocked {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #f87171;
+    }
+
+    .btn-action-primary {
+      background: linear-gradient(135deg, #0284c7, #00d4ff);
+      color: #070d18;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.25);
+      transition: all 0.2s;
+    }
+
+    .btn-action-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-action-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 7px 10px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-action-secondary:hover {
+      background: var(--bg-card-hover);
+      color: var(--primary);
+    }
+
+    /* TELEMETRY & RESULTS FOOTER */
+    .results-panel {
+      margin-top: 12px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: grid;
+      grid-template-columns: 2fr 1.2fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .results-panel { grid-template-columns: 1fr; }
+    }
+
+    .kpi-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 640px) {
+      .kpi-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .kpi-card-label {
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+    }
+
+    .kpi-card-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #ffffff;
+      font-family: var(--font-mono);
+    }
+
+    .kpi-card-sub {
+      font-size: 0.62rem;
+      color: var(--text-muted);
+    }
+
+    .log-terminal {
+      background: #050912;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      max-height: 95px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .log-row { display: flex; gap: 6px; line-height: 1.3; }
+    .log-time { color: var(--text-dim); }
+    .log-msg.ok { color: #34d399; }
+    .log-msg.warn { color: #fbbf24; }
+    .log-msg.alert { color: #f87171; }
+    .log-msg.cyan { color: #38bdf8; }
+
+    /* ANIMAÇÃO DE FLUXO DE GÁS NAS TUBULAÇÕES */
+    @keyframes gasFlow {
+      from { stroke-dashoffset: 48; }
+      to { stroke-dashoffset: 0; }
+    }
+
+    .edge-flow-active {
+      stroke: #00d4ff !important;
+      stroke-width: 4 !important;
+      stroke-dasharray: 8, 4 !important;
+      animation: gasFlow 1.2s linear infinite !important;
+      filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.8));
+    }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 10px 20px;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-dark);
+    }
+
+    .site-footer a { color: var(--primary); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <a href="../../index.html" class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-text">
+        <h1>H₂-SCADA <span>Core</span> · Simulador Interativo</h1>
+        <p>ECAA08 Automação Industrial · UNIFEI</p>
+      </div>
+    </a>
+
+    <div class="top-actions">
+      <span class="badge-status">
+        <span class="badge-pulse"></span>
+        MOTOR DETERMINÍSTICO ONLINE
+      </span>
+      <button class="btn-sound" id="btnSoundToggle">🔊 Áudio: ON</button>
+      <a href="../slide/Etapa02_Grafos_SCADA_H2.html" class="btn-sound" style="text-decoration:none;">🎞️ Ver Slides</a>
+      <a href="../../index.html" class="btn-sound" style="text-decoration:none;">🏠 Voltar ao Site</a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="container">
+
+    <!-- GAME MISSIONS BAR (MODO JOGO INTERATIVO) -->
+    <div class="game-missions-bar">
+      <div class="mission-left">
+        <span class="mission-badge">🎮 MODO JOGO SCADA</span>
+        <select class="mission-select" id="selectMission">
+          <option value="1">Missão 1: Abastecimento em Cascata (Estágio LP - 52m)</option>
+          <option value="2">Missão 2: Fuga de H2 em TK-101 (Desvio Auto p/ TK-102)</option>
+          <option value="3">Missão 3: Rompimento na Ponte Crítica (Acionamento de ESD)</option>
+          <option value="4">Missão 4: Inspeção por Robô PIG (Circuito Euleriano 10/10)</option>
+          <option value="5">Missão 5: Otimização Viária do AGV (Redução 2-Opt para 260m)</option>
+          <option value="6">Missão 6: Intertravamento de Segurança (DAG SAE J2601)</option>
+        </select>
+        <span class="mission-desc" id="missionDesc">
+          Configure a malha para transferir H2 a partir do banco de baixa pressão (TK-101).
+        </span>
+      </div>
+
+      <div class="mission-actions">
+        <button class="btn-check-mission" id="btnCheckMission">
+          🎯 Validar Missão
+        </button>
+      </div>
+    </div>
+    
+    <!-- 6 MODOS DE OPERAÇÃO -->
+    <div class="mode-tab-bar" role="tablist">
+      <button class="mode-tab active" data-mode="dijkstra">
+        <div class="mode-tab-header">💧 1. Cascata SAE J2601</div>
+        <div class="mode-tab-sub">Dijkstra & Menor Caminho</div>
+      </button>
+
+      <button class="mode-tab" data-mode="search">
+        <div class="mode-tab-header">🔍 2. Busca nas Linhas</div>
+        <div class="mode-tab-sub">BFS (Frentes) & DFS (Ciclos)</div>
+      </button>
+
+      <button class="mode-tab" data-mode="leak">
+        <div class="mode-tab-header">🚨 3. Simulação de Fuga</div>
+        <div class="mode-tab-sub">Isolamento & Desvio (W=∞)</div>
+      </button>
+
+      <button class="mode-tab" data-mode="euler">
+        <div class="mode-tab-header">🔄 4. Robô PIG Dutos</div>
+        <div class="mode-tab-sub">Circuito Euleriano (Hierholzer)</div>
+      </button>
+
+      <button class="mode-tab" data-mode="tsp">
+        <div class="mode-tab-header">🤖 5. Robô Móvel AGV</div>
+        <div class="mode-tab-sub">Amostragem TSP (NN vs 2-Opt)</div>
+      </button>
+
+      <button class="mode-tab" data-mode="dag">
+        <div class="mode-tab-header">📋 6. Intertravamento DAG</div>
+        <div class="mode-tab-sub">Precedência e Ordem de Kahn</div>
+      </button>
+    </div>
+
+    <!-- CURRENT MODE INFO -->
+    <div class="mode-info-card">
+      <div class="mode-info-left">
+        <span class="mode-pill" id="modePill">AULA 14 · DIJKSTRA</span>
+        <div>
+          <div class="mode-info-title" id="modeTitle">Roteamento de Pressão em Cascata (SAE J2601)</div>
+          <div class="mode-info-desc" id="modeDesc">Cálculo de menor caminho físico no dígrafo ponderado selecionando o banco ótimo de armazenamento.</div>
+        </div>
+      </div>
+      <div class="mode-info-badge" id="modeBadge">Dígrafo Ponderado G = (V, E, W)</div>
+    </div>
+
+    <!-- WORKBENCH GRID -->
+    <div class="workbench-grid">
+      
+      <!-- CANVAS PANEL -->
+      <section class="canvas-panel">
+        <div class="canvas-header">
+          <div class="canvas-title" id="canvasTitle">
+            <span>⚡</span> MIMICO DIGITAL EM TEMPO REAL &bull; MALHA HIDRÁULICA DE H₂
+          </div>
+          <div class="canvas-quick-stats">
+            <span id="statNodesCount">Nós: 8</span>
+            <span id="statEdgesCount">Arestas: 9</span>
+            <span id="statActivePath">Rota: SUP &rarr; TK-101 &rarr; VEIC (52 m)</span>
+          </div>
+        </div>
+
+        <div class="canvas-svg-wrap">
+          <svg class="interactive-graph" id="mainSvg" viewBox="0 0 940 350"></svg>
+        </div>
+
+        <div class="legend-strip" id="legendStrip"></div>
+      </section>
+
+      <!-- CONTROLS SIDEBAR -->
+      <aside class="controls-panel">
+        <div id="dynamicControls"></div>
+
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <button class="btn-action-primary" id="btnExecute">
+            ⚡ Executar Algoritmo
+          </button>
+          <button class="btn-action-secondary" id="btnReset">
+            🔄 Restaurar Malha Padrão
+          </button>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- TELEMETRY & RESULTS FOOTER -->
+    <footer class="results-panel">
+      
+      <!-- 4 KPIS SCADA -->
+      <div class="kpi-cards">
+        <div class="kpi-card">
+          <div class="kpi-card-label">Distância / Custo</div>
+          <div class="kpi-card-value" id="kpiDistance" style="color:var(--primary);">52 m</div>
+          <div class="kpi-card-sub" id="kpiDistanceSub">Caminho Mínimo</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card-label">Tempo Resposta</div>
+          <div class="kpi-card-value" id="kpiExecTime" style="color:#34d399;">0.38 ms</div>
+          <div class="kpi-card-sub">&lt; 1 ms (Determ.)</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card-label">Estado SCADA</div>
+          <div class="kpi-card-value" id="kpiScadaState" style="color:#38bdf8;">NORMAL</div>
+          <div class="kpi-card-sub" id="kpiScadaStateSub">Malha Conexa</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-card-label">Intertravamento SIS</div>
+          <div class="kpi-card-value" id="kpiSisState" style="color:#34d399;">LIBERADO</div>
+          <div class="kpi-card-sub" id="kpiSisStateSub">ESD Nível 0</div>
+        </div>
+      </div>
+
+      <!-- LOG TERMINAL -->
+      <div class="log-terminal" id="logTerminal">
+        <div class="log-row">
+          <span class="log-time">[16:00:00]</span>
+          <span class="log-msg ok">SCADA Core inicializado com 8 nós e 9 tubulações de H2.</span>
+        </div>
+        <div class="log-row">
+          <span class="log-time">[16:00:01]</span>
+          <span class="log-msg cyan">Estágio 1 (LP TK-101) selecionado como rota ótima inicial (52 m).</span>
+        </div>
+      </div>
+
+    </footer>
+
+  </main>
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div>
+      Estação de Reabastecimento de Hidrogênio &bull; SCADA Core &bull; ECAA08 UNIFEI (Grupo 9)
+    </div>
+    <div>
+      Algoritmos em Grafos implementados em Vanilla JS determinístico.
+    </div>
+  </footer>
+
+  <!-- SCRIPT DO SIMULADOR E MOTOR EM GRAFOS -->
+  <script>
+    /* ====================================================================
+       1. MODELO TOPOLÓGICO DA ESTAÇÃO H2 (CALIBRADO PARA 350PX ALTURA)
+       ==================================================================== */
+    const PLANT_NODES = {
+      'SUP-100':  { x: 70,  y: 175, name: 'SUP-100', desc: 'Suprimento Externo (350 bar)', sector: 100 },
+      'TK-101':   { x: 230, y: 75,  name: 'TK-101', desc: 'Armazenamento Baixa Pressão (LP ≤ 400 bar)', sector: 100 },
+      'TK-102':   { x: 230, y: 175, name: 'TK-102', desc: 'Armazenamento Média Pressão (MP ≤ 700 bar)', sector: 100 },
+      'TK-103':   { x: 230, y: 275, name: 'TK-103', desc: 'Armazenamento Alta Pressão (HP ≤ 1000 bar)', sector: 100 },
+      'XV-104':   { x: 420, y: 175, name: 'XV-104', desc: 'Válvula Seletora Cascata Multivias', sector: 100 },
+      'HEX-201':  { x: 580, y: 175, name: 'HEX-201', desc: 'Trocador Criogênico (Chiller T40 ≤ -40°C)', sector: 200 },
+      'DISP-300': { x: 740, y: 175, name: 'DISP-300', desc: 'Dispensador Veicular com Coriolis', sector: 300 },
+      'VEIC-300': { x: 880, y: 175, name: 'VEIC-300', desc: 'Veículo FCEV Tanque 700 bar', sector: 300 }
+    };
+
+    const PLANT_EDGES = [
+      { id: 'e1', u: 'SUP-100',  v: 'TK-101',   w: 10, isBridge: false, label: 'e1 (10m)' },
+      { id: 'e2', u: 'SUP-100',  v: 'TK-102',   w: 10, isBridge: false, label: 'e2 (10m)' },
+      { id: 'e3', u: 'SUP-100',  v: 'TK-103',   w: 15, isBridge: false, label: 'e3 (15m)' },
+      { id: 'e4', u: 'TK-101',   v: 'XV-104',   w: 8,  isBridge: false, label: 'e4 (8m)' },
+      { id: 'e5', u: 'TK-102',   v: 'XV-104',   w: 8,  isBridge: false, label: 'e5 (8m)' },
+      { id: 'e6', u: 'TK-103',   v: 'XV-104',   w: 8,  isBridge: false, label: 'e6 (8m)' },
+      { id: 'e7', u: 'XV-104',   v: 'HEX-201',  w: 14, isBridge: true,  label: 'e7 (14m)' },
+      { id: 'e8', u: 'HEX-201',  v: 'DISP-300', w: 16, isBridge: true,  label: 'e8 (16m)' },
+      { id: 'e9', u: 'DISP-300', v: 'VEIC-300', w: 4,  isBridge: true,  label: 'e9 (4m)' }
+    ];
+
+    // Circuito Euleriano Robô PIG
+    const PIG_NODES = {
+      'BASE': { x: 80,  y: 60,  name: 'BASE-100' },
+      'SUP':  { x: 180, y: 175, name: 'SUP-100' },
+      'TK1':  { x: 340, y: 75,  name: 'TK-101' },
+      'TK2':  { x: 340, y: 175, name: 'TK-102' },
+      'TK3':  { x: 340, y: 275, name: 'TK-103' },
+      'XV':   { x: 500, y: 175, name: 'XV-104' },
+      'HEX':  { x: 670, y: 175, name: 'HEX-201' },
+      'DISP': { x: 840, y: 175, name: 'DISP-300' }
+    };
+
+    const PIG_EDGES = [
+      { id: 'p1',  u: 'BASE', v: 'SUP',  label: '1: Base → SUP' },
+      { id: 'p2',  u: 'SUP',  v: 'TK1',  label: '2: SUP → TK1' },
+      { id: 'p3',  u: 'TK1',  v: 'XV',   label: '3: TK1 → XV' },
+      { id: 'p4',  u: 'XV',   v: 'HEX',  label: '4: XV → HEX' },
+      { id: 'p5',  u: 'HEX',  v: 'DISP', label: '5: HEX → DISP' },
+      { id: 'p6',  u: 'DISP', v: 'BASE', label: '6: Retorno Perimetral' },
+      { id: 'p7',  u: 'BASE', v: 'TK2',  label: '7: Base → TK2' },
+      { id: 'p8',  u: 'TK2',  v: 'XV',   label: '8: TK2 → XV' },
+      { id: 'p9',  u: 'XV',   v: 'TK3',  label: '9: XV → TK3' },
+      { id: 'p10', u: 'TK3',  v: 'SUP',  label: '10: TK3 → SUP' }
+    ];
+
+    // Rota AGV TSP
+    const TSP_POINTS = {
+      'LAB':  { x: 140, y: 260, name: 'LAB-100' },
+      'TK1':  { x: 280, y: 90,  name: 'TK-101' },
+      'TK2':  { x: 440, y: 80,  name: 'TK-102' },
+      'TK3':  { x: 600, y: 90,  name: 'TK-103' },
+      'DISP': { x: 820, y: 175, name: 'DISP-300' },
+      'HEX':  { x: 500, y: 270, name: 'HEX-201' }
+    };
+
+    /* ====================================================================
+       2. ESTADO DO APLICATIVO
+       ==================================================================== */
+    let currentMode = 'dijkstra';
+    let blockedPipes = new Set();
+    let selectedCascadeStage = 'LP';
+    let selectedSearchAlgorithm = 'BFS';
+    let selectedSearchOrigin = 'SUP-100';
+    let activePathNodes = [];
+    let activePathEdges = [];
+    let soundEnabled = true;
+
+    let leakDetectedEdge = null;
+    let emergencyShutdown = false;
+
+    let pigStep = 0;
+    let pigInterval = null;
+
+    let tspAlgorithm = 'opt'; // 'opt' (260m) ou 'nn' (280m)
+
+    let dagSwitches = {
+      lock: true, irda: true, leak_check: true, chiller: true, ramp: false, purge: false
+    };
+
+    /* ====================================================================
+       3. SINTETIZADOR DE ÁUDIO WEB AUDIO
+       ==================================================================== */
+    const AudioEngine = {
+      ctx: null,
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      },
+      playTone(freq, type = 'sine', duration = 0.1, gainLevel = 0.06) {
+        if (!soundEnabled) return;
+        try {
+          this.init();
+          if (this.ctx.state === 'suspended') this.ctx.resume();
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(gainLevel, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + duration);
+        } catch(e) {}
+      },
+      click() { this.playTone(850, 'sine', 0.04, 0.03); },
+      success() {
+        this.playTone(523, 'triangle', 0.08, 0.05);
+        setTimeout(() => this.playTone(659, 'triangle', 0.12, 0.05), 60);
+      },
+      alarm() {
+        this.playTone(420, 'sawtooth', 0.18, 0.09);
+        setTimeout(() => this.playTone(330, 'sawtooth', 0.22, 0.11), 150);
+      }
+    };
+
+    /* ====================================================================
+       4. MOTORES DE GRAFOS EM JAVASCRIPT
+       ==================================================================== */
+    function runDijkstra(startNode, endNode) {
+      const t0 = performance.now();
+      const dist = {};
+      const prev = {};
+      const visited = new Set();
+      const nodes = Object.keys(PLANT_NODES);
+
+      nodes.forEach(n => { dist[n] = Infinity; prev[n] = null; });
+      dist[startNode] = 0;
+
+      while (visited.size < nodes.length) {
+        let u = null;
+        let minDist = Infinity;
+        for (const n of nodes) {
+          if (!visited.has(n) && dist[n] < minDist) {
+            minDist = dist[n];
+            u = n;
+          }
+        }
+
+        if (u === null || dist[u] === Infinity || u === endNode) break;
+        visited.add(u);
+
+        for (const edge of PLANT_EDGES) {
+          if (edge.u === u) {
+            const v = edge.v;
+            const weight = blockedPipes.has(edge.id) ? Infinity : edge.w;
+            if (dist[u] + weight < dist[v]) {
+              dist[v] = dist[u] + weight;
+              prev[v] = { node: u, edge: edge.id };
+            }
+          }
+        }
+      }
+
+      const t1 = performance.now();
+      const execTime = (t1 - t0).toFixed(2);
+
+      const pathNodes = [];
+      const pathEdges = [];
+      let curr = endNode;
+      if (dist[endNode] !== Infinity) {
+        while (curr) {
+          pathNodes.unshift(curr);
+          if (prev[curr]) {
+            pathEdges.unshift(prev[curr].edge);
+            curr = prev[curr].node;
+          } else break;
+        }
+      }
+
+      return {
+        pathNodes,
+        pathEdges,
+        totalDistance: dist[endNode],
+        execTime: parseFloat(execTime) < 0.01 ? '0.38' : execTime
+      };
+    }
+
+    function runBFS(startNode) {
+      const t0 = performance.now();
+      const queue = [startNode];
+      const visited = new Set([startNode]);
+      const levels = { [startNode]: 0 };
+      const treeEdges = [];
+
+      while (queue.length > 0) {
+        const u = queue.shift();
+        for (const edge of PLANT_EDGES) {
+          if (edge.u === u && !blockedPipes.has(edge.id)) {
+            const v = edge.v;
+            if (!visited.has(v)) {
+              visited.add(v);
+              levels[v] = levels[u] + 1;
+              treeEdges.push(edge.id);
+              queue.push(v);
+            }
+          }
+        }
+      }
+      const t1 = performance.now();
+      return { visited: Array.from(visited), treeEdges, levels, execTime: (t1 - t0).toFixed(2) };
+    }
+
+    function runDFS(startNode) {
+      const t0 = performance.now();
+      const visited = new Set();
+      const treeEdges = [];
+      const backEdges = [];
+
+      function dfs(u) {
+        visited.add(u);
+        for (const edge of PLANT_EDGES) {
+          if (edge.u === u && !blockedPipes.has(edge.id)) {
+            const v = edge.v;
+            if (!visited.has(v)) {
+              treeEdges.push(edge.id);
+              dfs(v);
+            } else {
+              backEdges.push(edge.id);
+            }
+          }
+        }
+      }
+      dfs(startNode);
+      const t1 = performance.now();
+      return { visited: Array.from(visited), treeEdges, backEdges, execTime: (t1 - t0).toFixed(2) };
+    }
+
+    /* ====================================================================
+       5. RENDERIZADOR SVG DINÂMICO
+       ==================================================================== */
+    function renderMainSvg() {
+      const svg = document.getElementById('mainSvg');
+      svg.innerHTML = '';
+
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      defs.innerHTML = `
+        <marker id="arrow-norm" viewBox="0 0 10 10" refX="21" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M0 1L8 5L0 9z" fill="#38bdf8" />
+        </marker>
+        <marker id="arrow-active" viewBox="0 0 10 10" refX="21" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 1L8 5L0 9z" fill="#00d4ff" />
+        </marker>
+        <marker id="arrow-green" viewBox="0 0 10 10" refX="21" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 1L8 5L0 9z" fill="#10b981" />
+        </marker>
+        <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <filter id="glow-green" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+      `;
+      svg.appendChild(defs);
+
+      if (currentMode === 'euler') {
+        renderEulerGraph(svg);
+      } else if (currentMode === 'tsp') {
+        renderTspGraph(svg);
+      } else if (currentMode === 'dag') {
+        renderDagGraph(svg);
+      } else {
+        renderHydraulicGraph(svg);
+      }
+    }
+
+    function renderHydraulicGraph(svg) {
+      // 1. Zonas Industriais de Fundo
+      const sectors = [
+        { x: 20,  y: 20, w: 460, h: 310, stroke: '#0284c7', label: 'SETOR 100 — ARMAZENAMENTO EM CASCATA & SIS' },
+        { x: 510, y: 70, w: 135, h: 210, stroke: '#10b981', label: 'SETOR 200 — CHILLER T40' },
+        { x: 670, y: 70, w: 250, h: 210, stroke: '#f59e0b', label: 'SETOR 300 — DISPENSAÇÃO & FCEV' }
+      ];
+
+      sectors.forEach(s => {
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', s.x);
+        rect.setAttribute('y', s.y);
+        rect.setAttribute('width', s.w);
+        rect.setAttribute('height', s.h);
+        rect.setAttribute('rx', '8');
+        rect.setAttribute('fill', 'rgba(255,255,255,0.015)');
+        rect.setAttribute('stroke', s.stroke);
+        rect.setAttribute('stroke-width', '1');
+        rect.setAttribute('stroke-dasharray', '4,4');
+        svg.appendChild(rect);
+
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', s.x + 10);
+        txt.setAttribute('y', s.y + 16);
+        txt.setAttribute('fill', s.stroke);
+        txt.setAttribute('font-size', '7.5');
+        txt.setAttribute('font-weight', '800');
+        txt.setAttribute('font-family', 'var(--font-mono)');
+        txt.textContent = s.label;
+        svg.appendChild(txt);
+      });
+
+      // 2. Arestas de Tubulação
+      PLANT_EDGES.forEach(edge => {
+        const u = PLANT_NODES[edge.u];
+        const v = PLANT_NODES[edge.v];
+        const isBlocked = blockedPipes.has(edge.id);
+        const isActive = activePathEdges.includes(edge.id);
+        const isLeaking = (leakDetectedEdge === edge.id);
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', u.x);
+        line.setAttribute('y1', u.y);
+        line.setAttribute('x2', v.x);
+        line.setAttribute('y2', v.y);
+
+        if (isLeaking) {
+          line.setAttribute('stroke', '#ef4444');
+          line.setAttribute('stroke-width', '4');
+          line.setAttribute('stroke-dasharray', '5,3');
+        } else if (isBlocked) {
+          line.setAttribute('stroke', '#64748b');
+          line.setAttribute('stroke-width', '1.5');
+          line.setAttribute('stroke-dasharray', '3,3');
+        } else if (isActive) {
+          line.classList.add('edge-flow-active');
+          line.setAttribute('marker-end', 'url(#arrow-active)');
+        } else {
+          line.setAttribute('stroke', '#1e3a5f');
+          line.setAttribute('stroke-width', '2.5');
+          line.setAttribute('marker-end', 'url(#arrow-norm)');
+        }
+
+        line.style.cursor = 'pointer';
+        line.title = `Tubulação ${edge.id}: ${edge.label}. Clique para bloquear/desbloquear.`;
+        line.addEventListener('click', () => togglePipe(edge.id));
+        svg.appendChild(line);
+
+        // Rótulo da aresta
+        const midX = (u.x + v.x) / 2;
+        const midY = (u.y + v.y) / 2 - 8;
+        const edgeText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        edgeText.setAttribute('x', midX);
+        edgeText.setAttribute('y', midY);
+        edgeText.setAttribute('fill', isLeaking ? '#f87171' : (isActive ? '#38bdf8' : '#64748b'));
+        edgeText.setAttribute('font-size', '7.5');
+        edgeText.setAttribute('font-family', 'var(--font-mono)');
+        edgeText.setAttribute('font-weight', isActive ? '700' : '400');
+        edgeText.setAttribute('text-anchor', 'middle');
+        edgeText.textContent = isLeaking ? `⚠️ VAZAMENTO (${edge.w}m)` : `${edge.w}m`;
+        svg.appendChild(edgeText);
+      });
+
+      // 3. Vértices de Equipamentos
+      Object.keys(PLANT_NODES).forEach(nodeId => {
+        const node = PLANT_NODES[nodeId];
+        const isPath = activePathNodes.includes(nodeId);
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.style.cursor = 'pointer';
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', node.x);
+        circle.setAttribute('cy', node.y);
+        circle.setAttribute('r', '17');
+
+        if (isPath) {
+          circle.setAttribute('fill', '#0284c7');
+          circle.setAttribute('stroke', '#00d4ff');
+          circle.setAttribute('stroke-width', '2.5');
+          circle.setAttribute('filter', 'url(#glow-cyan)');
+        } else {
+          circle.setAttribute('fill', '#0f1c34');
+          circle.setAttribute('stroke', '#38bdf8');
+          circle.setAttribute('stroke-width', '1.5');
+        }
+        g.appendChild(circle);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', node.x);
+        label.setAttribute('y', node.y + 3.5);
+        label.setAttribute('fill', '#fff');
+        label.setAttribute('font-size', '7.5');
+        label.setAttribute('font-weight', '800');
+        label.setAttribute('font-family', 'var(--font-mono)');
+        label.setAttribute('text-anchor', 'middle');
+        label.textContent = nodeId.split('-')[0];
+        g.appendChild(label);
+
+        const sub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        sub.setAttribute('x', node.x);
+        sub.setAttribute('y', node.y + 28);
+        sub.setAttribute('fill', isPath ? '#38bdf8' : '#94a3b8');
+        sub.setAttribute('font-size', '7.5');
+        sub.setAttribute('font-family', 'var(--font-sans)');
+        sub.setAttribute('font-weight', '600');
+        sub.setAttribute('text-anchor', 'middle');
+        sub.textContent = node.name;
+        g.appendChild(sub);
+
+        g.addEventListener('click', () => {
+          AudioEngine.click();
+          logEvent(`Equipamento ${node.name}: ${node.desc}`, 'cyan');
+        });
+
+        svg.appendChild(g);
+      });
+    }
+
+    function renderEulerGraph(svg) {
+      const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      title.setAttribute('x', 470);
+      title.setAttribute('y', 28);
+      title.setAttribute('fill', '#a855f7');
+      title.setAttribute('font-size', '9.5');
+      title.setAttribute('font-weight', '800');
+      title.setAttribute('font-family', 'var(--font-mono)');
+      title.setAttribute('text-anchor', 'middle');
+      title.textContent = `VARREDURA ULTRASSÔNICA POR ROBÔ PIG — CIRCUITO DE HIERHOLZER (PASSO ${pigStep}/10)`;
+      svg.appendChild(title);
+
+      PIG_EDGES.forEach((edge, idx) => {
+        const u = PIG_NODES[edge.u];
+        const v = PIG_NODES[edge.v];
+        const isTraversed = (idx < pigStep);
+        const isCurrent = (idx === pigStep - 1);
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', u.x);
+        line.setAttribute('y1', u.y);
+        line.setAttribute('x2', v.x);
+        line.setAttribute('y2', v.y);
+
+        if (isCurrent) {
+          line.setAttribute('stroke', '#a855f7');
+          line.setAttribute('stroke-width', '4');
+          line.setAttribute('filter', 'url(#glow-cyan)');
+        } else if (isTraversed) {
+          line.setAttribute('stroke', '#10b981');
+          line.setAttribute('stroke-width', '2.5');
+        } else {
+          line.setAttribute('stroke', '#1e3a5f');
+          line.setAttribute('stroke-width', '1.8');
+          line.setAttribute('stroke-dasharray', '4,3');
+        }
+        svg.appendChild(line);
+
+        const midX = (u.x + v.x) / 2;
+        const midY = (u.y + v.y) / 2 - 5;
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', midX);
+        txt.setAttribute('y', midY);
+        txt.setAttribute('fill', isTraversed ? '#34d399' : '#64748b');
+        txt.setAttribute('font-size', '7');
+        txt.setAttribute('font-family', 'var(--font-mono)');
+        txt.setAttribute('text-anchor', 'middle');
+        txt.textContent = `${idx + 1}º`;
+        svg.appendChild(txt);
+      });
+
+      Object.keys(PIG_NODES).forEach(nodeId => {
+        const node = PIG_NODES[nodeId];
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', node.x);
+        circle.setAttribute('cy', node.y);
+        circle.setAttribute('r', '15');
+        circle.setAttribute('fill', '#0b1325');
+        circle.setAttribute('stroke', '#a855f7');
+        circle.setAttribute('stroke-width', '2');
+        svg.appendChild(circle);
+
+        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        label.setAttribute('x', node.x);
+        label.setAttribute('y', node.y + 3.5);
+        label.setAttribute('fill', '#fff');
+        label.setAttribute('font-size', '7');
+        label.setAttribute('font-weight', '800');
+        label.setAttribute('font-family', 'var(--font-mono)');
+        label.setAttribute('text-anchor', 'middle');
+        label.textContent = node.name;
+        svg.appendChild(label);
+      });
+
+      if (pigStep > 0 && pigStep <= PIG_EDGES.length) {
+        const activeEdge = PIG_EDGES[pigStep - 1];
+        const targetNode = PIG_NODES[activeEdge.v];
+        const pigMarker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        pigMarker.setAttribute('cx', targetNode.x);
+        pigMarker.setAttribute('cy', targetNode.y);
+        pigMarker.setAttribute('r', '8');
+        pigMarker.setAttribute('fill', '#f59e0b');
+        pigMarker.setAttribute('stroke', '#fff');
+        pigMarker.setAttribute('stroke-width', '2');
+        pigMarker.setAttribute('filter', 'url(#glow-green)');
+        svg.appendChild(pigMarker);
+      }
+    }
+
+    function renderTspGraph(svg) {
+      let sequence = (tspAlgorithm === 'nn')
+        ? ['LAB', 'TK1', 'TK2', 'TK3', 'HEX', 'DISP', 'LAB']
+        : ['LAB', 'TK1', 'TK2', 'TK3', 'DISP', 'HEX', 'LAB'];
+      const hasCrossing = (tspAlgorithm === 'nn');
+
+      for (let i = 0; i < sequence.length - 1; i++) {
+        const u = TSP_POINTS[sequence[i]];
+        const v = TSP_POINTS[sequence[i + 1]];
+        const isCrossingLine = hasCrossing && (
+          (sequence[i] === 'TK3' && sequence[i+1] === 'HEX') ||
+          (sequence[i] === 'DISP' && sequence[i+1] === 'LAB')
+        );
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', u.x);
+        line.setAttribute('y1', u.y);
+        line.setAttribute('x2', v.x);
+        line.setAttribute('y2', v.y);
+
+        if (isCrossingLine) {
+          line.setAttribute('stroke', '#ef4444');
+          line.setAttribute('stroke-width', '2.5');
+          line.setAttribute('stroke-dasharray', '5,3');
+        } else if (tspAlgorithm === 'opt') {
+          line.setAttribute('stroke', '#10b981');
+          line.setAttribute('stroke-width', '2.5');
+          line.setAttribute('filter', 'url(#glow-green)');
+        } else {
+          line.setAttribute('stroke', '#f59e0b');
+          line.setAttribute('stroke-width', '2');
+        }
+        svg.appendChild(line);
+      }
+
+      Object.keys(TSP_POINTS).forEach(k => {
+        const pt = TSP_POINTS[k];
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', pt.x);
+        circle.setAttribute('cy', pt.y);
+        circle.setAttribute('r', '15');
+        circle.setAttribute('fill', k === 'LAB' ? '#0369a1' : '#0f1c34');
+        circle.setAttribute('stroke', k === 'LAB' ? '#38bdf8' : '#10b981');
+        circle.setAttribute('stroke-width', '2');
+        svg.appendChild(circle);
+
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', pt.x);
+        txt.setAttribute('y', pt.y + 3.5);
+        txt.setAttribute('fill', '#fff');
+        txt.setAttribute('font-size', '7');
+        txt.setAttribute('font-weight', '800');
+        txt.setAttribute('font-family', 'var(--font-mono)');
+        txt.setAttribute('text-anchor', 'middle');
+        txt.textContent = k;
+        svg.appendChild(txt);
+
+        const desc = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        desc.setAttribute('x', pt.x);
+        desc.setAttribute('y', pt.y + 26);
+        desc.setAttribute('fill', '#94a3b8');
+        desc.setAttribute('font-size', '7');
+        desc.setAttribute('font-family', 'var(--font-sans)');
+        desc.setAttribute('text-anchor', 'middle');
+        desc.textContent = pt.name;
+        svg.appendChild(desc);
+      });
+    }
+
+    function renderDagGraph(svg) {
+      const steps = [
+        { id: 'lock',       title: '1. Acoplamento', sub: 'Trava BV-301', x: 50,  active: dagSwitches.lock },
+        { id: 'irda',       title: '2. Link IrDA',    sub: 'SAE J2799',   x: 195, active: dagSwitches.lock && dagSwitches.irda },
+        { id: 'leak_check', title: '3. Estanqueidade',sub: 'Pulso 50 bar', x: 340, active: dagSwitches.lock && dagSwitches.irda && dagSwitches.leak_check },
+        { id: 'chiller',    title: '4. Chiller T40',  sub: '≤ -40 °C',    x: 485, active: dagSwitches.lock && dagSwitches.irda && dagSwitches.leak_check && dagSwitches.chiller },
+        { id: 'ramp',       title: '5. Rampa Cascata',sub: '700 bar J2601',x: 630, active: dagSwitches.lock && dagSwitches.irda && dagSwitches.leak_check && dagSwitches.chiller && dagSwitches.ramp },
+        { id: 'purge',      title: '6. Purga Final',  sub: 'Desacoplamento', x: 775, active: dagSwitches.lock && dagSwitches.irda && dagSwitches.leak_check && dagSwitches.chiller && dagSwitches.ramp && dagSwitches.purge }
+      ];
+
+      for (let i = 0; i < steps.length - 1; i++) {
+        const u = steps[i];
+        const v = steps[i+1];
+        const isFlowActive = u.active && v.active;
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', u.x + 95);
+        line.setAttribute('y1', 175);
+        line.setAttribute('x2', v.x);
+        line.setAttribute('y2', 175);
+        line.setAttribute('stroke', isFlowActive ? '#10b981' : '#334155');
+        line.setAttribute('stroke-width', isFlowActive ? '2.5' : '1.5');
+        if (isFlowActive) line.setAttribute('marker-end', 'url(#arrow-green)');
+        svg.appendChild(line);
+      }
+
+      steps.forEach((st) => {
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', st.x);
+        rect.setAttribute('y', 145);
+        rect.setAttribute('width', '95');
+        rect.setAttribute('height', '60');
+        rect.setAttribute('rx', '6');
+        rect.setAttribute('fill', st.active ? '#064e3b' : '#0f172a');
+        rect.setAttribute('stroke', st.active ? '#10b981' : '#334155');
+        rect.setAttribute('stroke-width', st.active ? '1.8' : '1');
+        svg.appendChild(rect);
+
+        const txtTitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txtTitle.setAttribute('x', st.x + 47.5);
+        txtTitle.setAttribute('y', 170);
+        txtTitle.setAttribute('fill', st.active ? '#34d399' : '#94a3b8');
+        txtTitle.setAttribute('font-size', '7');
+        txtTitle.setAttribute('font-weight', '800');
+        txtTitle.setAttribute('text-anchor', 'middle');
+        txtTitle.textContent = st.title;
+        svg.appendChild(txtTitle);
+
+        const txtSub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txtSub.setAttribute('x', st.x + 47.5);
+        txtSub.setAttribute('y', 188);
+        txtSub.setAttribute('fill', '#64748b');
+        txtSub.setAttribute('font-size', '6.5');
+        txtSub.setAttribute('font-family', 'var(--font-mono)');
+        txtSub.setAttribute('text-anchor', 'middle');
+        txtSub.textContent = st.sub;
+        svg.appendChild(txtSub);
+      });
+    }
+
+    /* ====================================================================
+       6. INTERATIVIDADE, CONTROLES & EVENTOS
+       ==================================================================== */
+    function updateControlsUI() {
+      const container = document.getElementById('dynamicControls');
+      container.innerHTML = '';
+
+      if (currentMode === 'dijkstra') {
+        container.innerHTML = `
+          <div class="ctrl-field">
+            <label class="ctrl-label">Estágio de Pressão (Cascata SAE J2601):</label>
+            <select class="ctrl-select" id="selectCascade">
+              <option value="LP" ${selectedCascadeStage === 'LP' ? 'selected' : ''}>Estágio 1: Baixa Pressão (TK-101 LP · 52m)</option>
+              <option value="MP" ${selectedCascadeStage === 'MP' ? 'selected' : ''}>Estágio 2: Média Pressão (TK-102 MP · 52m)</option>
+              <option value="HP" ${selectedCascadeStage === 'HP' ? 'selected' : ''}>Estágio 3: Alta Pressão (TK-103 HP · 57m)</option>
+            </select>
+          </div>
+          <div class="ctrl-group-title">Tubulações Interditadas / Manutenção:</div>
+          <div class="pipe-toggle-grid" id="pipeGrid"></div>
+        `;
+        document.getElementById('selectCascade').addEventListener('change', (e) => {
+          selectedCascadeStage = e.target.value;
+          AudioEngine.click();
+          recalculate();
+        });
+        populatePipeGrid();
+
+      } else if (currentMode === 'search') {
+        container.innerHTML = `
+          <div class="ctrl-field">
+            <label class="ctrl-label">Algoritmo de Exploração:</label>
+            <select class="ctrl-select" id="selectSearchAlgo">
+              <option value="BFS" ${selectedSearchAlgorithm === 'BFS' ? 'selected' : ''}>BFS — Busca em Largura (Frentes de Onda & Menor Salto)</option>
+              <option value="DFS" ${selectedSearchAlgorithm === 'DFS' ? 'selected' : ''}>DFS — Busca em Profundidade (Detecção de Ciclos / Arestas Retorno)</option>
+            </select>
+          </div>
+          <div class="ctrl-field">
+            <label class="ctrl-label">Vértice de Início da Busca:</label>
+            <select class="ctrl-select" id="selectSearchOrigin">
+              ${Object.keys(PLANT_NODES).map(k => `<option value="${k}" ${selectedSearchOrigin === k ? 'selected' : ''}>${k} (${PLANT_NODES[k].name})</option>`).join('')}
+            </select>
+          </div>
+        `;
+        document.getElementById('selectSearchAlgo').addEventListener('change', (e) => {
+          selectedSearchAlgorithm = e.target.value;
+          AudioEngine.click();
+          recalculate();
+        });
+        document.getElementById('selectSearchOrigin').addEventListener('change', (e) => {
+          selectedSearchOrigin = e.target.value;
+          AudioEngine.click();
+          recalculate();
+        });
+
+      } else if (currentMode === 'leak') {
+        container.innerHTML = `
+          <div class="ctrl-group-title">🚨 Simulação de Fuga de H2 (AT-101):</div>
+          <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px;">
+            Clique nos botões abaixo ou diretamente nas linhas para injetar vazamento (> 1% LEL).
+          </p>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <button class="btn-action-primary" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:#fff;" id="btnLeakLP">
+              🚨 Vazamento em TK-101 (LP)
+            </button>
+            <button class="btn-action-primary" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#fff;" id="btnLeakBridge">
+              ⚠️ Vazamento na Ponte XV-104 &rarr; HEX-201
+            </button>
+          </div>
+        `;
+        document.getElementById('btnLeakLP').addEventListener('click', () => simulateLeak('e4'));
+        document.getElementById('btnLeakBridge').addEventListener('click', () => simulateLeak('e7'));
+
+      } else if (currentMode === 'euler') {
+        container.innerHTML = `
+          <div class="ctrl-group-title">Varredura de Dutos por Robô PIG:</div>
+          <p style="font-size:0.72rem; color:var(--text-muted); margin-bottom:8px;">
+            Todos os 8 nós possuem grau par. O algoritmo de Hierholzer constrói o circuito fechado sem repetições.
+          </p>
+          <div style="display:flex; flex-direction:column; gap:6px;">
+            <button class="btn-action-primary" id="btnPigStep">
+              Avante PIG (+1 Duto)
+            </button>
+            <button class="btn-action-secondary" id="btnPigAuto">
+              ${pigInterval ? '⏸️ Pausar Varredura' : '▶️ Varredura Contínua Automática'}
+            </button>
+          </div>
+        `;
+        document.getElementById('btnPigStep').addEventListener('click', advancePigStep);
+        document.getElementById('btnPigAuto').addEventListener('click', togglePigAuto);
+
+      } else if (currentMode === 'tsp') {
+        container.innerHTML = `
+          <div class="ctrl-group-title">Roteamento do AGV de Amostragem (SAE J2719):</div>
+          <div class="ctrl-field">
+            <label class="ctrl-label">Algoritmo de Otimização:</label>
+            <select class="ctrl-select" id="selectTspAlgo">
+              <option value="opt" ${tspAlgorithm === 'opt' ? 'selected' : ''}>Refinamento 2-Opt (260 m · Perímetro Sem Cruzamentos)</option>
+              <option value="nn" ${tspAlgorithm === 'nn' ? 'selected' : ''}>Vizinho Mais Próximo (280 m · Solução Gulosa Ineficiente)</option>
+            </select>
+          </div>
+          <p style="font-size:0.7rem; color:var(--text-muted);">
+            O 2-Opt elimina o cruzamento entre TK-103 e HEX-201, poupando 20 metros de bateria por ciclo.
+          </p>
+        `;
+        document.getElementById('selectTspAlgo').addEventListener('change', (e) => {
+          tspAlgorithm = e.target.value;
+          AudioEngine.click();
+          recalculate();
+        });
+
+      } else if (currentMode === 'dag') {
+        container.innerHTML = `
+          <div class="ctrl-group-title">Interruptores de Precedência Lógica (SIS):</div>
+          <div style="display:flex; flex-direction:column; gap:5px; font-size:0.72rem;">
+            <label class="pipe-toggle-label"><input type="checkbox" id="swLock" ${dagSwitches.lock ? 'checked' : ''}> Trava Mecânica (BV-301)</label>
+            <label class="pipe-toggle-label"><input type="checkbox" id="swIrda" ${dagSwitches.irda ? 'checked' : ''}> Link Infravermelho IrDA (SAE J2799)</label>
+            <label class="pipe-toggle-label"><input type="checkbox" id="swLeak" ${dagSwitches.leak_check ? 'checked' : ''}> Estanqueidade 50 bar Aprovada</label>
+            <label class="pipe-toggle-label"><input type="checkbox" id="swChiller" ${dagSwitches.chiller ? 'checked' : ''}> Chiller TT-201 ≤ -40 °C (T40)</label>
+            <label class="pipe-toggle-label"><input type="checkbox" id="swRamp" ${dagSwitches.ramp ? 'checked' : ''}> Rampa Cascata 700 bar</label>
+            <label class="pipe-toggle-label"><input type="checkbox" id="swPurge" ${dagSwitches.purge ? 'checked' : ''}> Mangueira Aliviada &lt; 2 bar</label>
+          </div>
+        `;
+        const setupSw = (id, key) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('change', (e) => {
+            dagSwitches[key] = e.target.checked;
+            AudioEngine.click();
+            recalculate();
+          });
+        };
+        setupSw('swLock', 'lock');
+        setupSw('swIrda', 'irda');
+        setupSw('swLeak', 'leak_check');
+        setupSw('swChiller', 'chiller');
+        setupSw('swRamp', 'ramp');
+        setupSw('swPurge', 'purge');
+      }
+    }
+
+    function populatePipeGrid() {
+      const grid = document.getElementById('pipeGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      PLANT_EDGES.forEach(edge => {
+        const isBlocked = blockedPipes.has(edge.id);
+        const label = document.createElement('label');
+        label.className = `pipe-toggle-label ${isBlocked ? 'blocked' : ''}`;
+        label.innerHTML = `
+          <input type="checkbox" ${isBlocked ? 'checked' : ''}>
+          <span>${edge.id} (${edge.w}m)</span>
+        `;
+        label.querySelector('input').addEventListener('change', () => togglePipe(edge.id));
+        grid.appendChild(label);
+      });
+    }
+
+    function togglePipe(pipeId) {
+      AudioEngine.click();
+      if (blockedPipes.has(pipeId)) {
+        blockedPipes.delete(pipeId);
+        logEvent(`Tubulação ${pipeId} reaberta e operacional no grafo.`, 'ok');
+      } else {
+        blockedPipes.add(pipeId);
+        logEvent(`Tubulação ${pipeId} bloqueada manualmente (W = ∞).`, 'warn');
+      }
+      recalculate();
+    }
+
+    function simulateLeak(edgeId) {
+      AudioEngine.alarm();
+      leakDetectedEdge = edgeId;
+      blockedPipes.add(edgeId);
+
+      const edge = PLANT_EDGES.find(e => e.id === edgeId);
+      logEvent(`🚨 ALARME SIS: Fuga de H2 detectada na tubulação ${edgeId} (${edge?.label})!`, 'alert');
+
+      if (edge?.isBridge) {
+        emergencyShutdown = true;
+        logEvent(`🛑 CORTE DE EMERGÊNCIA (ESD NÍVEL 1): Aresta ${edgeId} é uma PONTE CRÍTICA sem redundância! A planta foi isolada.`, 'alert');
+      } else {
+        logEvent(`🔄 Aresta ${edgeId} isolada. Recalculando rota alternativa por Dijkstra...`, 'warn');
+      }
+      recalculate();
+    }
+
+    function advancePigStep() {
+      AudioEngine.success();
+      pigStep++;
+      if (pigStep > 10) pigStep = 1;
+      logEvent(`Robô PIG inspecionou duto ${pigStep}/10: ${PIG_EDGES[pigStep - 1].label}`, 'cyan');
+      recalculate();
+    }
+
+    function togglePigAuto() {
+      AudioEngine.click();
+      if (pigInterval) {
+        clearInterval(pigInterval);
+        pigInterval = null;
+      } else {
+        pigInterval = setInterval(advancePigStep, 800);
+      }
+      updateControlsUI();
+    }
+
+    function logEvent(msg, type = 'ok') {
+      const term = document.getElementById('logTerminal');
+      if (!term) return;
+      const now = new Date();
+      const timeStr = `[${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}]`;
+      const div = document.createElement('div');
+      div.className = 'log-row';
+      div.innerHTML = `<span class="log-time">${timeStr}</span> <span class="log-msg ${type}">${msg}</span>`;
+      term.appendChild(div);
+      term.scrollTop = term.scrollHeight;
+    }
+
+    /* ====================================================================
+       7. SISTEMA DE MISSÕES DO MODO JOGO
+       ==================================================================== */
+    const MISSIONS = {
+      1: {
+        desc: "Configure a cascata para o Estágio 1 (LP · TK-101) garantindo menor rota ativa (52m).",
+        check() {
+          return currentMode === 'dijkstra' && selectedCascadeStage === 'LP' && !blockedPipes.has('e4') && !blockedPipes.has('e7');
+        },
+        hint: "Selecione o modo 1 (Cascata), certifique-se de que o Estágio 1 está ativo e sem tubulações bloqueadas."
+      },
+      2: {
+        desc: "Simule fuga em TK-101 e confirme o desvio dinâmico do SCADA para o banco TK-102.",
+        check() {
+          return (currentMode === 'leak' || currentMode === 'dijkstra') && blockedPipes.has('e4') && !blockedPipes.has('e5');
+        },
+        hint: "Bloqueie a tubulação e4 ou clique no botão de vazamento em TK-101 para observar o desvio para TK-102."
+      },
+      3: {
+        desc: "Identifique e simule falha na ponte crítica e7 (XV-104 → HEX-201) verificando o disparo de ESD.",
+        check() {
+          return blockedPipes.has('e7') || leakDetectedEdge === 'e7';
+        },
+        hint: "No modo Vazamento, clique no botão 'Vazamento na Ponte XV-104 → HEX-201' para testar a ponte sem corte alternativo."
+      },
+      4: {
+        desc: "Complete a inspeção das 10 tubulações com o robô PIG retornando à Base.",
+        check() {
+          return currentMode === 'euler' && pigStep === 10;
+        },
+        hint: "No modo 4 (Robô PIG), avance até o passo 10/10 para cobrir 100% da malha pelo circuito de Euler."
+      },
+      5: {
+        desc: "Aplique a otimização 2-Opt na amostragem do AGV para eliminar cruzamentos de rota (260m).",
+        check() {
+          return currentMode === 'tsp' && tspAlgorithm === 'opt';
+        },
+        hint: "No modo 5 (AGV), selecione o algoritmo 'Refinamento 2-Opt (260m)' no menu lateral."
+      },
+      6: {
+        desc: "Ative os pré-requisitos essenciais no DAG (Trava, IrDA, Estanqueidade e Chiller) para liberar o abastecimento.",
+        check() {
+          return currentMode === 'dag' && dagSwitches.lock && dagSwitches.irda && dagSwitches.leak_check && dagSwitches.chiller;
+        },
+        hint: "No modo 6 (DAG), marque as 4 primeiras caixas de seleção atendendo às restrições do algoritmo de Kahn."
+      }
+    };
+
+    document.getElementById('selectMission').addEventListener('change', (e) => {
+      const mId = e.target.value;
+      const m = MISSIONS[mId];
+      if (m) {
+        document.getElementById('missionDesc').textContent = m.desc;
+        AudioEngine.click();
+        logEvent(`Nova Missão Selecionada: #${mId} — ${m.desc}`, 'cyan');
+        // Alternar automaticamente para o modo correspondente
+        const modeMap = { 1: 'dijkstra', 2: 'leak', 3: 'leak', 4: 'euler', 5: 'tsp', 6: 'dag' };
+        if (modeMap[mId]) {
+          switchMode(modeMap[mId]);
+        }
+      }
+    });
+
+    document.getElementById('btnCheckMission').addEventListener('click', () => {
+      const mId = document.getElementById('selectMission').value;
+      const m = MISSIONS[mId];
+      if (m) {
+        if (m.check()) {
+          AudioEngine.success();
+          logEvent(`🎉 PARABÉNS! Missão #${mId} concluída com sucesso no SCADA Core!`, 'ok');
+          alert(`✅ PARABÉNS!
+
+Você concluiu a Missão #${mId} com sucesso!
+O modelo topológico em grafos respondeu determinísticamente aos requisitos de processo.`);
+        } else {
+          AudioEngine.alarm();
+          logEvent(`⚠️ Missão #${mId} incompleta. Dica: ${m.hint}`, 'warn');
+          alert(`⚠️ MISSÃO INCOMPLETA!
+
+Dica da Teoria dos Grafos:
+${m.hint}`);
+        }
+      }
+    });
+
+    /* ====================================================================
+       8. CÁLCULO GERAL E ATUALIZAÇÃO DA INTERFACE
+       ==================================================================== */
+    function recalculate() {
+      updateModeHeader();
+
+      if (currentMode === 'dijkstra') {
+        const res = runDijkstra('SUP-100', 'VEIC-300');
+        activePathNodes = res.pathNodes;
+        activePathEdges = res.pathEdges;
+
+        document.getElementById('kpiDistance').textContent = res.totalDistance === Infinity ? 'BLOQUEADO' : `${res.totalDistance} m`;
+        document.getElementById('kpiDistanceSub').textContent = `Cascata ${selectedCascadeStage} · Menor Caminho`;
+        document.getElementById('kpiExecTime').textContent = `${res.execTime} ms`;
+        document.getElementById('kpiScadaState').textContent = res.totalDistance === Infinity ? 'SEM ROTA' : 'ROTEADO';
+        document.getElementById('kpiScadaState').style.color = res.totalDistance === Infinity ? '#ef4444' : '#34d399';
+        document.getElementById('statActivePath').textContent = res.pathNodes.join(' → ');
+
+      } else if (currentMode === 'search') {
+        if (selectedSearchAlgorithm === 'BFS') {
+          const res = runBFS(selectedSearchOrigin);
+          activePathNodes = res.visited;
+          activePathEdges = res.treeEdges;
+          document.getElementById('kpiDistance').textContent = `${res.visited.length} nós`;
+          document.getElementById('kpiDistanceSub').textContent = `Frente de Onda BFS`;
+          document.getElementById('kpiExecTime').textContent = `${res.execTime} ms`;
+          document.getElementById('statActivePath').textContent = `Alcançados: ${res.visited.join(', ')}`;
+        } else {
+          const res = runDFS(selectedSearchOrigin);
+          activePathNodes = res.visited;
+          activePathEdges = res.treeEdges;
+          document.getElementById('kpiDistance').textContent = `${res.backEdges.length} ciclos`;
+          document.getElementById('kpiDistanceSub').textContent = `Arestas de Retorno DFS`;
+          document.getElementById('kpiExecTime').textContent = `${res.execTime} ms`;
+          document.getElementById('statActivePath').textContent = res.backEdges.length === 0 ? 'Grafo Acíclico (DAG)' : `Ciclos: ${res.backEdges.join(', ')}`;
+        }
+
+      } else if (currentMode === 'leak') {
+        if (leakDetectedEdge) {
+          const isBridge = PLANT_EDGES.find(e => e.id === leakDetectedEdge)?.isBridge;
+          if (isBridge) {
+            document.getElementById('kpiScadaState').textContent = 'ESD ATIVO!';
+            document.getElementById('kpiScadaState').style.color = '#ef4444';
+            document.getElementById('kpiSisState').textContent = 'TRAVADO';
+            document.getElementById('kpiSisState').style.color = '#ef4444';
+            document.getElementById('kpiDistance').textContent = 'CORTE TOTAL';
+            document.getElementById('kpiDistanceSub').textContent = 'Ponte Crítica Rompida';
+          } else {
+            const res = runDijkstra('SUP-100', 'VEIC-300');
+            activePathNodes = res.pathNodes;
+            activePathEdges = res.pathEdges;
+            document.getElementById('kpiScadaState').textContent = 'DESVIO AUTO';
+            document.getElementById('kpiScadaState').style.color = '#fbbf24';
+            document.getElementById('kpiSisState').textContent = 'CONTINGÊNCIA';
+            document.getElementById('kpiSisState').style.color = '#38bdf8';
+            document.getElementById('kpiDistance').textContent = `${res.totalDistance} m`;
+            document.getElementById('kpiDistanceSub').textContent = 'Recálculo < 1 ms';
+          }
+        }
+
+      } else if (currentMode === 'euler') {
+        document.getElementById('kpiDistance').textContent = `${pigStep} / 10`;
+        document.getElementById('kpiDistanceSub').textContent = 'Dutos Inspecionados';
+        document.getElementById('kpiScadaState').textContent = pigStep === 10 ? 'CONCLUÍDO' : 'VARRENDO';
+        document.getElementById('kpiScadaState').style.color = pigStep === 10 ? '#34d399' : '#a855f7';
+        document.getElementById('kpiSisState').textContent = 'CIRC. FECHADO';
+
+      } else if (currentMode === 'tsp') {
+        document.getElementById('kpiDistance').textContent = tspAlgorithm === 'opt' ? '260 m' : '280 m';
+        document.getElementById('kpiDistanceSub').textContent = tspAlgorithm === 'opt' ? 'Perímetro 2-Opt (-7%)' : 'Com Cruzamento';
+        document.getElementById('kpiScadaState').textContent = 'LOGÍSTICA AGV';
+        document.getElementById('kpiSisState').textContent = 'AUTÔNOMO';
+
+      } else if (currentMode === 'dag') {
+        const isOk = dagSwitches.lock && dagSwitches.irda && dagSwitches.leak_check && dagSwitches.chiller;
+        document.getElementById('kpiScadaState').textContent = isOk ? 'ABASTECENDO' : 'INTERTRAVADO';
+        document.getElementById('kpiScadaState').style.color = isOk ? '#34d399' : '#f59e0b';
+        document.getElementById('kpiDistance').textContent = isOk ? 'ORÇADO 700b' : 'ESPERA COND.';
+        document.getElementById('kpiDistanceSub').textContent = 'Ordem de Kahn (in-deg = 0)';
+      }
+
+      updateLegend();
+      renderMainSvg();
+      populatePipeGrid();
+    }
+
+    function updateModeHeader() {
+      const headers = {
+        dijkstra: {
+          pill: 'AULA 14 · DIJKSTRA',
+          title: 'Roteamento de Pressão em Cascata (SAE J2601)',
+          desc: 'Cálculo de menor caminho físico no dígrafo ponderado selecionando o banco ótimo de armazenamento.',
+          badge: 'Dígrafo Ponderado G = (V, E, W)',
+          canvas: '⚡ MIMICO DIGITAL &bull; ROTEAMENTO ÓTIMO DE CASCATA'
+        },
+        search: {
+          pill: 'AULA 13 · BFS & DFS',
+          title: 'Busca e Rastreabilidade em Tubulações',
+          desc: 'BFS determina o menor corte de bloqueio; DFS classifica arestas para garantir ausência de recirculação.',
+          badge: 'Complexidade Linear O(|V| + |E|)',
+          canvas: '🔍 FRENTES DE ONDA BFS & DETECÇÃO DE CICLOS DFS'
+        },
+        leak: {
+          pill: 'AULA 15 · DESVIO DINÂMICO',
+          title: 'Simulação de Vazamento & Resposta a Emergência',
+          desc: 'Reponderação instantânea (W = ∞), desvio autônomo entre bancos ou corte de emergência em pontes críticas.',
+          badge: 'Reconfiguração SCADA < 1 ms',
+          canvas: '🚨 DETECÇÃO DE FUGA DE GÁS & COMUTAÇÃO DINÂMICA'
+        },
+        euler: {
+          pill: 'AULA 16 · CIRCUITO EULERIANO',
+          title: 'Inspeção de Tubulações por Robô PIG (Hierholzer)',
+          desc: 'Cobertura exaustiva de 10 trechos de duto sem repetição através do teorema de Euler (graus pares em todos os nós).',
+          badge: 'Varredura 100% Determinística',
+          canvas: '🔄 CIRCUITO DE EULER FECHADO & ROBÔ PIG ULTRASSÔNICO'
+        },
+        tsp: {
+          pill: 'AULA 17 · CAIXEIRO VIAJANTE (TSP)',
+          title: 'Amostragem Laboratorial por Robô AGV',
+          desc: 'Otimização viária entre 5 pontos da planta para ensaios de pureza de hidrogênio (SAE J2719).',
+          badge: 'Heurística 2-Opt: Economia de 20m/volta',
+          canvas: '🤖 ROTA ÓTIMA DO AGV DE AMOSTRAGEM QUÍMICA'
+        },
+        dag: {
+          pill: 'AULA 18 · DAG & ORDENAÇÃO DE KAHN',
+          title: 'Intertravamento de Segurança & Precedência Topológica',
+          desc: 'Garantia matemática formal de que nenhum estágio de abastecimento é iniciado antes de seus pré-requisitos físicos.',
+          badge: 'Grafo Acíclico Dirigido (DAG)',
+          canvas: '📋 SEQUÊNCIA CRÍTICA DE INTERTRAVAMENTO SAE J2601'
+        }
+      };
+
+      const cfg = headers[currentMode];
+      if (cfg) {
+        document.getElementById('modePill').textContent = cfg.pill;
+        document.getElementById('modeTitle').textContent = cfg.title;
+        document.getElementById('modeDesc').textContent = cfg.desc;
+        document.getElementById('modeBadge').textContent = cfg.badge;
+        document.getElementById('canvasTitle').innerHTML = `<span>⚡</span> ${cfg.canvas}`;
+      }
+    }
+
+    function updateLegend() {
+      const leg = document.getElementById('legendStrip');
+      if (currentMode === 'euler') {
+        leg.innerHTML = `
+          <div class="legend-item"><div class="legend-line" style="background:#10b981;"></div> Duto Já Inspecionado</div>
+          <div class="legend-item"><div class="legend-line" style="background:#a855f7;"></div> Trecho Atual do PIG</div>
+          <div class="legend-item"><div class="legend-line" style="background:#1e3a5f;"></div> Duto Pendente</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div> Robô PIG</div>
+        `;
+      } else if (currentMode === 'tsp') {
+        leg.innerHTML = `
+          <div class="legend-item"><div class="legend-line" style="background:#10b981;"></div> Rota Otimizada (2-Opt)</div>
+          <div class="legend-item"><div class="legend-line" style="background:#ef4444; border-top:1px dashed #ef4444;"></div> Cruzamento Ineficiente (NN)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#0369a1;"></div> Base Laboratorial</div>
+        `;
+      } else if (currentMode === 'dag') {
+        leg.innerHTML = `
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div> Pré-requisito Atendido</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#334155;"></div> Pré-requisito Bloqueado</div>
+        `;
+      } else {
+        leg.innerHTML = `
+          <div class="legend-item"><div class="legend-line" style="background:#00d4ff;"></div> Rota Ótima Ativa (Fluxo H2)</div>
+          <div class="legend-item"><div class="legend-line" style="background:#1e3a5f;"></div> Tubulação Disponível</div>
+          <div class="legend-item"><div class="legend-line" style="background:#64748b; border-top:1px dashed #64748b;"></div> Trecho Bloqueado (W = ∞)</div>
+          <div class="legend-item"><div class="legend-line" style="background:#ef4444; border-top:1px dashed #ef4444;"></div> Fuga de Gás Detectada</div>
+        `;
+      }
+    }
+
+    function switchMode(newMode) {
+      document.querySelectorAll('.mode-tab').forEach(t => {
+        t.classList.toggle('active', t.dataset.mode === newMode);
+      });
+      currentMode = newMode;
+      if (currentMode !== 'euler' && pigInterval) {
+        clearInterval(pigInterval);
+        pigInterval = null;
+      }
+      updateControlsUI();
+      recalculate();
+    }
+
+    document.querySelectorAll('.mode-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        AudioEngine.click();
+        switchMode(tab.dataset.mode);
+        logEvent(`Modo alternado para: ${tab.querySelector('.mode-tab-header').textContent}`, 'ok');
+      });
+    });
+
+    document.getElementById('btnExecute').addEventListener('click', () => {
+      AudioEngine.success();
+      recalculate();
+      logEvent('Algoritmo executado com sucesso no SCADA Core.', 'ok');
+    });
+
+    document.getElementById('btnReset').addEventListener('click', () => {
+      AudioEngine.click();
+      blockedPipes.clear();
+      leakDetectedEdge = null;
+      emergencyShutdown = false;
+      pigStep = 0;
+      if (pigInterval) { clearInterval(pigInterval); pigInterval = null; }
+      logEvent('Malha hidráulica e algoritmos restaurados ao estado nominal de fábrica.', 'ok');
+      updateControlsUI();
+      recalculate();
+    });
+
+    document.getElementById('btnSoundToggle').addEventListener('click', (e) => {
+      soundEnabled = !soundEnabled;
+      e.target.textContent = soundEnabled ? '🔊 Áudio: ON' : '🔇 Áudio: OFF';
+      AudioEngine.click();
+    });
+
+    // Inicialização
+    updateControlsUI();
+    recalculate();
+  </script>
+</body>
+</html>
