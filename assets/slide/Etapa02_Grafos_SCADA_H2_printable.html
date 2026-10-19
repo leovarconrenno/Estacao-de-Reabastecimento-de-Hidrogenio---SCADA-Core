@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Estação de Reabastecimento de Hidrogênio — SCADA Core | Etapa 02</title>
+  <style>
+    @page {
+      size: 16in 9in;
+      margin: 0;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #334155;
+    }
+
+    /* SLIDE BASE */
+    .slide {
+      width: 16in;
+      height: 9in;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    /* SLIDES ESCUROS (Capa, Divisores, Encerramento) */
+    .slide-dark {
+      background-color: #0b1320;
+      color: #f1f5f9;
+      padding: 1.1in 1.4in;
+      justify-content: center;
+    }
+    .slide-dark::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0284c7, #38bdf8, transparent);
+    }
+
+    /* SLIDES CLAROS (Conteúdo) */
+    .slide-light {
+      background-color: #f8fafc;
+      color: #1e293b;
+      padding: 0.75in 1.25in 0.85in 1.25in;
+      justify-content: flex-start;
+    }
+
+    /* FOOTER PADRONIZADO (Slides Claros) */
+    .footer-light {
+      position: absolute;
+      bottom: 0.35in;
+      left: 1.25in;
+      right: 1.25in;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 0.25in;
+    }
+
+    /* CATEGORIAS E TÍTULOS */
+    .category-label {
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.25em;
+      color: #0284c7;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .category-pill {
+      display: inline-block;
+      background-color: #0284c7;
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.9rem;
+      border-radius: 9999px;
+      margin-bottom: 0.5rem;
+    }
+    .slide-title {
+      font-size: 2.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 0.45rem 0;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+    }
+    .slide-desc {
+      font-size: 1.05rem;
+      color: #475569;
+      line-height: 1.55;
+      margin: 0 0 1rem 0;
+    }
+
+    /* ÍCONES CIRCULARES */
+    .icon-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+    .icon-circle svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+    .icon-circle-lg {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.4);
+    }
+    .icon-circle-lg svg {
+      width: 72px;
+      height: 72px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+
+    /* CARDS EM BRANCO */
+    .card-white {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      box-shadow: 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+    }
+
+    /* TABELAS */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+    th {
+      background: #0284c7;
+      color: #ffffff;
+      padding: 0.65rem 0.9rem;
+      font-weight: 700;
+      text-align: left;
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+    }
+    td {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    /* BADGES */
+    .badge-ok {
+      color: #16a34a;
+      font-weight: 700;
+    }
+    .badge-crit {
+      color: #dc2626;
+      font-weight: 700;
+    }
+
+    .callout-light {
+      background: #eff6ff;
+      border-left: 4px solid #0284c7;
+      border-radius: 6px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.98rem;
+      color: #1e3a8a;
+      line-height: 1.5;
+      margin-top: auto;
+    }
+
+    .formula-box {
+      background: #0f172a;
+      color: #38bdf8;
+      border-radius: 8px;
+      padding: 0.8rem 1.2rem;
+      text-align: center;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin: 0.5rem 0 0.8rem 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====================================================================
+       PAGE 1: CAPA (DARK)
+       ==================================================================== -->
+  <div class="slide slide-dark" style="justify-content: space-between;">
+    <div>
+      <div style="font-size: 0.9rem; font-weight: 800; letter-spacing: 0.3em; color: #38bdf8; text-transform: uppercase; margin-bottom: 1.8rem;">
+        S C A D A - C O R E
+      </div>
+      <h1 style="font-size: 3.4rem; font-weight: 800; color: #ffffff; line-height: 1.15; margin: 0 0 1rem 0; letter-spacing: -0.02em;">
+        Estação de<br>Reabastecimento<br>de Hidrogênio
+      </h1>
+      <p style="font-size: 1.35rem; color: #94a3b8; font-style: italic; margin: 0 0 2.5rem 0;">
+        Módulo 2 — Teoria dos Grafos, Redes de Fluxo e Otimização no SCADA Core
+      </p>
+
+      <!-- Badges de Setores/Tópicos -->
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <div style="border: 1px solid #0284c7; background: rgba(2, 132, 199, 0.12); padding: 0.6rem 1.4rem; border-radius: 8px; color: #38bdf8; font-weight: 700; font-size: 1rem;">
+          100 Armazenamento em Cascata
+        </div>
+        <div style="border: 1px solid #0284c7; background: rgba(2, 132, 199, 0.12); padding: 0.6rem 1.4rem; border-radius: 8px; color: #38bdf8; font-weight: 700; font-size: 1rem;">
+          200 Condicionamento Criogênico
+        </div>
+        <div style="border: 1px solid #ea580c; background: rgba(234, 88, 12, 0.12); padding: 0.6rem 1.4rem; border-radius: 8px; color: #fb923c; font-weight: 700; font-size: 1rem;">
+          300 Dispensação &amp; Veículo
+        </div>
+      </div>
+    </div>
+
+    <!-- Lado Direito: Logo Ícone e Autores no Rodapé -->
+    <div style="position: absolute; right: 1.4in; top: 1.8in;">
+      <div class="icon-circle-lg">
+        <svg viewBox="0 0 24 24">
+          <circle cx="6" cy="6" r="3"></circle>
+          <circle cx="18" cy="6" r="3"></circle>
+          <circle cx="18" cy="18" r="3"></circle>
+          <circle cx="6" cy="18" r="3"></circle>
+          <line x1="9" y1="6" x2="15" y2="6"></line>
+          <line x1="18" y1="9" x2="18" y2="15"></line>
+          <line x1="15" y1="18" x2="9" y2="18"></line>
+          <line x1="6" y1="15" x2="6" y2="9"></line>
+          <line x1="8.5" y1="8.5" x2="15.5" y2="15.5"></line>
+        </svg>
+      </div>
+    </div>
+
+    <div style="font-size: 1rem; color: #94a3b8; font-weight: 500;">
+      João Pedro &nbsp;·&nbsp; Marcelo Candelária &nbsp;·&nbsp; Luca Augusto &nbsp;·&nbsp; Leo Vargas
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 2: INTRODUÇÃO (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-label">I N T R O D U Ç Ã O</div>
+    <div class="slide-title">Um grafo para modelar e supervisionar a planta de H₂</div>
+
+    <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 2.2rem; margin-top: 0.5rem; flex: 1;">
+      <div style="display: flex; flex-direction: column; justify-content: space-around;">
+        <p style="font-size: 1.15rem; line-height: 1.65; color: #334155; margin: 0;">
+          O projeto desenvolve o núcleo de decisão do <strong>SCADA Core</strong> utilizando a teoria dos grafos para modelar a malha física de alta pressão, equipamentos de processo e fluxos operacionais de uma estação de hidrogênio voltada a veículos movidos a célula de combustível (FCEV).
+        </p>
+        <p style="font-size: 1.15rem; line-height: 1.65; color: #334155; margin: 0;">
+          A planta envolve armazenamento em cascata, condicionamento criogênico e transferência a 700 bar. O SCADA Core avalia a topologia do dígrafo $GG = (V, E, W), executa o roteamento de pressão por Dijkstra em tempo real, isola vazamentos instantaneamente e otimiza a inspeção física e a logística viária.
+        </p>
+      </div>
+
+      <div class="card-white" style="display: flex; flex-direction: column; justify-content: space-around; background: #ffffff;">
+        <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.15em; color: #64748b; text-transform: uppercase; margin-bottom: 0.4rem;">
+          ESTA ETAPA (GRAFOS) COBRE
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+          </div>
+          <div style="font-size: 1rem; color: #1e293b; font-weight: 500;">Modelagem da planta como dígrafo ponderado G=(V,E,W) e matrizes</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
+          <div style="font-size: 1rem; color: #1e293b; font-weight: 500;">Algoritmos BFS e DFS para isolamento mínimo e detecção de ciclos</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+          </div>
+          <div style="font-size: 1rem; color: #1e293b; font-weight: 500;">Roteamento ótimo de pressão (Dijkstra) e desvio dinâmico de vazamento</div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <div class="icon-circle">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <div style="font-size: 1rem; color: #1e293b; font-weight: 500;">Robótica autônoma: inspeção euleriana (PIG) e amostragem de pureza (AGV)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>02</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 3: A PLANTA EM TRÊS SETORES (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-label">A R Q U I T E T U R A</div>
+    <div class="slide-title">A malha de hidrogênio modelada em três setores</div>
+    <div class="slide-desc">
+      Do suprimento externo até o bico do veículo, o fluxo de H₂ percorre três setores de equipamentos — cada um mapeado como nós e arcos no dígrafo:
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; flex: 1; align-items: stretch;">
+      <!-- Setor 100 -->
+      <div class="card-white" style="display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid #0284c7;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+            <div class="icon-circle" style="background:#0284c7;">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            </div>
+            <span style="font-size: 2.2rem; font-weight: 800; color: #0284c7;">100</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Banco de Armazenamento</div>
+          <p style="font-size: 0.95rem; color: #475569; line-height: 1.55;">
+            Cilindros em cascata: baixa pressão (TK-101), média (TK-102) e alta (TK-103). Válvulas de corte, alívio e válvula seletora direcional XV-104.
+          </p>
+        </div>
+        <div style="font-size: 0.82rem; font-weight: 700; color: #0284c7; border-top: 1px solid #f1f5f9; padding-top: 0.6rem;">
+          SUP-100 · TK-101 · TK-102 · TK-103 · XV-104
+        </div>
+      </div>
+
+      <!-- Setor 200 -->
+      <div class="card-white" style="display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid #06b6d4;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+            <div class="icon-circle" style="background:#06b6d4;">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"></line></svg>
+            </div>
+            <span style="font-size: 2.2rem; font-weight: 800; color: #06b6d4;">200</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Condicionamento (Chiller)</div>
+          <p style="font-size: 0.95rem; color: #475569; line-height: 1.55;">
+            Trocador de calor criogênico HEX-201 com pré-resfriamento do H₂ a ≤ −40 °C conforme norma SAE J2601, evitando sobreaquecimento do tanque veicular.
+          </p>
+        </div>
+        <div style="font-size: 0.82rem; font-weight: 700; color: #06b6d4; border-top: 1px solid #f1f5f9; padding-top: 0.6rem;">
+          HEX-201 · TT-201 · PT-201 · XV-201
+        </div>
+      </div>
+
+      <!-- Setor 300 -->
+      <div class="card-white" style="display: flex; flex-direction: column; justify-content: space-between; border-top: 4px solid #ea580c;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+            <div class="icon-circle" style="background:#ea580c;">
+              <svg viewBox="0 0 24 24"><path d="M3 2h12v20H3z"></path><path d="M15 6h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4"></path><circle cx="9" cy="9" r="2"></circle></svg>
+            </div>
+            <span style="font-size: 2.2rem; font-weight: 800; color: #ea580c;">300</span>
+          </div>
+          <div style="font-size: 1.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Dispensador &amp; Veículo</div>
+          <p style="font-size: 0.95rem; color: #475569; line-height: 1.55;">
+            Medição mássica com coriolis, acoplamento breakaway (BV-301), bico dispensador DISP-300 e tanque veicular 700 bar (VEIC-300).
+          </p>
+        </div>
+        <div style="font-size: 0.82rem; font-weight: 700; color: #ea580c; border-top: 1px solid #f1f5f9; padding-top: 0.6rem;">
+          DISP-300 · VEIC-300 · BV-301 · XV-301
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>03</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 4: DIVISOR TÓPICO 01 (DARK)
+       ==================================================================== -->
+  <div class="slide slide-dark">
+    <div style="font-size: 5.5rem; font-weight: 800; color: #0284c7; line-height: 1; margin-bottom: 0.4rem;">
+      100
+    </div>
+    <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: #38bdf8; text-transform: uppercase; margin-bottom: 0.8rem;">
+      S E T O R   1 0 0   /   T Ó P I C O   0 1
+    </div>
+    <div style="font-size: 2.6rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem;">
+      Modelagem Topológica e Matrizes de Fluxo
+    </div>
+    <p style="font-size: 1.15rem; color: #94a3b8; font-style: italic; max-width: 65%;">
+      Dígrafo ponderado da tubulação de alta pressão, matrizes de incidência e conservação vetorial de massa
+    </p>
+
+    <div style="position: absolute; right: 1.4in; top: 2.8in;">
+      <div class="icon-circle-lg">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+      </div>
+    </div>
+
+    <div style="position: absolute; bottom: 0.5in; right: 1.4in; font-size: 1rem; color: #64748b; font-weight: 700;">
+      04
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 5: DÍGRAFO PONDERADO G = (V, E, W) (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 01</div>
+    <div class="slide-title">Dígrafo ponderado da malha: G = (V, E, W)</div>
+    <div class="slide-desc">
+      8 equipamentos de processo como vértices e 8 arcos de tubulação pressurizada interligando a estação:
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Origem</th>
+          <th>Destino</th>
+          <th>Comprimento L (m)</th>
+          <th>Válvula ISA</th>
+          <th>Diâmetro Ø</th>
+          <th>Papel no Processo Hidráulico</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>SUP-100</td><td>TK-101</td><td>10</td><td>XV-101</td><td>2"</td><td>Enchimento do banco de baixa pressão (LP)</td></tr>
+        <tr><td>SUP-100</td><td>TK-102</td><td>12</td><td>XV-102</td><td>1½"</td><td>Enchimento do banco de média pressão (MP)</td></tr>
+        <tr><td>SUP-100</td><td>TK-103</td><td>15</td><td>XV-103</td><td>1"</td><td>Enchimento do banco de alta pressão (HP)</td></tr>
+        <tr><td>TK-101</td><td>XV-104</td><td>8</td><td>Linha LP</td><td>1"</td><td>Alimentação do 1º estágio da cascata</td></tr>
+        <tr><td>TK-102</td><td>XV-104</td><td>6</td><td>Linha MP</td><td>¾"</td><td>Alimentação do 2º estágio da cascata</td></tr>
+        <tr><td>TK-103</td><td>XV-104</td><td>8</td><td>Linha HP</td><td>½"</td><td>Alimentação do 3º estágio da cascata</td></tr>
+        <tr><td>XV-104</td><td>HEX-201</td><td>5</td><td>XV-201</td><td>1"</td><td>Linha principal para pré-resfriador (−40 °C)</td></tr>
+        <tr><td>HEX-201</td><td>DISP-300</td><td>4</td><td>XV-301</td><td>½"</td><td>Envio de H₂ condicionado ao dispensador</td></tr>
+        <tr><td>DISP-300</td><td>VEIC-300</td><td>2</td><td>BV-301</td><td>⅜"</td><td>Bico e mangueira de abastecimento a 700 bar</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout-light">
+      💡 <strong>Formalização Topológica:</strong> O nó de comutação apresenta grau de entrada deg⁻(XV-104) = 3, modelando formalmente a convergência dos 3 bancos em cascata para seleção unificada de abastecimento veicular.
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>05</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 6: MATRIZES E BALANÇO DE MASSA (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 01</div>
+    <div class="slide-title">Matriz de Incidência e Balanço de Massa</div>
+    <div class="slide-desc">
+      A Matriz de Incidência $BB &isin; {&minus;1, 0, &plus;1}<sup>n&times;m</sup> traduz conexões físicas em equações algébricas no ciclo do CLP:
+    </div>
+
+    <div class="formula-box">
+      B · Q = S &nbsp;&nbsp;⟹&nbsp;&nbsp; [Matriz de Incidência] · [Vetor de Vazões] = [Vetor Fonte / Sumidouro]
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nó de Processo</th>
+          <th>Balanço Líquido (kg/h)</th>
+          <th>Papel no Sistema SCADA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SUP-100</strong></td>
+          <td style="color:#dc2626; font-weight:700;">−30 kg/h</td>
+          <td>Fonte externa de hidrogênio (Tube Trailer de suprimento)</td>
+        </tr>
+        <tr>
+          <td><strong>TK-101 / TK-102 / TK-103</strong></td>
+          <td style="color:#0284c7; font-weight:700;">0 kg/h</td>
+          <td>Nós de armazenamento intermediário (acúmulo nulo em regime permanente)</td>
+        </tr>
+        <tr>
+          <td><strong>XV-104 / HEX-201 / DISP-300</strong></td>
+          <td style="color:#0284c7; font-weight:700;">0 kg/h</td>
+          <td>Nós de passagem, comutação direcional e condicionamento térmico</td>
+        </tr>
+        <tr>
+          <td><strong>VEIC-300</strong></td>
+          <td style="color:#16a34a; font-weight:700;">+30 kg/h</td>
+          <td>Destino final (abastecimento do tanque veicular FCEV)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout-light">
+      ✅ <strong>Conservação de Massa Garantida:</strong> &sum; S<sub>i</sub> = 0. O produto matricial prova formalmente que a rede não possui perdas de massa não modeladas, garantindo consistência estrita para os diagnósticos de vazamento do supervisório.
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>06</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 7: DIVISOR TÓPICO 02 (DARK)
+       ==================================================================== -->
+  <div class="slide slide-dark">
+    <div style="font-size: 5.5rem; font-weight: 800; color: #0284c7; line-height: 1; margin-bottom: 0.4rem;">
+      200
+    </div>
+    <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: #38bdf8; text-transform: uppercase; margin-bottom: 0.8rem;">
+      T Ó P I C O   0 2
+    </div>
+    <div style="font-size: 2.6rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem;">
+      Conectividade e Busca nas Tubulações
+    </div>
+    <p style="font-size: 1.15rem; color: #94a3b8; font-style: italic; max-width: 65%;">
+      Algoritmos de busca em largura e profundidade para isolamento de segurança e diagnóstico de ciclos
+    </p>
+
+    <div style="position: absolute; right: 1.4in; top: 2.8in;">
+      <div class="icon-circle-lg">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </div>
+    </div>
+
+    <div style="position: absolute; bottom: 0.5in; right: 1.4in; font-size: 1rem; color: #64748b; font-weight: 700;">
+      07
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 8: BFS E DFS NAS TUBULAÇÕES (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 02</div>
+    <div class="slide-title">Busca em Largura (BFS) vs Profundidade (DFS)</div>
+    <div class="slide-desc">
+      Aplicações complementares de exploração de grafos integradas ao ciclo de varredura do SCADA:
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Critério</th>
+          <th>BFS (Busca em Largura)</th>
+          <th>DFS (Busca em Profundidade)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Estrutura de Dados</strong></td>
+          <td>Fila FIFO (First-In, First-Out)</td>
+          <td>Pilha LIFO / Recursão</td>
+        </tr>
+        <tr>
+          <td><strong>Garantia Formal</strong></td>
+          <td>Menor número de arestas (saltos topológicos)</td>
+          <td>Exploração exaustiva e conectividade estrutural</td>
+        </tr>
+        <tr>
+          <td><strong>Complexidade</strong></td>
+          <td>$OO(|V| + |E|)</td>
+          <td>$OO(|V| + |E|)</td>
+        </tr>
+        <tr>
+          <td><strong>Aplicação no SCADA H₂</strong></td>
+          <td>Determinar o <strong>conjunto mínimo de válvulas</strong> a fechar no isolamento</td>
+          <td><strong>Detecção de ciclos fechados</strong> e rastreabilidade de contaminação</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 0.5rem; flex: 1;">
+      <div class="card-white" style="border-left: 4px solid #0284c7;">
+        <div style="font-size: 1.05rem; font-weight: 700; color: #0284c7; margin-bottom: 0.3rem;">Isolamento Seguro com BFS</div>
+        <p style="font-size: 0.92rem; color: #475569; line-height: 1.5; margin: 0;">
+          Ao disparar alarme de gás (AT-101), a BFS varre o grafo por níveis a partir da falha, identificando a menor cadeia de bloqueio para isolar o setor sem despressurizar linhas sadias.
+        </p>
+      </div>
+
+      <div class="card-white" style="border-left: 4px solid #ea580c;">
+        <div style="font-size: 1.05rem; font-weight: 700; color: #ea580c; margin-bottom: 0.3rem;">Detecção de Ciclos com DFS</div>
+        <p style="font-size: 0.92rem; color: #475569; line-height: 1.5; margin: 0;">
+          Classificação de arestas em árvore e retorno. Qualquer aresta de retorno detectada sinaliza ciclo indesejado (recirculação descontrolada de H₂ pressurizado), ativando alarme crítico.
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>08</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 9: DIVISOR TÓPICO 03 (DARK)
+       ==================================================================== -->
+  <div class="slide slide-dark">
+    <div style="font-size: 5.5rem; font-weight: 800; color: #0284c7; line-height: 1; margin-bottom: 0.4rem;">
+      300
+    </div>
+    <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: #38bdf8; text-transform: uppercase; margin-bottom: 0.8rem;">
+      T Ó P I C O   0 3
+    </div>
+    <div style="font-size: 2.6rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem;">
+      Roteamento Ótimo e Segurança Ativa
+    </div>
+    <p style="font-size: 1.15rem; color: #94a3b8; font-style: italic; max-width: 65%;">
+      Caminho mínimo por Dijkstra na cascata de pressão e reconfiguração instantânea perante vazamentos
+    </p>
+
+    <div style="position: absolute; right: 1.4in; top: 2.8in;">
+      <div class="icon-circle-lg">
+        <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+      </div>
+    </div>
+
+    <div style="position: absolute; bottom: 0.5in; right: 1.4in; font-size: 1rem; color: #64748b; font-weight: 700;">
+      09
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 10: DIJKSTRA E CASCATA DE PRESSÃO (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 03</div>
+    <div class="slide-title">Roteamento de Pressão e Cascata (Dijkstra)</div>
+    <div class="slide-desc">
+      O protocolo SAE J2601 é executado via Dijkstra como cálculo de menor caminho no dígrafo ponderado:
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Estágio de Pressão</th>
+          <th>Rota Hidráulica no Dígrafo</th>
+          <th>Distância Total</th>
+          <th>Status no SCADA Core</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>LP</strong> — TK-101 (350–400 bar)</td>
+          <td>SUP-100 &rarr; TK-101 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td>
+          <td style="font-weight:700;">52 m</td>
+          <td class="badge-ok">✅ ROTA ÓTIMA INICIAL</td>
+        </tr>
+        <tr>
+          <td><strong>MP</strong> — TK-102 (650–700 bar)</td>
+          <td>SUP-100 &rarr; TK-102 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td>
+          <td style="font-weight:700;">52 m</td>
+          <td style="color:#d97706; font-weight:700;">Contingência 1</td>
+        </tr>
+        <tr>
+          <td><strong>HP</strong> — TK-103 (950–1000 bar)</td>
+          <td>SUP-100 &rarr; TK-103 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td>
+          <td style="font-weight:700;">57 m</td>
+          <td style="color:#d97706; font-weight:700;">Contingência 2</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout-light">
+      📋 <strong>Protocolo SAE J2601 em Tempo Real:</strong> O SCADA comuta automaticamente entre os bancos de armazenamento (LP &rarr; MP &rarr; HP) conforme a pressão veicular se eleva e os bancos intermediários se esgotam, minimizando o consumo elétrico dos compressores da planta.
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>10</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 11: VAZAMENTO E PONTES CRÍTICAS (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 03</div>
+    <div class="slide-title">Detecção de Vazamentos e Análise de Pontes</div>
+    <div class="slide-desc">
+      Isolamento dinâmico em tempo real e identificação formal de pontos únicos de falha na infraestrutura:
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; flex: 1;">
+      <!-- Lado Esquerdo: Ações Automáticas -->
+      <div class="card-white" style="display: flex; flex-direction: column; justify-content: space-around;">
+        <div style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">
+          Cenário de Fuga de Gás (AT-101 &gt; 1 %vol):
+        </div>
+        <div style="display: flex; gap: 0.8rem; align-items: flex-start;">
+          <span style="background:#0284c7; color:#fff; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700;">1</span>
+          <p style="font-size: 0.95rem; margin:0; color:#334155;">Fechamento de emergência de XV-101 (isola banco TK-101 da rede).</p>
+        </div>
+        <div style="display: flex; gap: 0.8rem; align-items: flex-start;">
+          <span style="background:#0284c7; color:#fff; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700;">2</span>
+          <p style="font-size: 0.95rem; margin:0; color:#334155;">Reponderação dinâmica da aresta afetada no grafo com peso infinito ($WW &rarr; &infin;).</p>
+        </div>
+        <div style="display: flex; gap: 0.8rem; align-items: flex-start;">
+          <span style="background:#0284c7; color:#fff; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:700;">3</span>
+          <p style="font-size: 0.95rem; margin:0; color:#334155;">Recálculo de rota por Dijkstra em &lt; 1 ms ⟹ comuta automaticamente para o banco TK-102 (54 m).</p>
+        </div>
+      </div>
+
+      <!-- Lado Direito: Tabela de Pontes -->
+      <div>
+        <table style="margin: 0;">
+          <thead>
+            <tr>
+              <th>Trecho Hidráulico</th>
+              <th>É Ponte (Cut-Edge)?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>SUP-100 &rarr; TK-101 / 102 / 103</td>
+              <td class="badge-ok">❌ Não (3 rotas redundantes)</td>
+            </tr>
+            <tr>
+              <td>XV-104 &rarr; HEX-201</td>
+              <td class="badge-crit">⚠️ SIM — PONTE CRÍTICA</td>
+            </tr>
+            <tr>
+              <td>HEX-201 &rarr; DISP-300</td>
+              <td class="badge-crit">⚠️ SIM — PONTE CRÍTICA</td>
+            </tr>
+            <tr>
+              <td>DISP-300 &rarr; VEIC-300</td>
+              <td class="badge-crit">⚠️ SIM — PONTE CRÍTICA</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size: 0.85rem; color: #64748b; margin-top: 0.6rem; line-height: 1.4;">
+          Arestas críticas não possuem redundância física na planta. Qualquer falha nesses trechos aciona intertravamento global imediato (Trip geral).
+        </p>
+      </div>
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>11</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 12: DIVISOR TÓPICO 04 (DARK)
+       ==================================================================== -->
+  <div class="slide slide-dark">
+    <div style="font-size: 5.5rem; font-weight: 800; color: #0284c7; line-height: 1; margin-bottom: 0.4rem;">
+      400
+    </div>
+    <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: #38bdf8; text-transform: uppercase; margin-bottom: 0.8rem;">
+      T Ó P I C O   0 4
+    </div>
+    <div style="font-size: 2.6rem; font-weight: 800; color: #ffffff; margin-bottom: 1rem;">
+      Robótica Autônoma e Redes Multicamada
+    </div>
+    <p style="font-size: 1.15rem; color: #94a3b8; font-style: italic; max-width: 65%;">
+      Inspeção estrutural por PIG (Euler), amostragem de pureza por AGV (TSP) e logística por DAG
+    </p>
+
+    <div style="position: absolute; right: 1.4in; top: 2.8in;">
+      <div class="icon-circle-lg">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </div>
+    </div>
+
+    <div style="position: absolute; bottom: 0.5in; right: 1.4in; font-size: 1rem; color: #64748b; font-weight: 700;">
+      12
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 13: INSPEÇÃO POR ROBÔ PIG (EULER) (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 04</div>
+    <div class="slide-title">Inspeção Estrutural por Robô PIG (Euler)</div>
+    <div class="slide-desc">
+      Varredura ultrassônica periódica para detecção de microtrincas e fragilização por hidrogênio em dutos:
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 0.8rem;">
+      <div class="card-white" style="border-left: 4px solid #0284c7;">
+        <div style="font-weight: 700; color: #0284c7; margin-bottom: 0.3rem;">Condição Teórica de Euler</div>
+        <p style="font-size: 0.95rem; color: #334155; margin: 0; line-height: 1.5;">
+          Todos os vértices da malha de inspeção possuem grau par ⟹ Grafo Euleriano comprovado formalmente.
+        </p>
+      </div>
+
+      <div class="card-white" style="border-left: 4px solid #16a34a;">
+        <div style="font-weight: 700; color: #16a34a; margin-bottom: 0.3rem;">Algoritmo de Hierholzer</div>
+        <p style="font-size: 0.95rem; color: #334155; margin: 0; line-height: 1.5;">
+          Complexidade linear $OO(|E|), construindo a rota de varredura sem redundância de trecho e com retorno garantido à base.
+        </p>
+      </div>
+    </div>
+
+    <div class="formula-box" style="font-size: 1.05rem; padding: 0.9rem;">
+      BASE-100 &rarr; DISP-300 &rarr; HEX-201 &rarr; XV-104 &rarr; TK-103 &rarr; SUP-100<br>
+      &rarr; TK-102 &rarr; XV-104 &rarr; TK-101 &rarr; SUP-100 &rarr; BASE-100
+    </div>
+
+    <div class="callout-light">
+      🔄 <strong>Cobertura 100% Determinística:</strong> O robô PIG inspeciona todas as 10 tubulações em circuito fechado percorrendo cada segmento exatamente uma vez, minimizando o tempo de indisponibilidade da planta.
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>13</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 14: ROTEAMENTO DE AGV DE AMOSTRAGEM (TSP) (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 04</div>
+    <div class="slide-title">Roteamento do AGV de Amostragem (TSP)</div>
+    <div class="slide-desc">
+      O robô móvel AGV coleta amostras para ensaio de pureza de hidrogênio em 5 pontos da planta (norma SAE J2719):
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Método Empregado</th>
+          <th>Sequência de Visitação do AGV</th>
+          <th>Distância Total</th>
+          <th>Desempenho no SCADA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Vizinho Mais Próximo (NN)</strong></td>
+          <td>LAB &rarr; TK-101 &rarr; TK-102 &rarr; TK-103 &rarr; HEX-201 &rarr; DISP-300 &rarr; LAB</td>
+          <td>280 m</td>
+          <td>Solução gulosa inicial</td>
+        </tr>
+        <tr>
+          <td><strong>Refinamento 2-Opt</strong></td>
+          <td>LAB &rarr; TK-101 &rarr; TK-102 &rarr; TK-103 &rarr; DISP-300 &rarr; HEX-201 &rarr; LAB</td>
+          <td style="font-weight:700;" class="badge-ok">260 m</td>
+          <td class="badge-ok">✅ OTIMIZADO (−7,1%)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout-light">
+      📉 <strong>Economia Operacional e Autonomia:</strong> Redução de <strong>20 metros por ciclo</strong> de amostragem. Em regime contínuo de 24 coletas diárias, poupa-se ~480 metros por dia de tráfego, estendendo a vida útil da bateria do robô e diminuindo a ocupação das vias da estação.
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>14</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 15: LOGÍSTICA MULTICAMADA E ORDENAÇÃO DE KAHN (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-pill">TÓPICO 04</div>
+    <div class="slide-title">Logística Multicamada e Algoritmo de Kahn</div>
+    <div class="slide-desc">
+      Separação formal entre a malha física de gás e o tráfego de caminhões e viaturas na estação:
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Camada da Planta</th>
+          <th>Topologia Formal</th>
+          <th>Fluxo Operacional de Processo</th>
+          <th>Distância Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>G_M — Materiais</strong></td>
+          <td>Dígrafo Acíclico (DAG)</td>
+          <td>Portaria &rarr; Tube Trailer &rarr; SUP-100 &rarr; TK-10x &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td>
+          <td style="font-weight:700;">154 m</td>
+        </tr>
+        <tr>
+          <td><strong>G_V — Veículos</strong></td>
+          <td>Anel Viário Fechado</td>
+          <td>Ilha de Dispensação &rarr; Pátio de Expedição &rarr; Balança de Saída &rarr; Portaria</td>
+          <td style="font-weight:700;">85 m</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card-white" style="border-left: 4px solid #0284c7; margin-top: 0.5rem;">
+      <div style="font-size: 1.05rem; font-weight: 700; color: #0284c7; margin-bottom: 0.3rem;">
+        ⚙️ Ordenação Topológica com Algoritmo de Kahn:
+      </div>
+      <p style="font-size: 0.95rem; color: #334155; line-height: 1.5; margin: 0;">
+        A válvula <strong>XV-301</strong> nunca abre antes da confirmação do acoplamento do bocal (<strong>BV-301</strong>) e do pré-resfriamento criogênico a ≤ −40 °C em <strong>HEX-201</strong>. Qualquer tentativa de inversão de comandos no SCADA é bloqueada matematicamente por violação da precedência do DAG.
+      </p>
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>15</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 16: AVALIAÇÃO INTEGRADA / CASOS DE TESTE (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-label">A V A L I A Ç Ã O   I N T E G R A D A</div>
+    <div class="slide-title">SCADACoreModulo2: Algoritmos no Ciclo de Scan</div>
+    <div class="slide-desc">
+      Um único ciclo de varredura (100 ms) integra o grafo topológico, Dijkstra, busca e validação de precedência:
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; flex: 1;">
+      <!-- Card Cenário de Falha -->
+      <div class="card-white" style="display:flex; flex-direction:column; justify-content:space-between; border-top: 4px solid #dc2626;">
+        <div>
+          <div style="display:flex; align-items:center; gap: 0.8rem; margin-bottom: 0.8rem;">
+            <div class="icon-circle" style="background:#dc2626; width:38px; height:38px;">
+              <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </div>
+            <span style="font-size: 1rem; font-weight: 800; color: #dc2626; letter-spacing: 0.05em; text-transform: uppercase;">
+              CENÁRIO DE FALHA (VAZAMENTO)
+            </span>
+          </div>
+
+          <div style="font-size: 0.82rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.2rem;">TELEMETRIA</div>
+          <div style="font-family:'Consolas', monospace; font-size: 0.95rem; color: #0f172a; margin-bottom: 0.8rem;">
+            AT-101 = 1.8 %vol &nbsp;·&nbsp; Banco TK-101 ativo
+          </div>
+
+          <div style="font-size: 0.82rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.2rem;">ATUAÇÃO DO GRAFO</div>
+          <div style="font-family:'Consolas', monospace; font-size: 0.95rem; color: #dc2626; font-weight:700; margin-bottom: 0.8rem;">
+            Aresta W = &infin; &nbsp;·&nbsp; Desvio para TK-102 em 0.4 ms
+          </div>
+        </div>
+
+        <div style="font-size: 0.9rem; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 0.6rem;">
+          <strong>Diagnóstico:</strong> Fuga isolada instantaneamente com redirecionamento de fluxo sem paralisação da estação.
+        </div>
+      </div>
+
+      <!-- Card Cenário Normal -->
+      <div class="card-white" style="display:flex; flex-direction:column; justify-content:space-between; border-top: 4px solid #0284c7;">
+        <div>
+          <div style="display:flex; align-items:center; gap: 0.8rem; margin-bottom: 0.8rem;">
+            <div class="icon-circle" style="background:#0284c7; width:38px; height:38px;">
+              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <span style="font-size: 1rem; font-weight: 800; color: #0284c7; letter-spacing: 0.05em; text-transform: uppercase;">
+              CENÁRIO NOMINAL (TRANSIÇÃO LP &rarr; MP)
+            </span>
+          </div>
+
+          <div style="font-size: 0.82rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.2rem;">TELEMETRIA</div>
+          <div style="font-family:'Consolas', monospace; font-size: 0.95rem; color: #0f172a; margin-bottom: 0.8rem;">
+            PT-301 = 410 bar &nbsp;·&nbsp; Banco LP esgotado
+          </div>
+
+          <div style="font-size: 0.82rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 0.2rem;">ATUAÇÃO DO GRAFO</div>
+          <div style="font-family:'Consolas', monospace; font-size: 0.95rem; color: #0284c7; font-weight:700; margin-bottom: 0.8rem;">
+            Dijkstra seleciona MP &nbsp;·&nbsp; Comutação XV-104 ativa
+          </div>
+        </div>
+
+        <div style="font-size: 0.9rem; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 0.6rem;">
+          <strong>Diagnóstico:</strong> Transição suave de pressão conforme rampa SAE J2601 sem picos espúrios de vazão.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>16</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 17: CONCLUSÃO (LIGHT)
+       ==================================================================== -->
+  <div class="slide slide-light">
+    <div class="category-label">C O N C L U S Ã O</div>
+    <div class="slide-title">O que a Teoria dos Grafos entrega ao SCADA-Core</div>
+    <div class="slide-desc">
+      Benefícios comprováveis de segurança, tempo real e automação integrada na estação de H₂:
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; flex: 1;">
+      <!-- Card 1 -->
+      <div class="card-white" style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div class="icon-circle" style="background:#0284c7;">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.3rem;">Roteamento Determinístico</div>
+          <p style="font-size: 0.95rem; color: #475569; line-height: 1.5; margin: 0;">
+            Menor caminho e transição de pressão na cascata calculados matematicamente em menos de 1 ms, sem código ad-hoc.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="card-white" style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div class="icon-circle" style="background:#0284c7;">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        </div>
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.3rem;">Isolamento Instantâneo</div>
+          <p style="font-size: 0.95rem; color: #475569; line-height: 1.5; margin: 0;">
+            Reconfiguração dinâmica da malha perante vazamentos ($WW &rarr; &infin;) sem paralisação intempestiva da planta.
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="card-white" style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div class="icon-circle" style="background:#0284c7;">
+          <svg viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+        </div>
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.3rem;">Inspeção e Logística Otimizadas</div>
+          <p style="font-size: 0.95rem; color: #475569; line-height: 1.5; margin: 0;">
+            Cobertura de 100% dos dutos por robô PIG (Hierholzer) e redução de 7% no trajeto de amostragem do AGV (2-Opt).
+          </p>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="card-white" style="display: flex; gap: 1rem; align-items: flex-start;">
+        <div class="icon-circle" style="background:#0284c7;">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+        </div>
+        <div>
+          <div style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 0.3rem;">Intertravamento por DAG</div>
+          <p style="font-size: 0.95rem; color: #475569; line-height: 1.5; margin: 0;">
+            Garantia formal contra acionamentos de válvulas fora de ordem topológica através do algoritmo de Kahn.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout-light">
+      📌 <strong>Próxima Etapa:</strong> Modelagem formal com <strong>Redes de Petri</strong> e Autômatos Finitos para verificação estrita de concorrência e ausência de deadlocks no SCADA.
+    </div>
+
+    <div class="footer-light">
+      <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+      <span>17</span>
+    </div>
+  </div>
+
+
+  <!-- ====================================================================
+       PAGE 18: OBRIGADO (DARK)
+       ==================================================================== -->
+  <div class="slide slide-dark" style="align-items: center; text-align: center;">
+    <div class="icon-circle-lg" style="margin-bottom: 1.8rem;">
+      <svg viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><circle cx="18" cy="18" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="9" y1="6" x2="15" y2="6"></line><line x1="18" y1="9" x2="18" y2="15"></line><line x1="15" y1="18" x2="9" y2="18"></line><line x1="6" y1="15" x2="6" y2="9"></line></svg>
+    </div>
+
+    <h1 style="font-size: 4rem; font-weight: 800; color: #ffffff; margin: 0 0 0.8rem 0;">
+      Obrigado
+    </h1>
+
+    <p style="font-size: 1.25rem; color: #94a3b8; font-style: italic; margin: 0 0 2.2rem 0;">
+      Estação de Reabastecimento de Hidrogênio · SCADA-Core · Etapa 02 — Teoria dos Grafos
+    </p>
+
+    <div style="font-size: 1.15rem; color: #cbd5e1; font-weight: 500; margin-bottom: 1rem;">
+      João Pedro &nbsp;·&nbsp; Marcelo Candelária &nbsp;·&nbsp; Luca Augusto &nbsp;·&nbsp; Leo Vargas
+    </div>
+
+    <div style="font-size: 0.95rem; color: #38bdf8; font-family: monospace;">
+      github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core
+    </div>
+
+    <div style="position: absolute; bottom: 0.5in; right: 1.4in; font-size: 1rem; color: #64748b; font-weight: 700;">
+      18
+    </div>
+  </div>
+
+</body>
+</html>

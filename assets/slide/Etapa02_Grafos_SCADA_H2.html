@@ -2,308 +2,406 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Etapa 02 — Grafos SCADA H₂ | Grupo 9 UNIFEI</title>
+  <title>Etapa 02 — Teoria dos Grafos no SCADA Core | Grupo 9 UNIFEI</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/black.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
   <style>
     :root { --r-heading-color: #00d4ff; --r-link-color: #00d4ff; }
-    .reveal h1, .reveal h2, .reveal h3 { color: #00d4ff; }
-    .reveal table { font-size: 0.72em; }
-    .reveal table th { background: rgba(0,212,255,0.15); color: #00d4ff; }
-    .reveal table tr:nth-child(even) { background: rgba(255,255,255,0.04); }
+    .reveal { background-color: #0b1320; color: #f1f5f9; }
+    .reveal h1, .reveal h2, .reveal h3 { color: #00d4ff; font-weight: 800; }
+    .reveal table { font-size: 0.68em; width: 100%; border-collapse: collapse; margin-top: 0.5em; }
+    .reveal table th { background: rgba(0,212,255,0.15); color: #00d4ff; padding: 0.4em 0.8em; text-align: left; }
+    .reveal table td { padding: 0.4em 0.8em; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .reveal table tr:nth-child(even) { background: rgba(255,255,255,0.03); }
     .badge {
       display: inline-block; background: rgba(0,212,255,0.15);
       border: 1px solid #00d4ff; color: #00d4ff;
-      padding: 0.25em 0.75em; border-radius: 4px; font-size: 0.8em;
+      padding: 0.25em 0.75em; border-radius: 4px; font-size: 0.75em; font-weight: 700;
     }
-    .ok  { color: #4ade80; }
-    .crit { color: #f87171; }
-    .slide-num { position:absolute; bottom:0.6em; right:1em; font-size:0.4em; color:#555; }
+    .badge-topic {
+      display: inline-block; background: #0284c7;
+      color: #ffffff; padding: 0.25em 0.8em; border-radius: 9999px; font-size: 0.65em;
+      font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4em;
+    }
+    .slide-num { position:absolute; bottom:0.5em; right:1em; font-size:0.45em; color:#64748b; font-family: monospace; }
+    .callout {
+      background: rgba(0, 212, 255, 0.08);
+      border-left: 3px solid #00d4ff;
+      border-radius: 0 6px 6px 0;
+      padding: 0.5em 0.8em;
+      font-size: 0.7em;
+      margin-top: 0.8em;
+      text-align: left;
+    }
+    .zone-badge {
+      display: inline-flex; align-items: center; gap: 0.3em;
+      padding: 0.25em 0.65em; border-radius: 6px; font-size: 0.65em; font-weight: 700;
+    }
+    .zone-100 { background: rgba(2, 132, 199, 0.2); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.5); }
+    .zone-200 { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); }
+    .zone-300 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
   </style>
 </head>
 <body>
 <div class="reveal">
   <div class="slides">
+
     <!-- SLIDE 1: CAPA -->
     <section>
-      <br><br>
-      <h1 style="font-size:1.6em;">Estação de Reabastecimento de H₂<br>— SCADA Core</h1>
-      <h2 style="font-size:1.1em; color:#aaa;">Etapa 02 — Teoria dos Grafos Aplicada à Automação Industrial</h2>
-      <br>
+      <div style="font-size:0.7em; font-weight:800; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5em;">
+        ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO — SCADA CORE
+      </div>
+      <h1 style="font-size:1.6em; line-height:1.2;">Modelagem Topológica em Grafos e Roteamento Ótimo</h1>
+      <p style="font-size:0.75em; color:#94a3b8; max-width:85%; margin:0 auto 1em auto;">
+        Dígrafo ponderado da malha física, matrizes de fluxo, segurança por corte de arestas, algoritmos em grafos (Dijkstra, BFS/DFS, Euler, TSP) e integração SCADA em tempo real.
+      </p>
+      <div style="display:flex; justify-content:center; gap:0.8em; margin-bottom:1.2em;">
+        <span class="zone-badge zone-100">Setor 100 · Armazenamento</span>
+        <span class="zone-badge zone-200">Setor 200 · Chiller T40</span>
+        <span class="zone-badge zone-300">Setor 300 · Dispensação 700 bar</span>
+      </div>
       <span class="badge">ECAA08 · Grupo 9 · UNIFEI · 2026.2</span>
-      <br><br>
-      <p style="font-size:0.65em; color:#ccc;">
+      <p style="font-size:0.6em; color:#64748b; margin-top:1em;">
         João Pedro &nbsp;·&nbsp; Marcelo Candelaria &nbsp;·&nbsp; Luca Augusto &nbsp;·&nbsp; Leo Vargas
       </p>
-      <div class="slide-num">1 / 13</div>
+      <div class="slide-num">01 / 18</div>
     </section>
-    <!-- SLIDE 2: POR QUE GRAFO? -->
+
+    <!-- SLIDE 2: INTRODUÇÃO -->
     <section>
-      <h2>Por que modelar a planta como Grafo?</h2>
-      <ul>
-        <li>🔗 <strong>Conectividade e Rastreabilidade</strong><br>
-            <small>Verifica deterministicamente se existe rota contínua SUP-100 → VEIC-300 com todas as válvulas abertas.</small></li>
-        <br>
-        <li>📊 <strong>Redundância e Confiabilidade</strong><br>
-            <small>deg⁻(XV-104) = 3 evidencia o sistema de cascata LP / MP / HP e permite análise de falhas por pontes.</small></li>
-        <br>
-        <li>⚡ <strong>Composição Algorítmica no SCADA</strong><br>
-            <small>Dijkstra, BFS, DFS, Hierholzer e TSP operam em tempo real no supervisório sem código ad-hoc.</small></li>
+      <h2>A Teoria dos Grafos no SCADA Core</h2>
+      <ul style="font-size:0.72em; line-height:1.6;">
+        <li>🔗 <strong>Modelagem Fidedigna da Infraestrutura:</strong> A malha de alta pressão é formalizada como um dígrafo ponderado <i>G</i> = (<i>V</i>, <i>E</i>, <i>W</i>) com 8 equipamentos e 9 tubulações.</li>
+        <li>⚡ <strong>Roteamento de Pressão em Cascata:</strong> Execução do algoritmo de Dijkstra em tempo real para seleção ótima dos bancos (LP &rarr; MP &rarr; HP) conforme norma SAE J2601.</li>
+        <li>🚨 <strong>Segurança Cibernética e Isolamento:</strong> Detecção de vazamento repondera dinamicamente <i>W</i> &rarr; &infin;, isolando o duto e recalculando a rota em &lt;1 ms.</li>
+        <li>🤖 <strong>Robótica Autônoma:</strong> Inspeção estrutural por robô PIG (Circuito Euleriano / Hierholzer) e amostragem viária por AGV (TSP / 2-Opt).</li>
       </ul>
-      <div class="slide-num">2 / 13</div>
+      <div class="callout">
+        <strong>Estrutura em 4 Tópicos:</strong> 01 Modelagem e Matrizes &middot; 02 Busca e Conectividade &middot; 03 Roteamento e Segurança &middot; 04 Robótica e Precedência
+      </div>
+      <div class="slide-num">02 / 18</div>
     </section>
-    <!-- SLIDE 3: AULA 11 -->
+
+    <!-- SLIDE 3: ARQUITETURA EM TRÊS SETORES INDUSTRIAIS -->
     <section>
-      <h2>Aula 11 — G = (V, E, W)</h2>
-      <p style="font-size:0.75em;">Dígrafo Ponderado que modela as tubulações de alta pressão da estação:</p>
-      <ul style="font-size:0.7em;">
-        <li><strong>V</strong> = {SUP-100, TK-101, TK-102, TK-103, XV-104, HEX-201, DISP-300, VEIC-300} → <strong>|V| = 8</strong></li>
-        <li><strong>E</strong> ⊆ V × V → <strong>|E| = 8</strong> arcos de tubulação</li>
-        <li><strong>W: E → ℝ⁺</strong> → comprimento físico em metros (ou perda de carga em bar)</li>
+      <h2>A Planta Modelada em Três Setores</h2>
+      <p style="font-size:0.7em; color:#94a3b8;">Divisão física e funcional dos equipamentos da estação nos 3 setores industriais:</p>
+      <table>
+        <thead><tr><th>Setor Industrial</th><th>Equipamentos e Instrumentos</th><th>Papel no Dígrafo</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:#38bdf8;">Setor 100</strong><br><small>Armazenamento em Cascata</small></td>
+            <td>SUP-100, TK-101 (LP &le; 400 b), TK-102 (MP &le; 700 b), TK-103 (HP &le; 1000 b), Válvulas XV-101 a XV-104</td>
+            <td>Vértices de suprimento primário e reservatórios intermediários em cascata.</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#34d399;">Setor 200</strong><br><small>Condicionamento Térmico</small></td>
+            <td>Trocador de calor criogênico HEX-201, sensores de temperatura TT-201, PT-201, solenoide XV-201</td>
+            <td>Nó de passagem obrigatório para pré-resfriamento do gás a &le; &minus;40 &deg;C (SAE J2601 T40).</td>
+          </tr>
+          <tr>
+            <td><strong style="color:#fbbf24;">Setor 300</strong><br><small>Dispensação &amp; FCEV</small></td>
+            <td>Bico dispensador DISP-300, medidor mássico Coriolis, breakaway BV-301 e tanque VEIC-300 (700 bar)</td>
+            <td>Nó de medição mássica, transferência de alta pressão e sumidouro do dígrafo.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="slide-num">03 / 18</div>
+    </section>
+
+    <!-- SLIDE 4: DIVISOR TÓPICO 01 -->
+    <section>
+      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">01</div>
+      <span class="badge-topic">TÓPICO 01</span>
+      <h2 style="font-size:1.5em; margin-top:0.2em;">Modelagem Topológica e Matrizes de Fluxo</h2>
+      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+        Dígrafo ponderado da tubulação de alta pressão, matrizes de incidência e conservação vetorial de massa
+      </p>
+      <div class="slide-num">04 / 18</div>
+    </section>
+
+    <!-- SLIDE 5: DÍGRAFO PONDERADO DA PLANTA (COM IMAGEM) -->
+    <section>
+      <span class="badge-topic">TÓPICO 01</span>
+      <h3 style="font-size:1.1em; margin-bottom:0.3em;">Dígrafo Ponderado da Malha Hidráulica: G = (V, E, W)</h3>
+      <div style="width:100%; height:320px; background:#070d18; border:1px solid #1e293b; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+        <img src="grafo_tubulacoes.png" alt="Grafo de Tubulações da Planta H2" style="max-height:100%; max-width:100%; object-fit:contain;" />
+      </div>
+      <p style="font-size:0.62em; color:#94a3b8; margin-top:0.4em;">
+        8 Vértices (Equipamentos) &middot; 9 Arestas (Tubulações) &middot; Setores 100 (Cascata), 200 (Chiller) e 300 (Dispensador)
+      </p>
+      <div class="slide-num">05 / 18</div>
+    </section>
+
+    <!-- SLIDE 6: MATRIZ DE INCIDÊNCIA E CONSERVAÇÃO -->
+    <section>
+      <span class="badge-topic">TÓPICO 01</span>
+      <h3 style="font-size:1.1em;">Matriz de Incidência e Conservação Vetorial</h3>
+      <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:1em; font-size:0.7em; text-align:left;">
+        <div>
+          <table>
+            <thead><tr><th>Nó</th><th>Grau (in/out)</th><th>Balanço Instantâneo</th></tr></thead>
+            <tbody>
+              <tr><td>SUP-100</td><td>0 / 3</td><td>&minus; (q<sub>e1</sub> + q<sub>e2</sub> + q<sub>e3</sub>) = &minus;S<sub>in</sub></td></tr>
+              <tr><td>TK-101 (LP)</td><td>1 / 1</td><td>q<sub>e1</sub> &minus; q<sub>e4</sub> = dM<sub>101</sub>/dt</td></tr>
+              <tr><td>TK-102 (MP)</td><td>1 / 1</td><td>q<sub>e2</sub> &minus; q<sub>e5</sub> = dM<sub>102</sub>/dt</td></tr>
+              <tr><td>TK-103 (HP)</td><td>1 / 1</td><td>q<sub>e3</sub> &minus; q<sub>e6</sub> = dM<sub>103</sub>/dt</td></tr>
+              <tr><td>XV-104</td><td>3 / 1</td><td>q<sub>e4</sub> + q<sub>e5</sub> + q<sub>e6</sub> &minus; q<sub>e7</sub> = 0</td></tr>
+              <tr><td>HEX-201</td><td>1 / 1</td><td>q<sub>e7</sub> &minus; q<sub>e8</sub> = 0</td></tr>
+              <tr><td>DISP-300</td><td>1 / 1</td><td>q<sub>e8</sub> &minus; q<sub>e9</sub> = 0</td></tr>
+              <tr><td>VEIC-300</td><td>1 / 0</td><td>+ q<sub>e9</sub> = dM<sub>veic</sub>/dt</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex; flex-direction:column; justify-content:center;">
+          <div style="background:#111e33; padding:0.8em; border-radius:6px; text-align:center; font-family:monospace; font-size:1.1em; color:#38bdf8;">
+            B &middot; q = s
+          </div>
+          <p style="font-size:0.8em; color:#94a3b8; margin-top:0.6em; line-height:1.4;">
+            <strong>B &isin; &#123;&minus;1, 0, 1&#125;<sup>8 &times; 9</sup></strong> formaliza a conectividade e garante conservação vetorial de massa no ciclo do CLP.
+          </p>
+        </div>
+      </div>
+      <div class="slide-num">06 / 18</div>
+    </section>
+
+    <!-- SLIDE 7: DIVISOR TÓPICO 02 -->
+    <section>
+      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">02</div>
+      <span class="badge-topic">TÓPICO 02</span>
+      <h2 style="font-size:1.5em; margin-top:0.2em;">Conectividade e Busca nas Tubulações</h2>
+      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+        Algoritmos de busca em largura e profundidade para isolamento de segurança e diagnóstico de ciclos
+      </p>
+      <div class="slide-num">07 / 18</div>
+    </section>
+
+    <!-- SLIDE 8: BFS E DFS NAS TUBULAÇÕES -->
+    <section>
+      <span class="badge-topic">TÓPICO 02</span>
+      <h3 style="font-size:1.1em;">Busca em Largura (BFS) vs Profundidade (DFS)</h3>
+      <table>
+        <thead><tr><th>Critério</th><th>BFS (Busca em Largura)</th><th>DFS (Busca em Profundidade)</th></tr></thead>
+        <tbody>
+          <tr><td>Estrutura</td><td>Fila FIFO</td><td>Pilha LIFO / Recursão</td></tr>
+          <tr><td>Garantia</td><td>Menor número de saltos topológicos</td><td>Exploração exaustiva e estrutural</td></tr>
+          <tr><td>Complexidade</td><td><i>O</i>(|V| + |E|)</td><td><i>O</i>(|V| + |E|)</td></tr>
+          <tr><td>Aplicação SCADA</td><td>Isolamento mínimo de setores falhos</td><td>Detecção de ciclos fechados e reciclo</td></tr>
+        </tbody>
+      </table>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1em; margin-top:0.8em; font-size:0.68em; text-align:left;">
+        <div style="background:#111e33; padding:0.6em 0.8em; border-radius:6px; border-left:3px solid #0284c7;">
+          <strong style="color:#38bdf8;">BFS no Isolamento:</strong> Varre em ondas a partir da falha, identificando o menor corte de bloqueio sem afetar linhas sadias.
+        </div>
+        <div style="background:#111e33; padding:0.6em 0.8em; border-radius:6px; border-left:3px solid #f59e0b;">
+          <strong style="color:#fbbf24;">DFS na Segurança:</strong> Detecta arestas de retorno que caracterizam ciclos ilícitos de recirculação descontrolada.
+        </div>
+      </div>
+      <div class="slide-num">08 / 18</div>
+    </section>
+
+    <!-- SLIDE 9: DIVISOR TÓPICO 03 -->
+    <section>
+      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">03</div>
+      <span class="badge-topic">TÓPICO 03</span>
+      <h2 style="font-size:1.5em; margin-top:0.2em;">Roteamento Ótimo e Segurança Ativa</h2>
+      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+        Caminho mínimo por Dijkstra na cascata de pressão e reconfiguração instantânea perante vazamentos
+      </p>
+      <div class="slide-num">09 / 18</div>
+    </section>
+
+    <!-- SLIDE 10: ROTEAMENTO DIJKSTRA -->
+    <section>
+      <span class="badge-topic">TÓPICO 03</span>
+      <h3 style="font-size:1.1em;">Roteamento de Pressão e Cascata (Dijkstra)</h3>
+      <div style="background:#070d18; border:1px solid #1e293b; border-radius:8px; padding:0.6em; margin-bottom:0.6em;">
+        <svg viewBox="0 0 960 95" width="100%" height="80">
+          <line x1="110" y1="48" x2="310" y2="48" stroke="#334155" stroke-dasharray="4,4" />
+          <line x1="370" y1="48" x2="490" y2="48" stroke="#334155" stroke-dasharray="4,4" />
+          <path d="M 110,48 L 310,18" stroke="#10b981" stroke-width="3" />
+          <path d="M 370,18 L 490,48" stroke="#10b981" stroke-width="3" />
+          <line x1="535" y1="48" x2="635" y2="48" stroke="#10b981" stroke-width="3" />
+          <line x1="685" y1="48" x2="775" y2="48" stroke="#10b981" stroke-width="3" />
+          <line x1="825" y1="48" x2="905" y2="48" stroke="#10b981" stroke-width="3" />
+          <circle cx="75" cy="48" r="18" fill="#0c4a6e" /><text x="75" y="52" fill="#38bdf8" font-size="8" font-weight="800" text-anchor="middle">SUP</text>
+          <circle cx="340" cy="18" r="18" fill="#065f46" stroke="#10b981" /><text x="340" y="22" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle">TK-LP</text>
+          <circle cx="340" cy="48" r="14" fill="#1e293b" /><text x="340" y="51" fill="#94a3b8" font-size="7" text-anchor="middle">TK-MP</text>
+          <circle cx="340" cy="78" r="14" fill="#1e293b" /><text x="340" y="81" fill="#94a3b8" font-size="7" text-anchor="middle">TK-HP</text>
+          <circle cx="510" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="510" y="51" fill="#fff" font-size="7" text-anchor="middle">XV-104</text>
+          <circle cx="660" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="660" y="51" fill="#fff" font-size="7" text-anchor="middle">HEX</text>
+          <circle cx="800" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="800" y="51" fill="#fff" font-size="7" text-anchor="middle">DISP</text>
+          <circle cx="925" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="925" y="51" fill="#fff" font-size="7" text-anchor="middle">VEIC</text>
+        </svg>
+      </div>
+      <table>
+        <thead><tr><th>Estágio</th><th>Rota no Dígrafo</th><th>Distância</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>LP (TK-101)</strong></td><td>SUP &rarr; TK-101 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td><td><strong class="ok">52 m</strong></td><td><span class="ok">&check; Rota Ótima</span></td></tr>
+          <tr><td><strong>MP (TK-102)</strong></td><td>SUP &rarr; TK-102 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td><td>52 m</td><td>Contingência 1</td></tr>
+          <tr><td><strong>HP (TK-103)</strong></td><td>SUP &rarr; TK-103 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td><td>57 m</td><td>Contingência 2</td></tr>
+        </tbody>
+      </table>
+      <div class="slide-num">10 / 18</div>
+    </section>
+
+    <!-- SLIDE 11: VAZAMENTOS E PONTES CRÍTICAS -->
+    <section>
+      <span class="badge-topic">TÓPICO 03</span>
+      <h3 style="font-size:1.1em;">Detecção de Vazamentos e Análise de Pontes</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1em; font-size:0.7em; text-align:left;">
+        <div>
+          <div style="background:#7f1d1d; color:#fca5a5; padding:0.4em 0.8em; border-radius:4px; font-weight:700; margin-bottom:0.5em;">
+            🚨 Alarme AT-101 &gt; 1% (Vazamento em TK-101)
+          </div>
+          <ol style="line-height:1.6; color:#cbd5e1; padding-left:1.2em;">
+            <li>XV-101 fecha por intertravamento SIS.</li>
+            <li>SCADA repondera <i>W</i>(e1, e4) = &infin;.</li>
+            <li>Dijkstra comuta para TK-102 (MP) em &lt;1 ms.</li>
+          </ol>
+        </div>
+        <div>
+          <table>
+            <thead><tr><th>Trecho Hidráulico</th><th>Ponte (Cut-Edge)?</th></tr></thead>
+            <tbody>
+              <tr><td>SUP &rarr; Tanques TK-10x</td><td><span class="ok">&cross; Não (Redundante)</span></td></tr>
+              <tr><td>XV-104 &rarr; HEX-201</td><td><span style="color:#ef4444;">⚠️ SIM (Ponte)</span></td></tr>
+              <tr><td>HEX-201 &rarr; DISP-300</td><td><span style="color:#ef4444;">⚠️ SIM (Ponte)</span></td></tr>
+              <tr><td>DISP-300 &rarr; VEIC-300</td><td><span style="color:#ef4444;">⚠️ SIM (Ponte)</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Pontes Críticas:</strong> Trechos sem rota alternativa exigem Trip Global imediato em caso de fuga de gás.
+      </div>
+      <div class="slide-num">11 / 18</div>
+    </section>
+
+    <!-- SLIDE 12: DIVISOR TÓPICO 04 -->
+    <section>
+      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">04</div>
+      <span class="badge-topic">TÓPICO 04</span>
+      <h2 style="font-size:1.5em; margin-top:0.2em;">Robótica Autônoma e Redes Multicamada</h2>
+      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+        Inspeção estrutural por PIG (Euler), amostragem de pureza por AGV (TSP) e logística por DAG
+      </p>
+      <div class="slide-num">12 / 18</div>
+    </section>
+
+    <!-- SLIDE 13: INSPEÇÃO POR PIG (EULER) -->
+    <section>
+      <span class="badge-topic">TÓPICO 04</span>
+      <h3 style="font-size:1.1em;">Inspeção Estrutural por Robô PIG (Euler)</h3>
+      <ul style="font-size:0.72em; line-height:1.6; text-align:left;">
+        <li>🔍 <strong>Teorema de Euler:</strong> Todos os vértices da malha possuem grau par &rArr; Grafo conexo Euleriano.</li>
+        <li>⚡ <strong>Algoritmo de Hierholzer (<i>O</i>(|E|)):</strong> Determina o circuito fechado visitando cada duto exatamente uma vez.</li>
+        <li>🔄 <strong>Circuito Completo:</strong> BASE &rarr; DISP &rarr; HEX &rarr; XV-104 &rarr; TK-103 &rarr; SUP &rarr; TK-102 &rarr; XV-104 &rarr; TK-101 &rarr; SUP &rarr; BASE.</li>
       </ul>
-      <table>
-        <thead><tr><th>Origem</th><th>Destino</th><th>L (m)</th><th>Válvula ISA</th><th>Ø (pol)</th></tr></thead>
-        <tbody>
-          <tr><td>SUP-100</td><td>TK-101</td><td>10</td><td>XV-101</td><td>2"</td></tr>
-          <tr><td>SUP-100</td><td>TK-102</td><td>12</td><td>XV-102</td><td>1½"</td></tr>
-          <tr><td>SUP-100</td><td>TK-103</td><td>15</td><td>XV-103</td><td>1"</td></tr>
-          <tr><td>TK-101</td><td>XV-104</td><td>8</td><td>Linha LP</td><td>1"</td></tr>
-          <tr><td>TK-102</td><td>XV-104</td><td>6</td><td>Linha MP</td><td>¾"</td></tr>
-          <tr><td>TK-103</td><td>XV-104</td><td>8</td><td>Linha HP</td><td>½"</td></tr>
-          <tr><td>XV-104</td><td>HEX-201</td><td>5</td><td>XV-201</td><td>1"</td></tr>
-          <tr><td>HEX-201</td><td>DISP-300</td><td>4</td><td>XV-301</td><td>½"</td></tr>
-          <tr><td>DISP-300</td><td>VEIC-300</td><td>2</td><td>BV-301</td><td>⅜"</td></tr>
-        </tbody>
-      </table>
-      <div class="slide-num">3 / 13</div>
+      <div class="callout">
+        <strong>Cobertura 100% Determinística:</strong> Elimina sobreposição de trajeto e reduz o tempo de parada para manutenção periódica da estação.
+      </div>
+      <div class="slide-num">13 / 18</div>
     </section>
-    <!-- SLIDE 4: AULA 12 -->
+
+    <!-- SLIDE 14: ROTEAMENTO AGV (TSP & 2-OPT) -->
     <section>
-      <h2>Aula 12 — Matrizes e Balanço de Massa</h2>
-      <p style="font-size:0.75em;"><strong>Matriz de Incidência</strong> B ∈ {−1, 0, +1}<sup>n×m</sup>: −1 = saída do nó, +1 = entrada.</p>
-      <p style="font-size:0.9em; text-align:center;"><strong>B · Q⃗ = S⃗</strong></p>
+      <span class="badge-topic">TÓPICO 04</span>
+      <h3 style="font-size:1.1em;">Roteamento do AGV de Amostragem (TSP &amp; 2-Opt)</h3>
       <table>
-        <thead><tr><th>Nó</th><th>Balanço líquido (kg/h)</th><th>Papel</th></tr></thead>
+        <thead><tr><th>Método</th><th>Sequência de Visitação do AGV</th><th>Distância</th><th>Desempenho</th></tr></thead>
         <tbody>
-          <tr><td>SUP-100</td><td style="color:#f87171;">−30</td><td>Fonte (tube trailer)</td></tr>
-          <tr><td>TK-101 / TK-102 / TK-103</td><td>0</td><td>Nós de armazenamento</td></tr>
-          <tr><td>XV-104 / HEX-201 / DISP-300</td><td>0</td><td>Nós de passagem</td></tr>
-          <tr><td>VEIC-300</td><td style="color:#4ade80;">+30</td><td>Destino (tanque FCEV)</td></tr>
+          <tr><td>Vizinho Mais Próximo</td><td>LAB &rarr; TK1 &rarr; TK2 &rarr; TK3 &rarr; HEX &rarr; DISP &rarr; LAB</td><td>280 m</td><td>Solução inicial (cruzamento)</td></tr>
+          <tr><td>Refinamento 2-Opt</td><td>LAB &rarr; TK1 &rarr; TK2 &rarr; TK3 &rarr; DISP &rarr; HEX &rarr; LAB</td><td><strong class="ok">260 m</strong></td><td><strong class="ok">&minus;7,1% Otimizado</strong></td></tr>
         </tbody>
       </table>
-      <p style="font-size:0.65em; color:#aaa; text-align:center; margin-top:1em;">✅ Balanço fechado → dígrafo consistente e sem perdas não modeladas.</p>
-      <div class="slide-num">4 / 13</div>
+      <div class="callout">
+        <strong>Autonomia Operacional:</strong> Poupa 20 metros por ciclo (~480 metros por dia em 24 coletas), aumentando a durabilidade da bateria do AGV.
+      </div>
+      <div class="slide-num">14 / 18</div>
     </section>
-    <!-- SLIDE 5: AULA 13 -->
+
+    <!-- SLIDE 15: GRAFO DE PRECEDÊNCIA (DAG & KAHN) -->
     <section>
-      <h2>Aula 13 — BFS e DFS nas Tubulações</h2>
-      <table>
-        <thead><tr><th>Critério</th><th>BFS</th><th>DFS</th></tr></thead>
-        <tbody>
-          <tr><td>Estrutura de dados</td><td>Fila FIFO</td><td>Pilha LIFO / recursão</td></tr>
-          <tr><td>Garante</td><td>Menor nº de arestas</td><td>Exploração total</td></tr>
-          <tr><td>Complexidade</td><td>O(V + E)</td><td>O(V + E)</td></tr>
-          <tr><td>Uso no SCADA H₂</td><td>Mínimo de válvulas a comutar no isolamento</td><td>Detecção de ciclos e rastreabilidade de contaminação</td></tr>
-        </tbody>
-      </table>
+      <span class="badge-topic">TÓPICO 04</span>
+      <h3 style="font-size:1.1em;">Intertravamento Seguro por DAG (Kahn)</h3>
+      <div style="background:#070d18; border:1px solid #1e293b; border-radius:6px; padding:0.5em; font-family:monospace; font-size:0.68em; color:#38bdf8; margin-bottom:0.8em;">
+        Acoplamento BV-301 &rarr; Link IrDA J2799 &rarr; Teste Estanqueidade &rarr; Chiller T40 &rarr; Rampa Cascata &rarr; Purga/Fim
+      </div>
+      <ul style="font-size:0.7em; line-height:1.6; text-align:left;">
+        <li>Garante que nenhuma etapa do protocolo SAE J2601 ocorra fora da sequência crítica de segurança.</li>
+        <li>O algoritmo de Kahn valida aciclicidade e detecta instantaneamente deadlocks operacionais no SCADA.</li>
+      </ul>
+      <div class="slide-num">15 / 18</div>
+    </section>
+
+    <!-- SLIDE 16: CICLO DE VARREDURA SCADA (100 ms) -->
+    <section>
+      <span class="badge-topic">INTEGRAÇÃO SCADA</span>
+      <h3 style="font-size:1.1em;">Ciclo de Varredura (100 ms) e Execução Algorítmica</h3>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.6em; font-size:0.65em; text-align:left;">
+        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #0284c7;">
+          <strong style="color:#38bdf8;">1. Aquisição (10 ms)</strong><br>Leitura de PT, TT, AT e estados ZS.
+        </div>
+        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #0284c7;">
+          <strong style="color:#38bdf8;">2. Grafo (25 ms)</strong><br>Atualização dinâmica de pesos (W = &infin;).
+        </div>
+        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #10b981;">
+          <strong style="color:#34d399;">3. Roteamento (40 ms)</strong><br>Dijkstra, BFS e Kahn em &lt;1 ms.
+        </div>
+        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #0284c7;">
+          <strong style="color:#38bdf8;">4. Atuação (25 ms)</strong><br>Escrita em saídas e atualização na IHM.
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Determinismo Garantido:</strong> Execução total em 76 ms &le; 100 ms, assegurando folga de 24% para estabilidade em tempo real.
+      </div>
+      <div class="slide-num">16 / 18</div>
+    </section>
+
+    <!-- SLIDE 17: CONCLUSÃO E SINERGIA -->
+    <section>
+      <span class="badge-topic">CONCLUSÃO</span>
+      <h3 style="font-size:1.1em;">Síntese dos Resultados e Sinergia com a Etapa 01</h3>
+      <ul style="font-size:0.7em; line-height:1.6; text-align:left;">
+        <li>📊 <strong>Modelagem Unificada:</strong> Dígrafo com 8 nós e 9 arestas particionado nos Setores 100, 200 e 300.</li>
+        <li>⚡ <strong>Roteamento Dinâmico:</strong> Dijkstra executa cascata e desvio instantâneo de vazamentos em &lt;1 ms.</li>
+        <li>🤖 <strong>Robótica Otimizada:</strong> Cobertura de 100% dos dutos por PIG e reduções de 7,1% no trajeto do AGV.</li>
+        <li>🔗 <strong>Sinergia com Etapa 01:</strong> As proposições booleanas de intertravamento comandam os pesos no grafo (<i>W</i> &rarr; &infin;).</li>
+      </ul>
+      <div class="slide-num">17 / 18</div>
+    </section>
+
+    <!-- SLIDE 18: ENCERRAMENTO -->
+    <section>
+      <h2>Obrigado!</h2>
+      <h3 style="font-size:1.1em; color:#fff;">Estação de Reabastecimento de H₂ &mdash; SCADA Core</h3>
+      <p style="font-size:0.75em; color:#94a3b8;">Modelagem em Grafos, Segurança Operacional e Algoritmos de Roteamento Determinístico em Tempo Real.</p>
       <br>
-      <ul style="font-size:0.7em;">
-        <li><strong>BFS:</strong> AT-101 dispara → BFS determina conjunto mínimo de válvulas a fechar.</li>
-        <li><strong>DFS:</strong> aresta de retorno detectada → ciclo = risco de recirculação de H₂ pressurizado → alarme SCADA.</li>
-      </ul>
-      <div class="slide-num">5 / 13</div>
+      <div style="font-size:0.7em; color:#38bdf8; font-family:monospace; background:#111e33; padding:0.8em; border-radius:6px; display:inline-block;">
+        github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core
+      </div>
+      <br><br>
+      <span class="badge">UNIFEI · ECAA08 Automação Industrial · Grupo 9</span>
+      <div class="slide-num">18 / 18</div>
     </section>
-    <!-- SLIDE 6: AULA 14 -->
-    <section>
-      <h2>Aula 14 — Dijkstra e Cascata de Pressão</h2>
-      <table>
-        <thead><tr><th>Estágio</th><th>Rota</th><th>L (m)</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>LP — TK-101 (350–400 bar)</td>
-            <td style="font-size:0.8em;">SUP→TK-101→XV-104→HEX→DISP→VEIC</td>
-            <td>52</td>
-            <td class="ok">✅ ROTA ÓTIMA</td>
-          </tr>
-          <tr>
-            <td>MP — TK-102 (650–700 bar)</td>
-            <td style="font-size:0.8em;">SUP→TK-102→XV-104→HEX→DISP→VEIC</td>
-            <td>52</td>
-            <td>Contingência 1</td>
-          </tr>
-          <tr>
-            <td>HP — TK-103 (950–1000 bar)</td>
-            <td style="font-size:0.8em;">SUP→TK-103→XV-104→HEX→DISP→VEIC</td>
-            <td>57</td>
-            <td>Contingência 2</td>
-          </tr>
-        </tbody>
-      </table>
-      <br>
-      <p style="font-size:0.7em;">📋 <strong>Protocolo SAE J2601:</strong> SCADA comuta automaticamente LP → MP → HP conforme cada banco se esgota.</p>
-      <div class="slide-num">6 / 13</div>
-    </section>
-    <!-- SLIDE 7: AULA 15 -->
-    <section>
-      <h2>Aula 15 — Detecção de Vazamento e Desvio Automático</h2>
-      <p style="font-size:0.75em;"><strong>Cenário:</strong> AT-101 detecta H₂ &gt; 1 %vol na linha TK-101 → XV-104.</p>
-      <ol style="font-size:0.72em;">
-        <li>Fechar XV-101 (isolar TK-101 da rede)</li>
-        <li>Marcar aresta TK-101→XV-104 com W = ∞</li>
-        <li>Recalcular Dijkstra → nova rota via TK-102 (54 m) em &lt; 1 ms</li>
-      </ol>
-      <table style="margin-top:0.8em;">
-        <thead><tr><th>Aresta</th><th>É Ponte (sem redundância)?</th></tr></thead>
-        <tbody>
-          <tr><td>SUP-100 → TK-101 / TK-102 / TK-103</td><td class="ok">❌ Não — 3 rotas paralelas</td></tr>
-          <tr><td>XV-104 → HEX-201</td><td class="crit">✅ SIM — CRÍTICA</td></tr>
-          <tr><td>HEX-201 → DISP-300</td><td class="crit">✅ SIM — CRÍTICA</td></tr>
-          <tr><td>DISP-300 → VEIC-300</td><td class="crit">✅ SIM — CRÍTICA</td></tr>
-        </tbody>
-      </table>
-      <div class="slide-num">7 / 13</div>
-    </section>
-    <!-- SLIDE 8: AULA 16 -->
-    <section>
-      <h2>Aula 16 — Circuito Euleriano e Inspeção por PIG</h2>
-      <p style="font-size:0.75em;">
-        Objetivo: robô PIG ultrassônico percorre <strong>cada duto exatamente uma vez</strong>
-        para detecção de fragilização por hidrogênio, retornando à base.
-      </p>
-      <ul style="font-size:0.72em;">
-        <li><strong>Condição de Euler:</strong> todos os vértices com grau par → grafo euleriano ✅</li>
-        <li><strong>Algoritmo:</strong> Hierholzer — complexidade O(|E|)</li>
-      </ul>
-      <p style="font-size:0.7em; text-align:center; background:rgba(0,212,255,0.08); padding:0.6em; border-radius:6px; margin-top:0.8em;">
-        BASE-100 → DISP-300 → HEX-201 → XV-104 → TK-103 → SUP-100<br>
-        → TK-102 → XV-104 → TK-101 → SUP-100 → BASE-100
-      </p>
-      <p style="font-size:0.7em; text-align:center; margin-top:0.8em;">
-        🔄 <strong>10 tubulações inspecionadas · Cobertura 100% · Retorno à base garantido</strong>
-      </p>
-      <div class="slide-num">8 / 13</div>
-    </section>
-    <!-- SLIDE 9: AULA 17 -->
-    <section>
-      <h2>Aula 17 — TSP e Roteamento do AGV</h2>
-      <p style="font-size:0.75em;">
-        AGV coleta amostras de pureza H₂ em 5 pontos (SAE J2719) visitando cada ponto exatamente uma vez — Problema Hamiltoniano.
-      </p>
-      <table>
-        <thead><tr><th>Método</th><th>Rota</th><th>Distância</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>Vizinho Mais Próximo (NN)</td>
-            <td style="font-size:0.8em;">LAB→TK-101→TK-102→TK-103→HEX-201→DISP-300</td>
-            <td>280 m</td>
-          </tr>
-          <tr>
-            <td>Refinamento 2-Opt</td>
-            <td style="font-size:0.8em;">LAB→TK-101→TK-102→TK-103→DISP-300→HEX-201</td>
-            <td class="ok"><strong>260 m ✅</strong></td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="font-size:0.72em; text-align:center; margin-top:0.8em;">
-        📉 Redução de <strong>20 m (−7%)</strong> por ciclo · Com coletas horárias: ~480 m/dia a menos de desgaste.
-      </p>
-      <div class="slide-num">9 / 13</div>
-    </section>
-    <!-- SLIDE 10: AULA 18 -->
-    <section>
-      <h2>Aula 18 — Logística e Redes Multicamada</h2>
-      <table>
-        <thead><tr><th>Camada</th><th>Tipo</th><th>Fluxo</th><th>Dist.</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>G_M — Materiais</td>
-            <td>DAG</td>
-            <td style="font-size:0.72em;">Portaria → Tube Trailer → SUP-100 → TK-10x → XV-104 → HEX-201 → DISP-300 → VEIC-300 → Expedição</td>
-            <td>154 m</td>
-          </tr>
-          <tr>
-            <td>G_V — Veículos</td>
-            <td>Anel viário</td>
-            <td style="font-size:0.72em;">Ilha Dispensação → Pátio Expedição → Balança Saída → Portaria</td>
-            <td>85 m</td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="font-size:0.7em; margin-top:0.8em;">
-        ⚙️ <strong>Algoritmo de Kahn</strong> (ordenação topológica do DAG):<br>
-        XV-301 nunca abre antes de BV-301 (acoplamento) e HEX-201 (−40°C confirmado).<br>
-        Qualquer inversão → SCADA bloqueia o comando.
-      </p>
-      <div class="slide-num">10 / 13</div>
-    </section>
-    <!-- SLIDE 11: INTEGRAÇÃO -->
-    <section>
-      <h2>Integração — Algoritmos no SCADA Core</h2>
-      <table>
-        <thead><tr><th>Algoritmo</th><th>Aplicação no SCADA H₂</th><th>Aula</th></tr></thead>
-        <tbody>
-          <tr><td>BFS</td><td>Menor sequência de válvulas para isolamento de emergência</td><td>13</td></tr>
-          <tr><td>DFS</td><td>Detecção de ciclos e rastreabilidade de contaminação</td><td>13</td></tr>
-          <tr><td>Dijkstra</td><td>Seleção automática do banco de pressão ativo (LP/MP/HP)</td><td>14</td></tr>
-          <tr><td>Reponderação W→∞</td><td>Desvio automático de fluxo por vazamento detectado</td><td>15</td></tr>
-          <tr><td>Hierholzer (Euler)</td><td>Roteiro otimizado de inspeção periódica por robô PIG</td><td>16</td></tr>
-          <tr><td>2-Opt TSP</td><td>Rota do AGV de amostragem de pureza H₂ (SAE J2719)</td><td>17</td></tr>
-          <tr><td>Kahn (DAG)</td><td>Validação da ordem lógica de comandos antes da execução</td><td>18</td></tr>
-        </tbody>
-      </table>
-      <div class="slide-num">11 / 13</div>
-    </section>
-    <!-- SLIDE 12: CONCLUSÃO -->
-    <section>
-      <h2>Conclusão — O Grafo como Núcleo do SCADA</h2>
-      <ul style="font-size:0.78em;">
-        <li class="ok">✅ Roteamento automático de pressão entre 3 bancos de cascata</li>
-        <li class="ok">✅ Isolamento de falhas e recálculo de rota em &lt; 1 ms</li>
-        <li class="ok">✅ Inspeção 100% da infraestrutura sem repetição de trechos</li>
-        <li class="ok">✅ Validação formal da sequência de comandos SCADA</li>
-        <li class="ok">✅ Otimização logística de veículos e robôs de manutenção</li>
-      </ul>
-      <br>
-      <p style="font-size:0.7em; color:#aaa;">
-        📌 <strong>Próxima Etapa:</strong> Redes de Petri e autômatos finitos para modelagem formal dos estados do SCADA Core.
-      </p>
-      <div class="slide-num">12 / 13</div>
-    </section>
-    <!-- SLIDE 13: REFERÊNCIAS -->
-    <section>
-      <h2>Referências e Links</h2>
-      <ul style="font-size:0.75em;">
-        <li>🐙 <strong>Repositório:</strong> <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank">github.com/leovarconrenno/…</a></li>
-        <li>🌐 <strong>Site:</strong> <a href="https://leovarconrenno.github.io/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/" target="_blank">leovarconrenno.github.io/…</a></li>
-      </ul>
-      <p style="font-size:0.72em; margin-top:0.8em;"><strong>Normas:</strong></p>
-      <ul style="font-size:0.7em;">
-        <li>SAE J2601 — Protocolo de abastecimento de H₂ para veículos leves</li>
-        <li>SAE J2719 — Especificação de pureza de H₂ para células a combustível</li>
-        <li>ISA-5.1 — Identificação e simbolização de instrumentação</li>
-      </ul>
-      <p style="font-size:0.72em; margin-top:0.8em;"><strong>Algoritmos:</strong></p>
-      <ul style="font-size:0.7em;">
-        <li>Dijkstra (1959) · Hierholzer (1873) · Kahn (1962)</li>
-      </ul>
-      <br>
-      <span class="badge">Grupo 9 · ECAA08 · UNIFEI · 2026.2</span>
-      <div class="slide-num">13 / 13</div>
-    </section>
+
   </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/reveal.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/notes/notes.js"></script>
 <script>
   Reveal.initialize({
     hash: true,
-    slideNumber: false,
+    slideNumber: 'c/t',
+    progress: true,
+    controls: true,
+    center: true,
     transition: 'slide',
-    backgroundTransition: 'fade',
-    plugins: [ RevealHighlight, RevealNotes ]
+    plugins: [ RevealHighlight ]
   });
 </script>
 </body>
