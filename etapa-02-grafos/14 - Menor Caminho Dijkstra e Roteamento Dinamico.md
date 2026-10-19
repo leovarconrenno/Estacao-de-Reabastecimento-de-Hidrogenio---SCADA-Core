@@ -78,3 +78,22 @@ A rota via `TK-102` (52 m, mesmo comprimento) e `TK-103` (57 m) estão disponív
 ## 5. Entregável da Aula 14
 
 * **Módulo `RoteadorDijkstra` em Python:** Implementação com suporte a bloqueios dinâmicos (ESD, manutenção), retorno da sequência completa de equipamentos e da distância total em metros, validado para a rede real dos Setores 100, 200 e 300 da Estação de Reabastecimento de Hidrogênio.
+
+---
+
+## 6. Roteamento Dinâmico Contínuo: Penalização por Perda de Carga ($\Delta P$)
+
+Até agora, a simulação de contingências operou de forma estritamente binária: um equipamento ou funciona nominalmente, ou sofre um bloqueio total (traduzido matematicamente para a atribuição de um peso de aresta $w(u,v) = \infty$)[cite: 11]. No entanto, em sistemas SCADA reais, a degradação física de uma linha é frequentemente um processo contínuo.
+
+### 6.1. Adaptação Dinâmica do Algoritmo de Dijkstra
+
+Na Estação de Reabastecimento de Hidrogénio, o peso matricial de uma aresta entre dois nós é dinamicamente atualizado com base nos diferenciais de pressão analisados em tempo real. Se a linha LP (Low Pressure, interligando `TK-101` a `XV-104`[cite: 11]) apresentar resistência anómala ou estrangulamento parcial, o seu "comprimento efetivo" (custo associado) aumenta.
+
+O algoritmo reage autonomamente a esta perturbação:
+1. **Identificação SCADA:** O sistema supervisório identifica o estrangulamento e incrementa o peso da aresta para um valor alto, porém ainda finito[cite: 9, 11].
+2. **Reavaliação das Relaxações:** Ao executar a verificação base $\text{se } d[u] + w(u,v) < d[v]$[cite: 11, 12], o novo custo inflacionado da linha principal excede os das rotas paralelas.
+3. **Desvio de Contingência Automático:** Sem remover o nó do grafo, a lógica puramente matemática do algoritmo força o desvio do escoamento de hidrogénio para a cascata de Média Pressão (MP), interligada pelo `TK-102`[cite: 11], assegurando que a transferência para o `VEIC-300` ocorre ininterruptamente através do menor caminho viável restante[cite: 11].
+
+### 6.2. Vantagem Operacional na Dimensão do Grafo
+
+Ao preservar as propriedades estruturais da matriz e apenas oscilar as magnitudes escalares dos pesos nas arestas conectadas aos reservatórios (`SUP-100`, `TK-101`, `TK-102`, `TK-103`)[cite: 11], evita-se a reconstrução cíclica das estruturas de dados do roteador. Dada a complexidade assintótica $O((\vert{}V\vert{} + \vert{}E\vert{}) \log \vert{}V\vert{})$ com a implementação de um Min-Heap (`heapq`)[cite: 11, 12], a rede modular do projeto ($\vert{}V\vert{}=8, \vert{}E\vert{}=9$)[cite: 11, 12] viabiliza a determinação da nova rota ótima em frações de milissegundo, muito antes de uma oscilação mecânica tornar a dispensa insegura.

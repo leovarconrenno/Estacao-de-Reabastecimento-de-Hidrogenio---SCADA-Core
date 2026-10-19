@@ -124,3 +124,26 @@ Essa matriz de distâncias serve como a estrutura de dados primária para os alg
 ## 5. Entregável da Aula 12
 
 * **Motor Matricial de Balanço de Massa:** Geração automatizada da Matriz de Incidência $B \in \mathbb{R}^{8 \times 8}$, comprovação da propriedade da soma nula de colunas e validação em tempo real da equação de conservação mássica $B \cdot \vec{Q} = \vec{S}$ para o sistema SCADA Core da Estação de Reabastecimento de Hidrogênio.
+
+---
+
+## 6. Modelização Avançada e Análise SCADA de Redundância
+
+### 6.1. Simulação de Perturbações e Diagnóstico de Fugas
+
+O sistema SCADA monitoriza o sistema linear $B \cdot \vec{Q} = \vec{S}$ continuamente. No contexto de uma Estação de Reabastecimento de Hidrogênio, a segurança é primordial. Se o valor residual $S_i$ para um nó intermédio (como o `C-101` ou o `MAN-101`) não for igual a zero, isso indica um desvio de fluxo massivo.
+
+*   **Acúmulo ($S_i > 0$):** Uma discrepância onde o fluxo de entrada supera o de saída pode indicar uma restrição na linha de descarga (e.g., válvula encravada) ou uma falha de sensor de medição a jusante.
+*   **Perda ($S_i < 0$):** Uma perda massiva onde a saída supera a entrada aciona imediatamente as válvulas de bloqueio rápido (ESD), sinalizando uma fuga de alta pressão (perda de contenção física).
+
+### 6.2. Análise de Redundância Topológica (Multigrafos)
+
+Como explorado na Aula 11, a adição de tubulações de bypass ($e_{new}$) converte o grafo simples num multigrafo. Matematicamente, a dimensão do **Espaço de Ciclos** $\dim(\ker(B)) = m - n + 1$ aumenta com cada nova linha redundante adicionada. 
+
+Para a rede nominal de Hidrogénio ($n=8$, $m=8$), o espaço de ciclos é 1. Se implementarmos uma rota alternativa de abastecimento de emergência direta do Eletrolisador (`E-101`) para o Manifold (`MAN-101`), o número de arestas passaria a ser $m=9$, aumentando a dimensão de ciclos independentes para 2 e reforçando a robustez do sistema perante falhas.
+
+### 6.3. Otimização de Encaminhamento Dinâmico (Custos em Tempo Real)
+
+Embora a matriz de distâncias estáticas modele a proximidade espacial, o SCADA de Hidrogénio pode atualizar dinamicamente a Matriz de Custos $W$ para otimização do processo. O peso $W[u, v]$ pode ser reatribuído com base em:
+1.  **Diferencial de Pressão Atual ($\Delta P$):** Priorizando rotas com menor esforço de compressão.
+2.  **Disponibilidade Térmica:** Favorecendo rotas que passem pelo pré-arrefecedor (`CH-101`) caso a temperatura no Dispensador (`D-101`) comece a subir no abastecimento de múltiplos veículos (SAE J2601).
