@@ -8,384 +8,1457 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/dist/theme/black.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/monokai.css">
   <style>
-    :root { --r-heading-color: #00d4ff; --r-link-color: #00d4ff; }
-    .reveal { background-color: #0b1320; color: #f1f5f9; }
-    .reveal h1, .reveal h2, .reveal h3 { color: #00d4ff; font-weight: 800; }
-    .reveal table { font-size: 0.68em; width: 100%; border-collapse: collapse; margin-top: 0.5em; }
-    .reveal table th { background: rgba(0,212,255,0.15); color: #00d4ff; padding: 0.4em 0.8em; text-align: left; }
-    .reveal table td { padding: 0.4em 0.8em; border-bottom: 1px solid rgba(255,255,255,0.08); }
-    .reveal table tr:nth-child(even) { background: rgba(255,255,255,0.03); }
-    .badge {
-      display: inline-block; background: rgba(0,212,255,0.15);
-      border: 1px solid #00d4ff; color: #00d4ff;
-      padding: 0.25em 0.75em; border-radius: 4px; font-size: 0.75em; font-weight: 700;
+    :root {
+      --primary: #00d4ff;
+      --primary-dark: #0284c7;
+      --primary-light: #38bdf8;
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg-dark: #0b1320;
+      --card-bg: #111e33;
+      --border-color: #1e3a5f;
     }
-    .badge-topic {
-      display: inline-block; background: #0284c7;
-      color: #ffffff; padding: 0.25em 0.8em; border-radius: 9999px; font-size: 0.65em;
-      font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4em;
+
+    body {
+      background-color: var(--bg-dark);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #f1f5f9;
+      margin: 0;
+      padding: 0;
     }
-    .slide-num { position:absolute; bottom:0.5em; right:1em; font-size:0.45em; color:#64748b; font-family: monospace; }
-    .callout {
-      background: rgba(0, 212, 255, 0.08);
-      border-left: 3px solid #00d4ff;
-      border-radius: 0 6px 6px 0;
-      padding: 0.5em 0.8em;
-      font-size: 0.7em;
-      margin-top: 0.8em;
-      text-align: left;
+
+    .reveal {
+      background-color: var(--bg-dark);
     }
+
+    /* FORÇA DIMENSÕES E FLEXBOX EM CADA SEÇÃO REVEAL */
+    .reveal .slides section {
+      width: 1280px !important;
+      height: 720px !important;
+      padding: 30px 48px !important;
+      box-sizing: border-box !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-start !important;
+      align-items: stretch !important;
+      overflow: hidden !important;
+      text-align: left !important;
+      top: 0 !important;
+      left: 0 !important;
+    }
+
+    .reveal .slides section.center-slide {
+      justify-content: center !important;
+      align-items: center !important;
+      text-align: center !important;
+    }
+
+    /* CABEÇALHOS DE SLIDE */
+    .slide-header {
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .topic-badge {
+      display: inline-block;
+      background: var(--primary-dark);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 9999px;
+      margin-bottom: 6px;
+    }
+
+    .slide-title {
+      font-size: 1.85rem !important;
+      font-weight: 800 !important;
+      color: #ffffff !important;
+      line-height: 1.15 !important;
+      margin: 0 0 4px 0 !important;
+      letter-spacing: -0.01em;
+      text-transform: none !important;
+    }
+
+    .slide-title span {
+      color: var(--primary);
+    }
+
+    .slide-subtitle {
+      font-size: 0.88rem;
+      color: #94a3b8;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    /* CORPO FLEXÍVEL DO SLIDE */
+    .slide-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+      gap: 10px;
+    }
+
+    /* CARTÕES */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-sizing: border-box;
+    }
+
+    .card-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--primary-light);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-text {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    /* BADGES DE ZONAS INDUSTRIAIS */
     .zone-badge {
-      display: inline-flex; align-items: center; gap: 0.3em;
-      padding: 0.25em 0.65em; border-radius: 6px; font-size: 0.65em; font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
     }
-    .zone-100 { background: rgba(2, 132, 199, 0.2); color: #38bdf8; border: 1px solid rgba(2, 132, 199, 0.5); }
-    .zone-200 { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); }
-    .zone-300 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
+    .zone-100 {
+      background: rgba(2, 132, 199, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(2, 132, 199, 0.6);
+    }
+    .zone-200 {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.6);
+    }
+    .zone-300 {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.6);
+    }
+
+    /* TABELAS SCADA */
+    table.scada-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem !important;
+      background: #070d18;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      margin: 0;
+    }
+    table.scada-table th {
+      background: rgba(2, 132, 199, 0.25);
+      color: #38bdf8;
+      text-align: left;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--border-color);
+    }
+    table.scada-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      line-height: 1.3;
+    }
+    table.scada-table tr:last-child td {
+      border-bottom: none;
+    }
+    table.scada-table tr:nth-child(even) td {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+
+    /* RODAPÉ DO SLIDE */
+    .slide-footer {
+      flex-shrink: 0;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.68rem;
+      color: #64748b;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    /* CAIXA DE DESTAQUE / CALLOUT */
+    .callout {
+      background: rgba(2, 132, 199, 0.1);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 6px 6px 0;
+      padding: 6px 12px;
+      font-size: 0.74rem;
+      color: #bae6fd;
+      line-height: 1.4;
+    }
+
+    /* MOLDURA DE IMAGEM / GRAFO */
+    .graph-frame {
+      background: #070d18;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-sizing: border-box;
+      position: relative;
+    }
   </style>
 </head>
 <body>
 <div class="reveal">
   <div class="slides">
 
-    <!-- SLIDE 1: CAPA -->
-    <section>
-      <div style="font-size:0.7em; font-weight:800; letter-spacing:0.2em; color:#38bdf8; text-transform:uppercase; margin-bottom:0.5em;">
+    <!-- ====================================================================
+         SLIDE 1: CAPA
+         ==================================================================== -->
+    <section class="center-slide">
+      <div style="font-size: 0.8rem; font-weight: 800; letter-spacing: 0.25em; color: var(--primary-light); text-transform: uppercase; margin-bottom: 0.8rem;">
         ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO — SCADA CORE
       </div>
-      <h1 style="font-size:1.6em; line-height:1.2;">Modelagem Topológica em Grafos e Roteamento Ótimo</h1>
-      <p style="font-size:0.75em; color:#94a3b8; max-width:85%; margin:0 auto 1em auto;">
+      
+      <h1 style="font-size: 2.5rem !important; font-weight: 800; line-height: 1.15; color: #ffffff; margin: 0 0 0.8rem 0; letter-spacing: -0.02em; text-transform: none !important;">
+        Modelagem Topológica em Grafos e <span style="color: var(--primary);">Roteamento Ótimo de Pressão</span>
+      </h1>
+      
+      <p style="font-size: 1.05rem; color: #94a3b8; max-width: 85%; line-height: 1.5; margin: 0 auto 1.5rem auto;">
         Dígrafo ponderado da malha física, matrizes de fluxo, segurança por corte de arestas, algoritmos em grafos (Dijkstra, BFS/DFS, Euler, TSP) e integração SCADA em tempo real.
       </p>
-      <div style="display:flex; justify-content:center; gap:0.8em; margin-bottom:1.2em;">
-        <span class="zone-badge zone-100">Setor 100 · Armazenamento</span>
-        <span class="zone-badge zone-200">Setor 200 · Chiller T40</span>
-        <span class="zone-badge zone-300">Setor 300 · Dispensação 700 bar</span>
+
+      <!-- ZONAS INDUSTRIAIS DA PLANTA (SETORES 100, 200, 300) -->
+      <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.8rem;">
+        <span class="zone-badge zone-100">Setor 100 · Armazenamento em Cascata</span>
+        <span class="zone-badge zone-200">Setor 200 · Condicionamento Criogênico</span>
+        <span class="zone-badge zone-300">Setor 300 · Dispensação e Veículo FCEV</span>
       </div>
-      <span class="badge">ECAA08 · Grupo 9 · UNIFEI · 2026.2</span>
-      <p style="font-size:0.6em; color:#64748b; margin-top:1em;">
-        João Pedro &nbsp;·&nbsp; Marcelo Candelaria &nbsp;·&nbsp; Luca Augusto &nbsp;·&nbsp; Leo Vargas
-      </p>
-      <div class="slide-num">01 / 18</div>
-    </section>
 
-    <!-- SLIDE 2: INTRODUÇÃO -->
-    <section>
-      <h2>A Teoria dos Grafos no SCADA Core</h2>
-      <ul style="font-size:0.72em; line-height:1.6;">
-        <li>🔗 <strong>Modelagem Fidedigna da Infraestrutura:</strong> A malha de alta pressão é formalizada como um dígrafo ponderado <i>G</i> = (<i>V</i>, <i>E</i>, <i>W</i>) com 8 equipamentos e 9 tubulações.</li>
-        <li>⚡ <strong>Roteamento de Pressão em Cascata:</strong> Execução do algoritmo de Dijkstra em tempo real para seleção ótima dos bancos (LP &rarr; MP &rarr; HP) conforme norma SAE J2601.</li>
-        <li>🚨 <strong>Segurança Cibernética e Isolamento:</strong> Detecção de vazamento repondera dinamicamente <i>W</i> &rarr; &infin;, isolando o duto e recalculando a rota em &lt;1 ms.</li>
-        <li>🤖 <strong>Robótica Autônoma:</strong> Inspeção estrutural por robô PIG (Circuito Euleriano / Hierholzer) e amostragem viária por AGV (TSP / 2-Opt).</li>
-      </ul>
-      <div class="callout">
-        <strong>Estrutura em 4 Tópicos:</strong> 01 Modelagem e Matrizes &middot; 02 Busca e Conectividade &middot; 03 Roteamento e Segurança &middot; 04 Robótica e Precedência
+      <div style="display: flex; justify-content: center; align-items: center; gap: 2.5rem; font-size: 0.82rem; color: #64748b; border-top: 1px solid #1e293b; padding-top: 1.2rem; width: 85%;">
+        <div><strong style="color: #cbd5e1;">Equipe (Grupo 9):</strong> João Pedro · Marcelo Candelaria · Luca Augusto · Leo Vargas</div>
+        <div><strong style="color: #cbd5e1;">Disciplina:</strong> Automação Industrial (ECAA08) — UNIFEI</div>
+        <div><strong style="color: #cbd5e1;">Semestre:</strong> 2026.2</div>
       </div>
-      <div class="slide-num">02 / 18</div>
+
+      <div class="slide-footer" style="width: 100%;">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>01 / 18</span>
+      </div>
     </section>
 
-    <!-- SLIDE 3: ARQUITETURA EM TRÊS SETORES INDUSTRIAIS -->
+
+    <!-- ====================================================================
+         SLIDE 2: INTRODUÇÃO
+         ==================================================================== -->
     <section>
-      <h2>A Planta Modelada em Três Setores</h2>
-      <p style="font-size:0.7em; color:#94a3b8;">Divisão física e funcional dos equipamentos da estação nos 3 setores industriais:</p>
-      <table>
-        <thead><tr><th>Setor Industrial</th><th>Equipamentos e Instrumentos</th><th>Papel no Dígrafo</th></tr></thead>
-        <tbody>
-          <tr>
-            <td><strong style="color:#38bdf8;">Setor 100</strong><br><small>Armazenamento em Cascata</small></td>
-            <td>SUP-100, TK-101 (LP &le; 400 b), TK-102 (MP &le; 700 b), TK-103 (HP &le; 1000 b), Válvulas XV-101 a XV-104</td>
-            <td>Vértices de suprimento primário e reservatórios intermediários em cascata.</td>
-          </tr>
-          <tr>
-            <td><strong style="color:#34d399;">Setor 200</strong><br><small>Condicionamento Térmico</small></td>
-            <td>Trocador de calor criogênico HEX-201, sensores de temperatura TT-201, PT-201, solenoide XV-201</td>
-            <td>Nó de passagem obrigatório para pré-resfriamento do gás a &le; &minus;40 &deg;C (SAE J2601 T40).</td>
-          </tr>
-          <tr>
-            <td><strong style="color:#fbbf24;">Setor 300</strong><br><small>Dispensação &amp; FCEV</small></td>
-            <td>Bico dispensador DISP-300, medidor mássico Coriolis, breakaway BV-301 e tanque VEIC-300 (700 bar)</td>
-            <td>Nó de medição mássica, transferência de alta pressão e sumidouro do dígrafo.</td>
-          </tr>
-        </tbody>
-      </table>
-      <div class="slide-num">03 / 18</div>
+      <div class="slide-header">
+        <span class="topic-badge">INTRODUÇÃO</span>
+        <h2 class="slide-title">A Teoria dos Grafos como <span>Núcleo de Decisão</span> do SCADA Core</h2>
+        <p class="slide-subtitle">Fundamentação matemática para supervisão, roteamento seguro e otimização operacional em tempo real.</p>
+      </div>
+
+      <div class="slide-body">
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 18px; align-items: stretch; flex: 1;">
+          
+          <!-- COLUNA ESQUERDA: CONTEXTO E GARANTIA -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <p style="font-size: 0.85rem; line-height: 1.55; color: #cbd5e1; margin: 0;">
+              O projeto desenvolve o núcleo de decisão do <strong>SCADA Core</strong> utilizando a teoria dos grafos para modelar a malha física de alta pressão, equipamentos de processo e fluxos operacionais de uma estação de hidrogênio voltada a veículos movidos a célula de combustível (FCEV).
+            </p>
+            <p style="font-size: 0.85rem; line-height: 1.55; color: #cbd5e1; margin: 0;">
+              A planta envolve armazenamento em cascata de 3 estágios, condicionamento criogênico e transferência a 700 bar. O SCADA Core avalia a topologia do dígrafo <i>G</i> = (<i>V</i>, <i>E</i>, <i>W</i>), executa o roteamento de pressão por <strong>Dijkstra</strong> em tempo real, isola vazamentos instantaneamente reponderando arestas afetadas e otimiza a inspeção física e a logística viária.
+            </p>
+            <div class="callout" style="margin: 0;">
+              <strong style="color: #38bdf8;">⚡ Garantia Determinística:</strong> Todos os algoritmos em grafos foram projetados para execução estrita dentro do ciclo de varredura (100 ms) do SCADA Core, consumindo menos de 1 ms.
+            </div>
+          </div>
+
+          <!-- COLUNA DIREITA: OS 4 TÓPICOS TEMÁTICOS -->
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div style="font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; color: #64748b; text-transform: uppercase;">
+              ESTRUTURA EM 4 TÓPICOS TEMÁTICOS
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="background: var(--primary-dark); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px;">01</span>
+              <div>
+                <strong style="color: #ffffff; font-size: 0.8rem;">Modelagem Topológica e Matrizes de Fluxo</strong>
+                <div style="font-size: 0.72rem; color: #94a3b8;">Dígrafo <i>G</i> = (<i>V</i>, <i>E</i>, <i>W</i>), matrizes de incidência e conservação.</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="background: var(--primary-dark); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px;">02</span>
+              <div>
+                <strong style="color: #ffffff; font-size: 0.8rem;">Conectividade e Busca nas Tubulações</strong>
+                <div style="font-size: 0.72rem; color: #94a3b8;">BFS para isolamento mínimo de falhas e DFS para detecção de ciclos.</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="background: var(--primary-dark); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px;">03</span>
+              <div>
+                <strong style="color: #ffffff; font-size: 0.8rem;">Roteamento Ótimo e Segurança Ativa</strong>
+                <div style="font-size: 0.72rem; color: #94a3b8;">Dijkstra na cascata SAE J2601 e desvio dinâmico de vazamentos.</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="background: var(--primary-dark); color: #fff; font-weight: 800; font-size: 0.72rem; padding: 2px 7px; border-radius: 4px;">04</span>
+              <div>
+                <strong style="color: #ffffff; font-size: 0.8rem;">Robótica Autônoma e Redes Multicamada</strong>
+                <div style="font-size: 0.72rem; color: #94a3b8;">Inspeção por PIG (Euler), amostragem por AGV (TSP) e precedência DAG.</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>02 / 18</span>
+      </div>
     </section>
 
-    <!-- SLIDE 4: DIVISOR TÓPICO 01 -->
+
+    <!-- ====================================================================
+         SLIDE 3: ARQUITETURA EM TRÊS SETORES INDUSTRIAIS
+         ==================================================================== -->
     <section>
-      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">01</div>
-      <span class="badge-topic">TÓPICO 01</span>
-      <h2 style="font-size:1.5em; margin-top:0.2em;">Modelagem Topológica e Matrizes de Fluxo</h2>
-      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+      <div class="slide-header">
+        <span class="topic-badge">ARQUITETURA DA PLANTA</span>
+        <h2 class="slide-title">A Malha de Hidrogênio Modelada em <span>Três Setores Industriais</span></h2>
+        <p class="slide-subtitle">Do suprimento externo até o bico do veículo, o fluxo de H<sub>2</sub> percorre três subsistemas industriais mapeados no dígrafo:</p>
+      </div>
+
+      <div class="slide-body">
+        <!-- FLUXO VISUAL ENTRE OS SETORES -->
+        <div class="graph-frame" style="height: 52px; padding: 4px 12px; margin-bottom: 12px; flex-direction: column; justify-content: center;">
+          <svg viewBox="0 0 940 32" width="100%" height="28">
+            <rect x="5" y="4" width="130" height="24" rx="4" fill="#0f172a" stroke="#0284c7" stroke-width="1.5" />
+            <text x="70" y="19" fill="#38bdf8" font-size="8" font-weight="700" text-anchor="middle">SUP-100 (Suprimento)</text>
+            <line x1="135" y1="16" x2="185" y2="16" stroke="#0284c7" stroke-width="2" stroke-dasharray="3,2" />
+            
+            <rect x="185" y="2" width="225" height="28" rx="4" fill="#082f49" stroke="#0284c7" stroke-width="1.5" />
+            <text x="297" y="19" fill="#e0f2fe" font-size="8" font-weight="800" text-anchor="middle">SETOR 100 &mdash; Cascata (LP, MP, HP)</text>
+            <line x1="410" y1="16" x2="460" y2="16" stroke="#10b981" stroke-width="2" />
+
+            <rect x="460" y="2" width="225" height="28" rx="4" fill="#064e3b" stroke="#10b981" stroke-width="1.5" />
+            <text x="572" y="19" fill="#d1fae5" font-size="8" font-weight="800" text-anchor="middle">SETOR 200 &mdash; Chiller Criogênico (&le; &minus;40&deg;C)</text>
+            <line x1="685" y1="16" x2="735" y2="16" stroke="#f59e0b" stroke-width="2" />
+
+            <rect x="735" y="2" width="200" height="28" rx="4" fill="#451a03" stroke="#f59e0b" stroke-width="1.5" />
+            <text x="835" y="19" fill="#fef3c7" font-size="8" font-weight="800" text-anchor="middle">SETOR 300 &mdash; Dispensador &amp; FCEV</text>
+          </svg>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; flex: 1;">
+          
+          <!-- Setor 100 -->
+          <div class="card" style="border-top: 3px solid #0284c7; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 1.4rem;">🛢️</span>
+                <span class="zone-badge zone-100">Setor 100</span>
+              </div>
+              <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff; margin-bottom: 6px;">
+                Banco de Armazenamento
+              </div>
+              <p class="card-text">
+                Cilindros em cascata: baixa pressão (TK-101 &le; 400 bar), média (TK-102 &le; 700 bar) e alta (TK-103 &le; 1000 bar). Válvulas de corte rápido XV-101 a XV-103 e seletora direcional XV-104.
+              </p>
+            </div>
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); font-family: monospace; font-size: 0.72rem; font-weight: 700; color: #38bdf8;">
+              SUP-100 · TK-101 · TK-102 · TK-103 · XV-104
+            </div>
+          </div>
+
+          <!-- Setor 200 -->
+          <div class="card" style="border-top: 3px solid #10b981; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 1.4rem;">❄️</span>
+                <span class="zone-badge zone-200">Setor 200</span>
+              </div>
+              <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff; margin-bottom: 6px;">
+                Condicionamento (Chiller)
+              </div>
+              <p class="card-text">
+                Trocador criogênico HEX-201 com pré-resfriamento a &le; &minus;40 &deg;C (Classe T40 SAE J2601), evitando sobreaquecimento do tanque veicular durante o abastecimento rápido.
+              </p>
+            </div>
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); font-family: monospace; font-size: 0.72rem; font-weight: 700; color: #34d399;">
+              HEX-201 · TT-201 · PT-201 · XV-201
+            </div>
+          </div>
+
+          <!-- Setor 300 -->
+          <div class="card" style="border-top: 3px solid #f59e0b; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <span style="font-size: 1.4rem;">🚗</span>
+                <span class="zone-badge zone-300">Setor 300</span>
+              </div>
+              <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff; margin-bottom: 6px;">
+                Dispensador &amp; Veículo
+              </div>
+              <p class="card-text">
+                Medição mássica Coriolis, acoplamento de segurança breakaway (BV-301), bico dispensador DISP-300 com link infravermelho IrDA (SAE J2799) e tanque veicular 700 bar (VEIC-300).
+              </p>
+            </div>
+            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); font-family: monospace; font-size: 0.72rem; font-weight: 700; color: #fbbf24;">
+              DISP-300 · VEIC-300 · BV-301 · XV-301
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>03 / 18</span>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         SLIDE 4: DIVISOR TÓPICO 01
+         ==================================================================== -->
+    <section class="center-slide">
+      <div style="font-size: 5rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 0.4rem;">
+        01
+      </div>
+      <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: var(--primary-light); text-transform: uppercase; margin-bottom: 0.8rem;">
+        T Ó P I C O &nbsp;&nbsp; 0 1
+      </div>
+      <h2 style="font-size: 2.2rem !important; font-weight: 800; color: #ffffff; margin: 0 0 1rem 0; text-transform: none !important;">
+        Modelagem Topológica e Matrizes de Fluxo
+      </h2>
+      <p style="font-size: 1.05rem; color: #94a3b8; font-style: italic; max-width: 60%; margin: 0 auto 1.5rem auto;">
         Dígrafo ponderado da tubulação de alta pressão, matrizes de incidência e conservação vetorial de massa
       </p>
-      <div class="slide-num">04 / 18</div>
-    </section>
 
-    <!-- SLIDE 5: DÍGRAFO PONDERADO DA PLANTA (COM IMAGEM) -->
-    <section>
-      <span class="badge-topic">TÓPICO 01</span>
-      <h3 style="font-size:1.1em; margin-bottom:0.3em;">Dígrafo Ponderado da Malha Hidráulica: G = (V, E, W)</h3>
-      <div style="width:100%; height:320px; background:#070d18; border:1px solid #1e293b; border-radius:8px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-        <img src="grafo_tubulacoes.png" alt="Grafo de Tubulações da Planta H2" style="max-height:100%; max-width:100%; object-fit:contain;" />
+      <div class="slide-footer" style="width: 100%;">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>04 / 18</span>
       </div>
-      <p style="font-size:0.62em; color:#94a3b8; margin-top:0.4em;">
-        8 Vértices (Equipamentos) &middot; 9 Arestas (Tubulações) &middot; Setores 100 (Cascata), 200 (Chiller) e 300 (Dispensador)
-      </p>
-      <div class="slide-num">05 / 18</div>
     </section>
 
-    <!-- SLIDE 6: MATRIZ DE INCIDÊNCIA E CONSERVAÇÃO -->
+
+    <!-- ====================================================================
+         SLIDE 5: O DÍGRAFO PONDERADO DA PLANTA (COM IMAGEM EM ALTA DEFINIÇÃO)
+         ==================================================================== -->
     <section>
-      <span class="badge-topic">TÓPICO 01</span>
-      <h3 style="font-size:1.1em;">Matriz de Incidência e Conservação Vetorial</h3>
-      <div style="display:grid; grid-template-columns:1.2fr 0.8fr; gap:1em; font-size:0.7em; text-align:left;">
-        <div>
-          <table>
-            <thead><tr><th>Nó</th><th>Grau (in/out)</th><th>Balanço Instantâneo</th></tr></thead>
-            <tbody>
-              <tr><td>SUP-100</td><td>0 / 3</td><td>&minus; (q<sub>e1</sub> + q<sub>e2</sub> + q<sub>e3</sub>) = &minus;S<sub>in</sub></td></tr>
-              <tr><td>TK-101 (LP)</td><td>1 / 1</td><td>q<sub>e1</sub> &minus; q<sub>e4</sub> = dM<sub>101</sub>/dt</td></tr>
-              <tr><td>TK-102 (MP)</td><td>1 / 1</td><td>q<sub>e2</sub> &minus; q<sub>e5</sub> = dM<sub>102</sub>/dt</td></tr>
-              <tr><td>TK-103 (HP)</td><td>1 / 1</td><td>q<sub>e3</sub> &minus; q<sub>e6</sub> = dM<sub>103</sub>/dt</td></tr>
-              <tr><td>XV-104</td><td>3 / 1</td><td>q<sub>e4</sub> + q<sub>e5</sub> + q<sub>e6</sub> &minus; q<sub>e7</sub> = 0</td></tr>
-              <tr><td>HEX-201</td><td>1 / 1</td><td>q<sub>e7</sub> &minus; q<sub>e8</sub> = 0</td></tr>
-              <tr><td>DISP-300</td><td>1 / 1</td><td>q<sub>e8</sub> &minus; q<sub>e9</sub> = 0</td></tr>
-              <tr><td>VEIC-300</td><td>1 / 0</td><td>+ q<sub>e9</sub> = dM<sub>veic</sub>/dt</td></tr>
-            </tbody>
-          </table>
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 01</span>
+        <h2 class="slide-title">Dígrafo Ponderado da Malha Hidráulica: <span>G = (V, E, W)</span></h2>
+        <p class="slide-subtitle">Topologia física completa interligando os 8 equipamentos de processo através dos 3 setores industriais (100, 200 e 300):</p>
+      </div>
+
+      <div class="slide-body">
+        <!-- IMAGEM CENTRALIZADA DO GRAFO COM CONTORNO E SOMBRA -->
+        <div class="graph-frame" style="height: 380px;">
+          <img src="grafo_tubulacoes.png" alt="Grafo de Tubulações da Planta H2" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
         </div>
-        <div style="display:flex; flex-direction:column; justify-content:center;">
-          <div style="background:#111e33; padding:0.8em; border-radius:6px; text-align:center; font-family:monospace; font-size:1.1em; color:#38bdf8;">
-            B &middot; q = s
+
+        <!-- 3 CARDS INFERIORES DE IDENTIFICAÇÃO DOS SETORES -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+          <div class="card" style="padding: 8px 12px;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: #38bdf8;">SETOR 100 · CASCATA</div>
+            <div style="font-size: 0.7rem; color: #cbd5e1; line-height: 1.35;">Vértices: SUP-100, TK-101 (LP), TK-102 (MP), TK-103 (HP) e seletora direcional XV-104.</div>
           </div>
-          <p style="font-size:0.8em; color:#94a3b8; margin-top:0.6em; line-height:1.4;">
-            <strong>B &isin; &#123;&minus;1, 0, 1&#125;<sup>8 &times; 9</sup></strong> formaliza a conectividade e garante conservação vetorial de massa no ciclo do CLP.
-          </p>
+
+          <div class="card" style="padding: 8px 12px;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: #34d399;">SETOR 200 · CHILLER T40</div>
+            <div style="font-size: 0.7rem; color: #cbd5e1; line-height: 1.35;">Vértice: HEX-201 (trocador criogênico a &le; &minus;40 &deg;C). Garante a classe térmica T40 da SAE J2601.</div>
+          </div>
+
+          <div class="card" style="padding: 8px 12px;">
+            <div style="font-size: 0.74rem; font-weight: 800; color: #fbbf24;">SETOR 300 · DISPENSAÇÃO</div>
+            <div style="font-size: 0.7rem; color: #cbd5e1; line-height: 1.35;">Vértices: DISP-300 e VEIC-300. Medição Coriolis, breakaway BV-301 e mangueira 700 bar.</div>
+          </div>
         </div>
       </div>
-      <div class="slide-num">06 / 18</div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>05 / 18</span>
+      </div>
     </section>
 
-    <!-- SLIDE 7: DIVISOR TÓPICO 02 -->
+
+    <!-- ====================================================================
+         SLIDE 6: MATRIZ DE INCIDÊNCIA E BALANÇO DE MASSA
+         ==================================================================== -->
     <section>
-      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">02</div>
-      <span class="badge-topic">TÓPICO 02</span>
-      <h2 style="font-size:1.5em; margin-top:0.2em;">Conectividade e Busca nas Tubulações</h2>
-      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 01</span>
+        <h2 class="slide-title">Matriz de Incidência e <span>Conservação Vetorial de Massa</span></h2>
+        <p class="slide-subtitle">A conservação de massa em cada nó do dígrafo é formalizada por equações algébricas no ciclo do SCADA:</p>
+      </div>
+
+      <div class="slide-body">
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; align-items: stretch; flex: 1;">
+          
+          <!-- TABELA COMPACTA -->
+          <div>
+            <table class="scada-table">
+              <thead>
+                <tr>
+                  <th>Vértice (V)</th>
+                  <th>Grau (in/out)</th>
+                  <th>Balanço Instantâneo de Massa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>SUP-100</strong></td><td>0+ / 3&minus;</td><td>&minus; (q<sub>e1</sub> + q<sub>e2</sub> + q<sub>e3</sub>) = &minus;S<sub>in</sub></td></tr>
+                <tr><td><strong>TK-101 (LP)</strong></td><td>1+ / 1&minus;</td><td>q<sub>e1</sub> &minus; q<sub>e4</sub> = dM<sub>TK101</sub>/dt</td></tr>
+                <tr><td><strong>TK-102 (MP)</strong></td><td>1+ / 1&minus;</td><td>q<sub>e2</sub> &minus; q<sub>e5</sub> = dM<sub>TK102</sub>/dt</td></tr>
+                <tr><td><strong>TK-103 (HP)</strong></td><td>1+ / 1&minus;</td><td>q<sub>e3</sub> &minus; q<sub>e6</sub> = dM<sub>TK103</sub>/dt</td></tr>
+                <tr><td><strong>XV-104</strong></td><td>3+ / 1&minus;</td><td>(q<sub>e4</sub> + q<sub>e5</sub> + q<sub>e6</sub>) &minus; q<sub>e7</sub> = 0</td></tr>
+                <tr><td><strong>HEX-201</strong></td><td>1+ / 1&minus;</td><td>q<sub>e7</sub> &minus; q<sub>e8</sub> = 0</td></tr>
+                <tr><td><strong>DISP-300</strong></td><td>1+ / 1&minus;</td><td>q<sub>e8</sub> &minus; q<sub>e9</sub> = 0</td></tr>
+                <tr><td><strong>VEIC-300</strong></td><td>1+ / 0&minus;</td><td>+ q<sub>e9</sub> = dM<sub>veic</sub>/dt</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- DIAGRAMA VISUAL DE CONSERVAÇÃO E MATRIZ -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+            <div class="card">
+              <div class="card-title">Formulação Matricial Vetorial</div>
+              <div style="font-family: monospace; font-size: 1.1rem; background: #070d18; color: #38bdf8; padding: 6px 12px; border-radius: 6px; text-align: center; margin: 4px 0;">
+                B &middot; q = s
+              </div>
+              <p class="card-text">
+                Onde <strong>B &isin; &#123;&minus;1, 0, 1&#125;<sup>8 &times; 9</sup></strong> é a matriz nó-arco, <strong>q</strong> é o vetor de vazões e <strong>s</strong> é o vetor de injeção/extração.
+              </p>
+            </div>
+
+            <!-- SVG ESQUEMÁTICO DA CONSERVAÇÃO NO NÓ XV-104 -->
+            <div class="graph-frame" style="padding: 10px; height: 140px; flex-direction: column;">
+              <div style="font-size: 0.68rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; margin-bottom: 4px;">
+                CONVERGÊNCIA DE VAZÕES NO NÓ SELETOR XV-104
+              </div>
+              <svg viewBox="0 0 380 90" width="100%" height="80">
+                <line x1="30" y1="20" x2="170" y2="45" stroke="#38bdf8" stroke-width="2.5" />
+                <line x1="30" y1="45" x2="170" y2="45" stroke="#38bdf8" stroke-width="2.5" />
+                <line x1="30" y1="70" x2="170" y2="45" stroke="#38bdf8" stroke-width="2.5" />
+                
+                <circle cx="170" cy="45" r="20" fill="#0284c7" stroke="#38bdf8" stroke-width="2" />
+                <text x="170" y="49" fill="#fff" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">XV-104</text>
+                
+                <line x1="190" y1="45" x2="310" y2="45" stroke="#10b981" stroke-width="3.5" />
+                <circle cx="330" cy="45" r="16" fill="#065f46" stroke="#10b981" stroke-width="2" />
+                <text x="330" y="49" fill="#fff" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">HEX</text>
+                
+                <text x="75" y="18" fill="#94a3b8" font-size="8" font-family="monospace">q_e4 (LP)</text>
+                <text x="75" y="41" fill="#94a3b8" font-size="8" font-family="monospace">q_e5 (MP)</text>
+                <text x="75" y="65" fill="#94a3b8" font-size="8" font-family="monospace">q_e6 (HP)</text>
+                <text x="250" y="37" fill="#34d399" font-size="9" font-weight="800" font-family="monospace">&Sigma;q_in = q_e7</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>06 / 18</span>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         SLIDE 7: DIVISOR TÓPICO 02
+         ==================================================================== -->
+    <section class="center-slide">
+      <div style="font-size: 5rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 0.4rem;">
+        02
+      </div>
+      <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: var(--primary-light); text-transform: uppercase; margin-bottom: 0.8rem;">
+        T Ó P I C O &nbsp;&nbsp; 0 2
+      </div>
+      <h2 style="font-size: 2.2rem !important; font-weight: 800; color: #ffffff; margin: 0 0 1rem 0; text-transform: none !important;">
+        Conectividade e Busca nas Tubulações
+      </h2>
+      <p style="font-size: 1.05rem; color: #94a3b8; font-style: italic; max-width: 60%; margin: 0 auto 1.5rem auto;">
         Algoritmos de busca em largura e profundidade para isolamento de segurança e diagnóstico de ciclos
       </p>
-      <div class="slide-num">07 / 18</div>
+
+      <div class="slide-footer" style="width: 100%;">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>07 / 18</span>
+      </div>
     </section>
 
-    <!-- SLIDE 8: BFS E DFS NAS TUBULAÇÕES -->
+
+    <!-- ====================================================================
+         SLIDE 8: BFS E DFS NAS TUBULAÇÕES (COM DIAGRAMAS VISUAIS DUPLOS)
+         ==================================================================== -->
     <section>
-      <span class="badge-topic">TÓPICO 02</span>
-      <h3 style="font-size:1.1em;">Busca em Largura (BFS) vs Profundidade (DFS)</h3>
-      <table>
-        <thead><tr><th>Critério</th><th>BFS (Busca em Largura)</th><th>DFS (Busca em Profundidade)</th></tr></thead>
-        <tbody>
-          <tr><td>Estrutura</td><td>Fila FIFO</td><td>Pilha LIFO / Recursão</td></tr>
-          <tr><td>Garantia</td><td>Menor número de saltos topológicos</td><td>Exploração exaustiva e estrutural</td></tr>
-          <tr><td>Complexidade</td><td><i>O</i>(|V| + |E|)</td><td><i>O</i>(|V| + |E|)</td></tr>
-          <tr><td>Aplicação SCADA</td><td>Isolamento mínimo de setores falhos</td><td>Detecção de ciclos fechados e reciclo</td></tr>
-        </tbody>
-      </table>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1em; margin-top:0.8em; font-size:0.68em; text-align:left;">
-        <div style="background:#111e33; padding:0.6em 0.8em; border-radius:6px; border-left:3px solid #0284c7;">
-          <strong style="color:#38bdf8;">BFS no Isolamento:</strong> Varre em ondas a partir da falha, identificando o menor corte de bloqueio sem afetar linhas sadias.
-        </div>
-        <div style="background:#111e33; padding:0.6em 0.8em; border-radius:6px; border-left:3px solid #f59e0b;">
-          <strong style="color:#fbbf24;">DFS na Segurança:</strong> Detecta arestas de retorno que caracterizam ciclos ilícitos de recirculação descontrolada.
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 02</span>
+        <h2 class="slide-title">Busca em Largura (BFS) vs <span>Profundidade (DFS)</span></h2>
+        <p class="slide-subtitle">Aplicações complementares de exploração de grafos integradas ao ciclo de varredura do SCADA:</p>
+      </div>
+
+      <div class="slide-body">
+        <!-- TABELA COMPARATIVA -->
+        <table class="scada-table" style="margin-bottom: 8px;">
+          <thead>
+            <tr>
+              <th>Critério</th>
+              <th>BFS (Busca em Largura)</th>
+              <th>DFS (Busca em Profundidade)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Estrutura de Dados</strong></td><td>Fila FIFO (First-In, First-Out)</td><td>Pilha LIFO / Recursão</td></tr>
+            <tr><td><strong>Garantia Formal</strong></td><td>Menor número de arestas (saltos topológicos)</td><td>Exploração exaustiva e conectividade estrutural</td></tr>
+            <tr><td><strong>Complexidade</strong></td><td><i>O</i>(|V| + |E|)</td><td><i>O</i>(|V| + |E|)</td></tr>
+            <tr><td><strong>Aplicação no SCADA</strong></td><td>Determinar o conjunto mínimo de válvulas a fechar no isolamento</td><td>Detecção de ciclos fechados e reciclo indevido de gás</td></tr>
+          </tbody>
+        </table>
+
+        <!-- DIAGRAMAS VISUAIS DE BFS E DFS LADO A LADO -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1;">
+          
+          <!-- DIAGRAMA BFS WAVEFRONT -->
+          <div class="card" style="border-top: 3px solid #0284c7; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="card-title" style="color: #38bdf8;">Isolamento Seguro com BFS (Frentes de Onda)</div>
+              <p class="card-text" style="margin-bottom: 8px;">
+                Ao disparar alarme AT-101, a BFS varre o grafo em camadas concêntricas a partir da falha, identificando o menor corte de bloqueio.
+              </p>
+            </div>
+            <div class="graph-frame" style="padding: 6px; height: 95px;">
+              <svg viewBox="0 0 440 85" width="100%" height="80">
+                <circle cx="55" cy="42" r="16" fill="#dc2626" />
+                <text x="55" y="46" fill="#fff" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">TK-101</text>
+                <text x="55" y="70" fill="#f87171" font-size="7.5" font-weight="700" text-anchor="middle">Nível 0 (Falha)</text>
+                
+                <line x1="71" y1="42" x2="160" y2="24" stroke="#f87171" stroke-width="2.5" stroke-dasharray="3,3" />
+                <line x1="71" y1="42" x2="160" y2="60" stroke="#f87171" stroke-width="2.5" stroke-dasharray="3,3" />
+                
+                <rect x="160" y="12" width="60" height="24" rx="4" fill="#b91c1c" />
+                <text x="190" y="28" fill="#fff" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">XV-101</text>
+                
+                <rect x="160" y="48" width="60" height="24" rx="4" fill="#b91c1c" />
+                <text x="190" y="64" fill="#fff" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">XV-104A</text>
+                <text x="190" y="80" fill="#fca5a5" font-size="7" font-weight="700" text-anchor="middle">Nível 1 (Corte)</text>
+                
+                <line x1="220" y1="60" x2="310" y2="60" stroke="#10b981" stroke-width="2.5" />
+                <circle cx="330" cy="60" r="14" fill="#065f46" stroke="#10b981" stroke-width="2" />
+                <text x="330" y="64" fill="#fff" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">HEX</text>
+                <text x="385" y="64" fill="#34d399" font-size="8.5" font-weight="700">Linha Sadia &check;</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- DIAGRAMA DFS CICLO -->
+          <div class="card" style="border-top: 3px solid #f59e0b; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="card-title" style="color: #fbbf24;">Detecção de Ciclos com DFS (Arestas de Retorno)</div>
+              <p class="card-text" style="margin-bottom: 8px;">
+                Classificação formal de arestas. Arestas de retorno em ramos operacionais sinalizam recirculação e acionam alarme de trip.
+              </p>
+            </div>
+            <div class="graph-frame" style="padding: 6px; height: 95px;">
+              <svg viewBox="0 0 440 85" width="100%" height="80">
+                <circle cx="45" cy="42" r="14" fill="#0284c7" />
+                <text x="45" y="46" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">SUP</text>
+                
+                <line x1="59" y1="42" x2="140" y2="26" stroke="#38bdf8" stroke-width="2" />
+                <circle cx="150" cy="26" r="14" fill="#0284c7" />
+                <text x="150" y="30" fill="#fff" font-size="7.5" font-weight="800" text-anchor="middle">TK-LP</text>
+                
+                <line x1="164" y1="26" x2="245" y2="42" stroke="#38bdf8" stroke-width="2" />
+                <circle cx="255" cy="42" r="14" fill="#0284c7" />
+                <text x="255" y="46" fill="#fff" font-size="7.5" font-weight="800" text-anchor="middle">XV-104</text>
+                
+                <path d="M 255,28 C 215,-6 85,-6 45,28" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="3,3" />
+                <text x="150" y="10" fill="#ef4444" font-size="8.5" font-weight="800" text-anchor="middle">&times; Aresta de Retorno (Ciclo Ilícito)</text>
+                
+                <circle cx="360" cy="42" r="14" fill="#065f46" stroke="#10b981" stroke-width="2" />
+                <line x1="269" y1="42" x2="346" y2="42" stroke="#10b981" stroke-width="2.5" />
+                <text x="360" y="46" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">HEX</text>
+              </svg>
+            </div>
+          </div>
+
         </div>
       </div>
-      <div class="slide-num">08 / 18</div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>08 / 18</span>
+      </div>
     </section>
 
-    <!-- SLIDE 9: DIVISOR TÓPICO 03 -->
-    <section>
-      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">03</div>
-      <span class="badge-topic">TÓPICO 03</span>
-      <h2 style="font-size:1.5em; margin-top:0.2em;">Roteamento Ótimo e Segurança Ativa</h2>
-      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+
+    <!-- ====================================================================
+         SLIDE 9: DIVISOR TÓPICO 03
+         ==================================================================== -->
+    <section class="center-slide">
+      <div style="font-size: 5rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 0.4rem;">
+        03
+      </div>
+      <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: var(--primary-light); text-transform: uppercase; margin-bottom: 0.8rem;">
+        T Ó P I C O &nbsp;&nbsp; 0 3
+      </div>
+      <h2 style="font-size: 2.2rem !important; font-weight: 800; color: #ffffff; margin: 0 0 1rem 0; text-transform: none !important;">
+        Roteamento Ótimo e Segurança Ativa
+      </h2>
+      <p style="font-size: 1.05rem; color: #94a3b8; font-style: italic; max-width: 60%; margin: 0 auto 1.5rem auto;">
         Caminho mínimo por Dijkstra na cascata de pressão e reconfiguração instantânea perante vazamentos
       </p>
-      <div class="slide-num">09 / 18</div>
-    </section>
 
-    <!-- SLIDE 10: ROTEAMENTO DIJKSTRA -->
-    <section>
-      <span class="badge-topic">TÓPICO 03</span>
-      <h3 style="font-size:1.1em;">Roteamento de Pressão e Cascata (Dijkstra)</h3>
-      <div style="background:#070d18; border:1px solid #1e293b; border-radius:8px; padding:0.6em; margin-bottom:0.6em;">
-        <svg viewBox="0 0 960 95" width="100%" height="80">
-          <line x1="110" y1="48" x2="310" y2="48" stroke="#334155" stroke-dasharray="4,4" />
-          <line x1="370" y1="48" x2="490" y2="48" stroke="#334155" stroke-dasharray="4,4" />
-          <path d="M 110,48 L 310,18" stroke="#10b981" stroke-width="3" />
-          <path d="M 370,18 L 490,48" stroke="#10b981" stroke-width="3" />
-          <line x1="535" y1="48" x2="635" y2="48" stroke="#10b981" stroke-width="3" />
-          <line x1="685" y1="48" x2="775" y2="48" stroke="#10b981" stroke-width="3" />
-          <line x1="825" y1="48" x2="905" y2="48" stroke="#10b981" stroke-width="3" />
-          <circle cx="75" cy="48" r="18" fill="#0c4a6e" /><text x="75" y="52" fill="#38bdf8" font-size="8" font-weight="800" text-anchor="middle">SUP</text>
-          <circle cx="340" cy="18" r="18" fill="#065f46" stroke="#10b981" /><text x="340" y="22" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle">TK-LP</text>
-          <circle cx="340" cy="48" r="14" fill="#1e293b" /><text x="340" y="51" fill="#94a3b8" font-size="7" text-anchor="middle">TK-MP</text>
-          <circle cx="340" cy="78" r="14" fill="#1e293b" /><text x="340" y="81" fill="#94a3b8" font-size="7" text-anchor="middle">TK-HP</text>
-          <circle cx="510" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="510" y="51" fill="#fff" font-size="7" text-anchor="middle">XV-104</text>
-          <circle cx="660" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="660" y="51" fill="#fff" font-size="7" text-anchor="middle">HEX</text>
-          <circle cx="800" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="800" y="51" fill="#fff" font-size="7" text-anchor="middle">DISP</text>
-          <circle cx="925" cy="48" r="16" fill="#065f46" stroke="#10b981" /><text x="925" y="51" fill="#fff" font-size="7" text-anchor="middle">VEIC</text>
-        </svg>
+      <div class="slide-footer" style="width: 100%;">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>09 / 18</span>
       </div>
-      <table>
-        <thead><tr><th>Estágio</th><th>Rota no Dígrafo</th><th>Distância</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td><strong>LP (TK-101)</strong></td><td>SUP &rarr; TK-101 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td><td><strong class="ok">52 m</strong></td><td><span class="ok">&check; Rota Ótima</span></td></tr>
-          <tr><td><strong>MP (TK-102)</strong></td><td>SUP &rarr; TK-102 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td><td>52 m</td><td>Contingência 1</td></tr>
-          <tr><td><strong>HP (TK-103)</strong></td><td>SUP &rarr; TK-103 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td><td>57 m</td><td>Contingência 2</td></tr>
-        </tbody>
-      </table>
-      <div class="slide-num">10 / 18</div>
     </section>
 
-    <!-- SLIDE 11: VAZAMENTOS E PONTES CRÍTICAS -->
+
+    <!-- ====================================================================
+         SLIDE 10: ROTEAMENTO DIJKSTRA (COM GRAFO DE ROTA ATIVA)
+         ==================================================================== -->
     <section>
-      <span class="badge-topic">TÓPICO 03</span>
-      <h3 style="font-size:1.1em;">Detecção de Vazamentos e Análise de Pontes</h3>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1em; font-size:0.7em; text-align:left;">
-        <div>
-          <div style="background:#7f1d1d; color:#fca5a5; padding:0.4em 0.8em; border-radius:4px; font-weight:700; margin-bottom:0.5em;">
-            🚨 Alarme AT-101 &gt; 1% (Vazamento em TK-101)
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 03</span>
+        <h2 class="slide-title">Roteamento de Pressão e Cascata <span>(Dijkstra)</span></h2>
+        <p class="slide-subtitle">O protocolo SAE J2601 é executado via Dijkstra como cálculo de menor caminho no dígrafo ponderado:</p>
+      </div>
+
+      <div class="slide-body">
+        <!-- GRAFO VISUAL DE ROTEAMENTO DIJKSTRA -->
+        <div class="graph-frame" style="height: 155px; padding: 10px 16px; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.08em;">
+              TOPOLOGIA DE ROTEAMENTO DIJKSTRA &mdash; ESTÁGIO 1: LP ATIVO &rarr; VEÍCULO (52 m)
+            </span>
+            <span style="background: #065f46; color: #34d399; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; border: 1px solid #10b981;">
+              ROTA ÓTIMA EM OPERAÇÃO
+            </span>
           </div>
-          <ol style="line-height:1.6; color:#cbd5e1; padding-left:1.2em;">
-            <li>XV-101 fecha por intertravamento SIS.</li>
-            <li>SCADA repondera <i>W</i>(e1, e4) = &infin;.</li>
-            <li>Dijkstra comuta para TK-102 (MP) em &lt;1 ms.</li>
-          </ol>
+
+          <svg viewBox="0 0 960 115" width="100%" height="110">
+            <!-- Arestas inativas (contingência MP e HP) -->
+            <line x1="110" y1="58" x2="310" y2="58" stroke="#334155" stroke-width="2" stroke-dasharray="4,4" />
+            <line x1="370" y1="58" x2="490" y2="58" stroke="#334155" stroke-width="2" stroke-dasharray="4,4" />
+            
+            <line x1="110" y1="58" x2="310" y2="95" stroke="#334155" stroke-width="2" stroke-dasharray="4,4" />
+            <line x1="370" y1="95" x2="490" y2="58" stroke="#334155" stroke-width="2" stroke-dasharray="4,4" />
+
+            <!-- Rota ATIVA EM VERDE ESMERALDA -->
+            <path d="M 110,58 L 310,22" stroke="#10b981" stroke-width="3.5" />
+            <path d="M 370,22 L 490,58" stroke="#10b981" stroke-width="3.5" />
+            <line x1="540" y1="58" x2="640" y2="58" stroke="#10b981" stroke-width="3.5" />
+            <line x1="690" y1="58" x2="780" y2="58" stroke="#10b981" stroke-width="3.5" />
+            <line x1="830" y1="58" x2="905" y2="58" stroke="#10b981" stroke-width="3.5" />
+
+            <!-- Pesos das arestas -->
+            <text x="200" y="32" fill="#34d399" font-size="9.5" font-weight="700" font-family="monospace">e1: 10m</text>
+            <text x="430" y="32" fill="#34d399" font-size="9.5" font-weight="700" font-family="monospace">e4: 8m</text>
+            <text x="590" y="48" fill="#34d399" font-size="9.5" font-weight="700" font-family="monospace">e7: 14m</text>
+            <text x="735" y="48" fill="#34d399" font-size="9.5" font-weight="700" font-family="monospace">e8: 16m</text>
+            <text x="865" y="48" fill="#34d399" font-size="9.5" font-weight="700" font-family="monospace">e9: 4m</text>
+
+            <!-- Vértices -->
+            <circle cx="75" cy="58" r="22" fill="#0c4a6e" stroke="#0284c7" stroke-width="2.5" />
+            <text x="75" y="62" fill="#38bdf8" font-size="9" font-weight="800" text-anchor="middle" font-family="monospace">SUP-100</text>
+
+            <circle cx="340" cy="22" r="22" fill="#065f46" stroke="#10b981" stroke-width="3" />
+            <text x="340" y="26" fill="#34d399" font-size="9" font-weight="800" text-anchor="middle" font-family="monospace">TK-101 (LP)</text>
+
+            <circle cx="340" cy="58" r="18" fill="#1e293b" stroke="#475569" stroke-width="2" />
+            <text x="340" y="61" fill="#94a3b8" font-size="8" font-weight="700" text-anchor="middle" font-family="monospace">TK-102</text>
+
+            <circle cx="340" cy="95" r="18" fill="#1e293b" stroke="#475569" stroke-width="2" />
+            <text x="340" y="98" fill="#94a3b8" font-size="8" font-weight="700" text-anchor="middle" font-family="monospace">TK-103</text>
+
+            <circle cx="515" cy="58" r="20" fill="#065f46" stroke="#10b981" stroke-width="2.5" />
+            <text x="515" y="62" fill="#34d399" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">XV-104</text>
+
+            <circle cx="665" cy="58" r="20" fill="#065f46" stroke="#10b981" stroke-width="2.5" />
+            <text x="665" y="62" fill="#34d399" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">HEX-201</text>
+
+            <circle cx="805" cy="58" r="20" fill="#065f46" stroke="#10b981" stroke-width="2.5" />
+            <text x="805" y="62" fill="#34d399" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">DISP-300</text>
+
+            <circle cx="930" cy="58" r="20" fill="#065f46" stroke="#10b981" stroke-width="2.5" />
+            <text x="930" y="62" fill="#34d399" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">VEIC-300</text>
+          </svg>
         </div>
-        <div>
-          <table>
-            <thead><tr><th>Trecho Hidráulico</th><th>Ponte (Cut-Edge)?</th></tr></thead>
-            <tbody>
-              <tr><td>SUP &rarr; Tanques TK-10x</td><td><span class="ok">&cross; Não (Redundante)</span></td></tr>
-              <tr><td>XV-104 &rarr; HEX-201</td><td><span style="color:#ef4444;">⚠️ SIM (Ponte)</span></td></tr>
-              <tr><td>HEX-201 &rarr; DISP-300</td><td><span style="color:#ef4444;">⚠️ SIM (Ponte)</span></td></tr>
-              <tr><td>DISP-300 &rarr; VEIC-300</td><td><span style="color:#ef4444;">⚠️ SIM (Ponte)</span></td></tr>
-            </tbody>
-          </table>
+
+        <!-- TABELA DE ESTÁGIOS DA CASCATA -->
+        <table class="scada-table">
+          <thead>
+            <tr>
+              <th>Estágio de Pressão</th>
+              <th>Rota Hidráulica no Dígrafo</th>
+              <th>Distância Total</th>
+              <th>Status no SCADA Core</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>LP &mdash; TK-101 (350&ndash;400 bar)</strong></td>
+              <td>SUP-100 &rarr; TK-101 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td>
+              <td><strong style="color: #34d399;">52 m</strong></td>
+              <td><span style="color: #34d399; font-weight: 700;">&check; ROTA ÓTIMA INICIAL</span></td>
+            </tr>
+            <tr>
+              <td><strong>MP &mdash; TK-102 (650&ndash;700 bar)</strong></td>
+              <td>SUP-100 &rarr; TK-102 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td>
+              <td>52 m</td>
+              <td>Contingência 1</td>
+            </tr>
+            <tr>
+              <td><strong>HP &mdash; TK-103 (950&ndash;1000 bar)</strong></td>
+              <td>SUP-100 &rarr; TK-103 &rarr; XV-104 &rarr; HEX-201 &rarr; DISP-300 &rarr; VEIC-300</td>
+              <td>57 m</td>
+              <td>Contingência 2</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout" style="margin-top: 4px;">
+          📋 <strong>Protocolo SAE J2601:</strong> O SCADA comuta automaticamente entre os bancos de armazenamento (LP &rarr; MP &rarr; HP) conforme a pressão do FCEV sobe, economizando energia nos compressores.
         </div>
       </div>
-      <div class="callout">
-        <strong>Pontes Críticas:</strong> Trechos sem rota alternativa exigem Trip Global imediato em caso de fuga de gás.
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>10 / 18</span>
       </div>
-      <div class="slide-num">11 / 18</div>
     </section>
 
-    <!-- SLIDE 12: DIVISOR TÓPICO 04 -->
+
+    <!-- ====================================================================
+         SLIDE 11: DETECÇÃO DE VAZAMENTOS E PONTES (COM GRAFO DE DESVIO)
+         ==================================================================== -->
     <section>
-      <div style="font-size:3.5em; font-weight:800; color:#0284c7; line-height:1;">04</div>
-      <span class="badge-topic">TÓPICO 04</span>
-      <h2 style="font-size:1.5em; margin-top:0.2em;">Robótica Autônoma e Redes Multicamada</h2>
-      <p style="font-size:0.75em; color:#94a3b8; font-style:italic;">
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 03</span>
+        <h2 class="slide-title">Detecção de Vazamentos, <span>Desvio e Análise de Pontes</span></h2>
+        <p class="slide-subtitle">Isolamento dinâmico em tempo real e identificação formal de pontos únicos de falha na infraestrutura:</p>
+      </div>
+
+      <div class="slide-body">
+        <!-- GRAFO VISUAL DE VAZAMENTO E DESVIO DIJKSTRA -->
+        <div class="graph-frame" style="height: 155px; padding: 10px 16px; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: #ef4444; text-transform: uppercase; letter-spacing: 0.08em;">
+              🚨 RESPOSTA A VAZAMENTO: TK-101 ISOLADO (W = &infin;) &rarr; DESVIO DINÂMICO VIA TK-102 (MP)
+            </span>
+            <span style="background: #7f1d1d; color: #fca5a5; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; border: 1px solid #ef4444;">
+              RECONFIGURAÇÃO EM &lt; 1 ms
+            </span>
+          </div>
+
+          <svg viewBox="0 0 960 115" width="100%" height="110">
+            <!-- Rota bloqueada com X -->
+            <line x1="110" y1="58" x2="310" y2="22" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="3,3" />
+            <line x1="370" y1="22" x2="490" y2="58" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="3,3" />
+            <text x="200" y="24" fill="#ef4444" font-size="10" font-weight="800">&cross; W = &infin;</text>
+            <circle cx="340" cy="22" r="22" fill="#450a0a" stroke="#dc2626" stroke-width="2.5" />
+            <text x="340" y="25" fill="#fca5a5" font-size="7.5" font-weight="800" text-anchor="middle">TK-101 (ISOLADO)</text>
+
+            <!-- Nova rota reconfigurada em verde -->
+            <line x1="110" y1="58" x2="310" y2="58" stroke="#10b981" stroke-width="3.5" />
+            <line x1="370" y1="58" x2="490" y2="58" stroke="#10b981" stroke-width="3.5" />
+            <line x1="540" y1="58" x2="640" y2="58" stroke="#10b981" stroke-width="3.5" />
+            <line x1="690" y1="58" x2="780" y2="58" stroke="#10b981" stroke-width="3.5" />
+            <line x1="830" y1="58" x2="905" y2="58" stroke="#10b981" stroke-width="3.5" />
+
+            <!-- Vértices -->
+            <circle cx="75" cy="58" r="20" fill="#0c4a6e" stroke="#0284c7" stroke-width="2.5" />
+            <text x="75" y="62" fill="#38bdf8" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">SUP-100</text>
+
+            <circle cx="340" cy="58" r="20" fill="#065f46" stroke="#10b981" stroke-width="3" />
+            <text x="340" y="62" fill="#34d399" font-size="8.5" font-weight="800" text-anchor="middle" font-family="monospace">TK-102 (MP)</text>
+
+            <circle cx="515" cy="58" r="18" fill="#065f46" stroke="#10b981" stroke-width="2" />
+            <text x="515" y="61" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">XV-104</text>
+
+            <circle cx="665" cy="58" r="18" fill="#065f46" stroke="#10b981" stroke-width="2" />
+            <text x="665" y="61" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">HEX-201</text>
+
+            <circle cx="805" cy="58" r="18" fill="#065f46" stroke="#10b981" stroke-width="2" />
+            <text x="805" y="61" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">DISP-300</text>
+
+            <circle cx="930" cy="58" r="18" fill="#065f46" stroke="#10b981" stroke-width="2" />
+            <text x="930" y="61" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">VEIC-300</text>
+          </svg>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1.25fr; gap: 14px;">
+          <div class="card">
+            <div class="card-title" style="color: #f87171;">Sequência Operacional (AT-101 &gt; 1%):</div>
+            <ol style="margin: 0; padding-left: 1.1rem; font-size: 0.74rem; color: #cbd5e1; line-height: 1.5;">
+              <li>Fechamento de emergência de XV-101 (isola banco TK-101 da rede).</li>
+              <li>Reponderação dinâmica da aresta afetada com peso infinito (<i>W</i> &rarr; &infin;).</li>
+              <li>Recálculo por Dijkstra em &lt;1 ms comutando automaticamente para TK-102 (52 m).</li>
+            </ol>
+          </div>
+
+          <div>
+            <table class="scada-table">
+              <thead>
+                <tr><th>Trecho Hidráulico</th><th>É Ponte (Cut-Edge)?</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>SUP-100 &rarr; TK-101 / 102 / 103</td><td><span style="color: #34d399; font-weight: 700;">&cross; Não (3 rotas redundantes)</span></td></tr>
+                <tr><td>XV-104 &rarr; HEX-201</td><td><span style="color: #ef4444; font-weight: 700;">⚠️ SIM &mdash; PONTE CRÍTICA</span></td></tr>
+                <tr><td>HEX-201 &rarr; DISP-300</td><td><span style="color: #ef4444; font-weight: 700;">⚠️ SIM &mdash; PONTE CRÍTICA</span></td></tr>
+                <tr><td>DISP-300 &rarr; VEIC-300</td><td><span style="color: #ef4444; font-weight: 700;">⚠️ SIM &mdash; PONTE CRÍTICA</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>11 / 18</span>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         SLIDE 12: DIVISOR TÓPICO 04
+         ==================================================================== -->
+    <section class="center-slide">
+      <div style="font-size: 5rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 0.4rem;">
+        04
+      </div>
+      <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: var(--primary-light); text-transform: uppercase; margin-bottom: 0.8rem;">
+        T Ó P I C O &nbsp;&nbsp; 0 4
+      </div>
+      <h2 style="font-size: 2.2rem !important; font-weight: 800; color: #ffffff; margin: 0 0 1rem 0; text-transform: none !important;">
+        Robótica Autônoma e Redes Multicamada
+      </h2>
+      <p style="font-size: 1.05rem; color: #94a3b8; font-style: italic; max-width: 60%; margin: 0 auto 1.5rem auto;">
         Inspeção estrutural por PIG (Euler), amostragem de pureza por AGV (TSP) e logística por DAG
       </p>
-      <div class="slide-num">12 / 18</div>
-    </section>
 
-    <!-- SLIDE 13: INSPEÇÃO POR PIG (EULER) -->
-    <section>
-      <span class="badge-topic">TÓPICO 04</span>
-      <h3 style="font-size:1.1em;">Inspeção Estrutural por Robô PIG (Euler)</h3>
-      <ul style="font-size:0.72em; line-height:1.6; text-align:left;">
-        <li>🔍 <strong>Teorema de Euler:</strong> Todos os vértices da malha possuem grau par &rArr; Grafo conexo Euleriano.</li>
-        <li>⚡ <strong>Algoritmo de Hierholzer (<i>O</i>(|E|)):</strong> Determina o circuito fechado visitando cada duto exatamente uma vez.</li>
-        <li>🔄 <strong>Circuito Completo:</strong> BASE &rarr; DISP &rarr; HEX &rarr; XV-104 &rarr; TK-103 &rarr; SUP &rarr; TK-102 &rarr; XV-104 &rarr; TK-101 &rarr; SUP &rarr; BASE.</li>
-      </ul>
-      <div class="callout">
-        <strong>Cobertura 100% Determinística:</strong> Elimina sobreposição de trajeto e reduz o tempo de parada para manutenção periódica da estação.
+      <div class="slide-footer" style="width: 100%;">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>12 / 18</span>
       </div>
-      <div class="slide-num">13 / 18</div>
     </section>
 
-    <!-- SLIDE 14: ROTEAMENTO AGV (TSP & 2-OPT) -->
+
+    <!-- ====================================================================
+         SLIDE 13: ROBÔ PIG (COM GRAFO DO CIRCUITO EULERIANO)
+         ==================================================================== -->
     <section>
-      <span class="badge-topic">TÓPICO 04</span>
-      <h3 style="font-size:1.1em;">Roteamento do AGV de Amostragem (TSP &amp; 2-Opt)</h3>
-      <table>
-        <thead><tr><th>Método</th><th>Sequência de Visitação do AGV</th><th>Distância</th><th>Desempenho</th></tr></thead>
-        <tbody>
-          <tr><td>Vizinho Mais Próximo</td><td>LAB &rarr; TK1 &rarr; TK2 &rarr; TK3 &rarr; HEX &rarr; DISP &rarr; LAB</td><td>280 m</td><td>Solução inicial (cruzamento)</td></tr>
-          <tr><td>Refinamento 2-Opt</td><td>LAB &rarr; TK1 &rarr; TK2 &rarr; TK3 &rarr; DISP &rarr; HEX &rarr; LAB</td><td><strong class="ok">260 m</strong></td><td><strong class="ok">&minus;7,1% Otimizado</strong></td></tr>
-        </tbody>
-      </table>
-      <div class="callout">
-        <strong>Autonomia Operacional:</strong> Poupa 20 metros por ciclo (~480 metros por dia em 24 coletas), aumentando a durabilidade da bateria do AGV.
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 04</span>
+        <h2 class="slide-title">Inspeção Estrutural por Robô PIG <span>(Circuito de Euler)</span></h2>
+        <p class="slide-subtitle">Varredura ultrassônica periódica para detecção de microtrincas e fragilização por hidrogênio em dutos:</p>
       </div>
-      <div class="slide-num">14 / 18</div>
-    </section>
 
-    <!-- SLIDE 15: GRAFO DE PRECEDÊNCIA (DAG & KAHN) -->
-    <section>
-      <span class="badge-topic">TÓPICO 04</span>
-      <h3 style="font-size:1.1em;">Intertravamento Seguro por DAG (Kahn)</h3>
-      <div style="background:#070d18; border:1px solid #1e293b; border-radius:6px; padding:0.5em; font-family:monospace; font-size:0.68em; color:#38bdf8; margin-bottom:0.8em;">
-        Acoplamento BV-301 &rarr; Link IrDA J2799 &rarr; Teste Estanqueidade &rarr; Chiller T40 &rarr; Rampa Cascata &rarr; Purga/Fim
-      </div>
-      <ul style="font-size:0.7em; line-height:1.6; text-align:left;">
-        <li>Garante que nenhuma etapa do protocolo SAE J2601 ocorra fora da sequência crítica de segurança.</li>
-        <li>O algoritmo de Kahn valida aciclicidade e detecta instantaneamente deadlocks operacionais no SCADA.</li>
-      </ul>
-      <div class="slide-num">15 / 18</div>
-    </section>
+      <div class="slide-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <div class="card" style="border-left: 3px solid #0284c7;">
+            <div class="card-title" style="color: #38bdf8;">Condição Teórica de Euler</div>
+            <p class="card-text">Todos os vértices da malha de inspeção possuem grau par &rArr; Grafo conexo Euleriano comprovado formalmente.</p>
+          </div>
 
-    <!-- SLIDE 16: CICLO DE VARREDURA SCADA (100 ms) -->
-    <section>
-      <span class="badge-topic">INTEGRAÇÃO SCADA</span>
-      <h3 style="font-size:1.1em;">Ciclo de Varredura (100 ms) e Execução Algorítmica</h3>
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:0.6em; font-size:0.65em; text-align:left;">
-        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #0284c7;">
-          <strong style="color:#38bdf8;">1. Aquisição (10 ms)</strong><br>Leitura de PT, TT, AT e estados ZS.
+          <div class="card" style="border-left: 3px solid #10b981;">
+            <div class="card-title" style="color: #34d399;">Algoritmo de Hierholzer</div>
+            <p class="card-text">Complexidade linear <i>O</i>(|E|), construindo a rota de varredura sem redundância de trecho e com retorno garantido à base.</p>
+          </div>
         </div>
-        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #0284c7;">
-          <strong style="color:#38bdf8;">2. Grafo (25 ms)</strong><br>Atualização dinâmica de pesos (W = &infin;).
+
+        <!-- GRAFO VISUAL DO CIRCUITO EULERIANO -->
+        <div class="graph-frame" style="height: 155px; padding: 10px 16px; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.08em;">
+              CIRCUITO FECHADO DE INSPEÇÃO PIG (HIERHOLZER) &mdash; 10 TUBULAÇÕES SEM REPETIÇÃO
+            </span>
+            <span style="background: #065f46; color: #34d399; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; border: 1px solid #10b981;">
+              COBERTURA 100% DETERMINÍSTICA
+            </span>
+          </div>
+
+          <svg viewBox="0 0 920 115" width="100%" height="110">
+            <circle cx="60" cy="58" r="22" fill="#0369a1" stroke="#38bdf8" stroke-width="2.5" />
+            <text x="60" y="61" fill="#fff" font-size="8" font-weight="800" text-anchor="middle" font-family="monospace">BASE-100</text>
+
+            <path d="M 82,58 C 200,-5 700,-5 780,45" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3,3" />
+            <text x="440" y="15" fill="#38bdf8" font-size="8.5" font-weight="700">Etapa 1: Dutos Periféricos &rarr;</text>
+
+            <circle cx="800" cy="58" r="20" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+            <text x="800" y="61" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle" font-family="monospace">DISP</text>
+
+            <circle cx="660" cy="58" r="20" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+            <text x="660" y="61" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle" font-family="monospace">HEX</text>
+
+            <circle cx="500" cy="58" r="20" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+            <text x="500" y="61" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle" font-family="monospace">XV-104</text>
+
+            <circle cx="340" cy="25" r="16" fill="#065f46" stroke="#10b981" stroke-width="2" />
+            <text x="340" y="28" fill="#fff" font-size="7" font-weight="800" text-anchor="middle">TK-101</text>
+
+            <circle cx="340" cy="58" r="16" fill="#065f46" stroke="#10b981" stroke-width="2" />
+            <text x="340" y="61" fill="#fff" font-size="7" font-weight="800" text-anchor="middle">TK-102</text>
+
+            <circle cx="340" cy="91" r="16" fill="#065f46" stroke="#10b981" stroke-width="2" />
+            <text x="340" y="94" fill="#fff" font-size="7" font-weight="800" text-anchor="middle">TK-103</text>
+
+            <circle cx="180" cy="58" r="20" fill="#1e293b" stroke="#38bdf8" stroke-width="2" />
+            <text x="180" y="61" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle" font-family="monospace">SUP</text>
+
+            <line x1="780" y1="58" x2="680" y2="58" stroke="#10b981" stroke-width="2.5" />
+            <line x1="640" y1="58" x2="520" y2="58" stroke="#10b981" stroke-width="2.5" />
+            
+            <path d="M 480,50 L 356,25" stroke="#10b981" stroke-width="2" />
+            <path d="M 324,25 L 198,52" stroke="#10b981" stroke-width="2" />
+
+            <path d="M 480,58 L 356,58" stroke="#10b981" stroke-width="2" />
+            <path d="M 324,58 L 198,58" stroke="#10b981" stroke-width="2" />
+
+            <path d="M 480,66 L 356,91" stroke="#10b981" stroke-width="2" />
+            <path d="M 324,91 L 198,64" stroke="#10b981" stroke-width="2" />
+
+            <path d="M 180,78 C 135,110 95,110 60,80" fill="none" stroke="#34d399" stroke-width="2.5" stroke-dasharray="3,3" />
+            <text x="120" y="106" fill="#34d399" font-size="8" font-weight="700">Etapa 10: Retorno à Base &hookleftarrow;</text>
+          </svg>
         </div>
-        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #10b981;">
-          <strong style="color:#34d399;">3. Roteamento (40 ms)</strong><br>Dijkstra, BFS e Kahn em &lt;1 ms.
-        </div>
-        <div style="background:#111e33; padding:0.6em; border-radius:6px; border-top:3px solid #0284c7;">
-          <strong style="color:#38bdf8;">4. Atuação (25 ms)</strong><br>Escrita em saídas e atualização na IHM.
+
+        <div class="callout">
+          🔄 <strong>100% Determinístico:</strong> O robô PIG inspeciona todas as 10 tubulações em circuito fechado percorrendo cada segmento exatamente uma vez, minimizando o tempo de indisponibilidade da planta.
         </div>
       </div>
-      <div class="callout">
-        <strong>Determinismo Garantido:</strong> Execução total em 76 ms &le; 100 ms, assegurando folga de 24% para estabilidade em tempo real.
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>13 / 18</span>
       </div>
-      <div class="slide-num">16 / 18</div>
     </section>
 
-    <!-- SLIDE 17: CONCLUSÃO E SINERGIA -->
+
+    <!-- ====================================================================
+         SLIDE 14: AGV DE AMOSTRAGEM (COM GRAFO COMPARATIVO TSP)
+         ==================================================================== -->
     <section>
-      <span class="badge-topic">CONCLUSÃO</span>
-      <h3 style="font-size:1.1em;">Síntese dos Resultados e Sinergia com a Etapa 01</h3>
-      <ul style="font-size:0.7em; line-height:1.6; text-align:left;">
-        <li>📊 <strong>Modelagem Unificada:</strong> Dígrafo com 8 nós e 9 arestas particionado nos Setores 100, 200 e 300.</li>
-        <li>⚡ <strong>Roteamento Dinâmico:</strong> Dijkstra executa cascata e desvio instantâneo de vazamentos em &lt;1 ms.</li>
-        <li>🤖 <strong>Robótica Otimizada:</strong> Cobertura de 100% dos dutos por PIG e reduções de 7,1% no trajeto do AGV.</li>
-        <li>🔗 <strong>Sinergia com Etapa 01:</strong> As proposições booleanas de intertravamento comandam os pesos no grafo (<i>W</i> &rarr; &infin;).</li>
-      </ul>
-      <div class="slide-num">17 / 18</div>
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 04</span>
+        <h2 class="slide-title">Roteamento do AGV de Amostragem <span>(TSP &amp; 2-Opt)</span></h2>
+        <p class="slide-subtitle">O robô móvel AGV coleta amostras para ensaio de pureza de hidrogênio em 5 pontos da planta (norma SAE J2719):</p>
+      </div>
+
+      <div class="slide-body">
+        <!-- DIAGRAMAS DUPLOS DO GRAFO DO TSP -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          
+          <!-- GRAFO GULOSO -->
+          <div class="card" style="border-top: 3px solid #f59e0b; padding: 8px 12px;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #f59e0b; text-transform: uppercase; margin-bottom: 4px;">
+              1. SOLUÇÃO GULOSA (NN) &mdash; 280 M (COM CRUZAMENTO)
+            </div>
+            <div class="graph-frame" style="height: 110px;">
+              <svg viewBox="0 0 400 95" width="100%" height="95">
+                <line x1="40" y1="50" x2="110" y2="25" stroke="#475569" stroke-width="1.75" />
+                <line x1="110" y1="25" x2="190" y2="25" stroke="#475569" stroke-width="1.75" />
+                <line x1="190" y1="25" x2="270" y2="25" stroke="#475569" stroke-width="1.75" />
+                <line x1="40" y1="50" x2="270" y2="75" stroke="#475569" stroke-width="1.75" />
+                
+                <line x1="270" y1="25" x2="350" y2="75" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="3,3" />
+                <line x1="350" y1="25" x2="270" y2="75" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="3,3" />
+                <text x="310" y="55" fill="#ef4444" font-size="8.5" font-weight="800">&cross; Cruzamento</text>
+
+                <circle cx="40" cy="50" r="14" fill="#0284c7" /><text x="40" y="53" fill="#fff" font-size="7.5" font-weight="800" text-anchor="middle">LAB</text>
+                <circle cx="110" cy="25" r="12" fill="#1e293b" stroke="#38bdf8" /><text x="110" y="28" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">TK1</text>
+                <circle cx="190" cy="25" r="12" fill="#1e293b" stroke="#38bdf8" /><text x="190" y="28" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">TK2</text>
+                <circle cx="270" cy="25" r="12" fill="#1e293b" stroke="#38bdf8" /><text x="270" y="28" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">TK3</text>
+                <circle cx="350" cy="25" r="12" fill="#1e293b" stroke="#f59e0b" /><text x="350" y="28" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">HEX</text>
+                <circle cx="270" cy="75" r="12" fill="#1e293b" stroke="#f59e0b" /><text x="270" y="78" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">DISP</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- GRAFO OTIMIZADO 2-OPT -->
+          <div class="card" style="border-top: 3px solid #10b981; padding: 8px 12px;">
+            <div style="font-size: 0.72rem; font-weight: 800; color: #10b981; text-transform: uppercase; margin-bottom: 4px;">
+              2. REFINAMENTO 2-OPT &mdash; 260 M (PERÍMETRO OTIMIZADO)
+            </div>
+            <div class="graph-frame" style="height: 110px;">
+              <svg viewBox="0 0 400 95" width="100%" height="95">
+                <polygon points="40,50 110,25 190,25 270,25 350,45 270,75" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="2.5" />
+                <text x="210" y="55" fill="#34d399" font-size="8.5" font-weight="800">&check; Sem Cruzamento (&minus;7,1%)</text>
+
+                <circle cx="40" cy="50" r="14" fill="#0284c7" stroke="#38bdf8" /><text x="40" y="53" fill="#fff" font-size="7.5" font-weight="800" text-anchor="middle">LAB</text>
+                <circle cx="110" cy="25" r="12" fill="#065f46" stroke="#10b981" /><text x="110" y="28" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">TK1</text>
+                <circle cx="190" cy="25" r="12" fill="#065f46" stroke="#10b981" /><text x="190" y="28" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">TK2</text>
+                <circle cx="270" cy="25" r="12" fill="#065f46" stroke="#10b981" /><text x="270" y="28" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">TK3</text>
+                <circle cx="350" cy="45" r="12" fill="#065f46" stroke="#10b981" /><text x="350" y="48" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">DISP</text>
+                <circle cx="270" cy="75" r="12" fill="#065f46" stroke="#10b981" /><text x="270" y="78" fill="#fff" font-size="6.5" font-weight="700" text-anchor="middle">HEX</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- TABELA COMPARATIVA -->
+        <table class="scada-table">
+          <thead>
+            <tr><th>Método Empregado</th><th>Sequência de Visitação do AGV</th><th>Distância Total</th><th>Desempenho no SCADA</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Vizinho Mais Próximo (NN)</strong></td><td>LAB &rarr; TK-101 &rarr; TK-102 &rarr; TK-103 &rarr; HEX-201 &rarr; DISP-300 &rarr; LAB</td><td>280 m</td><td>Solução inicial (cruzamento)</td></tr>
+            <tr><td><strong>Refinamento 2-Opt</strong></td><td>LAB &rarr; TK-101 &rarr; TK-102 &rarr; TK-103 &rarr; DISP-300 &rarr; HEX-201 &rarr; LAB</td><td><strong style="color: #34d399;">260 m</strong></td><td><strong style="color: #34d399;">&check; OTIMIZADO (&minus;7,1%)</strong></td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          📉 <strong>Autonomia:</strong> Economia de 20 m por ciclo (~480 m/dia em 24 coletas contínuas), poupando bateria e desobstruindo vias da planta.
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>14 / 18</span>
+      </div>
     </section>
 
-    <!-- SLIDE 18: ENCERRAMENTO -->
+
+    <!-- ====================================================================
+         SLIDE 15: PRECEDÊNCIA (COM FLUXOGRAMA VISUAL DAG & KAHN)
+         ==================================================================== -->
     <section>
-      <h2>Obrigado!</h2>
-      <h3 style="font-size:1.1em; color:#fff;">Estação de Reabastecimento de H₂ &mdash; SCADA Core</h3>
-      <p style="font-size:0.75em; color:#94a3b8;">Modelagem em Grafos, Segurança Operacional e Algoritmos de Roteamento Determinístico em Tempo Real.</p>
-      <br>
-      <div style="font-size:0.7em; color:#38bdf8; font-family:monospace; background:#111e33; padding:0.8em; border-radius:6px; display:inline-block;">
-        github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core
+      <div class="slide-header">
+        <span class="topic-badge">TÓPICO 04</span>
+        <h2 class="slide-title">Grafo de Precedência e <span>Intertravamento (DAG &amp; Kahn)</span></h2>
+        <p class="slide-subtitle">Ordenação topológica formal para garantia de precedência no protocolo de abastecimento (SAE J2601 / SAE J2799):</p>
       </div>
-      <br><br>
-      <span class="badge">UNIFEI · ECAA08 Automação Industrial · Grupo 9</span>
-      <div class="slide-num">18 / 18</div>
+
+      <div class="slide-body">
+        <!-- FLUXOGRAMA VISUAL DO DAG -->
+        <div class="graph-frame" style="height: 130px; padding: 10px 16px; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 6px;">
+            <span style="font-size: 0.72rem; font-weight: 800; color: #38bdf8; text-transform: uppercase;">
+              FLUXO ACÍCLICO DIRIGIDO (DAG) &mdash; SEQUÊNCIA CRÍTICA DE INTERTRAVAMENTO
+            </span>
+            <span style="background: #0369a1; color: #e0f2fe; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">
+              ORDENAÇÃO TOPOLÓGICA DE KAHN
+            </span>
+          </div>
+
+          <svg viewBox="0 0 940 85" width="100%" height="75">
+            <rect x="10" y="18" width="135" height="48" rx="6" fill="#111e33" stroke="#0284c7" stroke-width="2" />
+            <text x="77" y="38" fill="#38bdf8" font-size="7.5" font-weight="800" text-anchor="middle">1. ACOPLAMENTO</text>
+            <text x="77" y="53" fill="#94a3b8" font-size="6.5" text-anchor="middle">Trava BV-301</text>
+            <line x1="145" y1="42" x2="175" y2="42" stroke="#0284c7" stroke-width="2" />
+
+            <rect x="175" y="18" width="135" height="48" rx="6" fill="#111e33" stroke="#0284c7" stroke-width="2" />
+            <text x="242" y="38" fill="#38bdf8" font-size="7.5" font-weight="800" text-anchor="middle">2. LINK IrDA</text>
+            <text x="242" y="53" fill="#94a3b8" font-size="6.5" text-anchor="middle">Handshake J2799</text>
+            <line x1="310" y1="42" x2="340" y2="42" stroke="#0284c7" stroke-width="2" />
+
+            <rect x="340" y="18" width="135" height="48" rx="6" fill="#111e33" stroke="#0284c7" stroke-width="2" />
+            <text x="407" y="38" fill="#38bdf8" font-size="7.5" font-weight="800" text-anchor="middle">3. ESTANQUEIDADE</text>
+            <text x="407" y="53" fill="#94a3b8" font-size="6.5" text-anchor="middle">Pulso 50 bar</text>
+            <line x1="475" y1="42" x2="505" y2="42" stroke="#0284c7" stroke-width="2" />
+
+            <rect x="505" y="18" width="135" height="48" rx="6" fill="#111e33" stroke="#10b981" stroke-width="2" />
+            <text x="572" y="38" fill="#34d399" font-size="7.5" font-weight="800" text-anchor="middle">4. CHILLER T40</text>
+            <text x="572" y="53" fill="#94a3b8" font-size="6.5" text-anchor="middle">HEX-201 &le; &minus;40&deg;C</text>
+            <line x1="640" y1="42" x2="670" y2="42" stroke="#10b981" stroke-width="2" />
+
+            <rect x="670" y="18" width="140" height="48" rx="6" fill="#111e33" stroke="#10b981" stroke-width="2" />
+            <text x="740" y="38" fill="#34d399" font-size="7.5" font-weight="800" text-anchor="middle">5. RAMPA CASCATA</text>
+            <text x="740" y="53" fill="#94a3b8" font-size="6.5" text-anchor="middle">LP &rarr; MP &rarr; HP (700 b)</text>
+            <line x1="810" y1="42" x2="835" y2="42" stroke="#10b981" stroke-width="2" />
+
+            <rect x="835" y="18" width="95" height="48" rx="6" fill="#111e33" stroke="#0284c7" stroke-width="2" />
+            <text x="882" y="38" fill="#38bdf8" font-size="7.5" font-weight="800" text-anchor="middle">6. PURGA</text>
+            <text x="882" y="53" fill="#94a3b8" font-size="6.5" text-anchor="middle">Desacoplamento</text>
+          </svg>
+        </div>
+
+        <!-- TABELA DE INTEGRAÇÃO INTERTRAVAMENTO (ETAPA 01) -> TOPOLOGIA DAG (ETAPA 02) -->
+        <table class="scada-table" style="font-size: 0.68rem; margin: 6px 0;">
+          <thead>
+            <tr>
+              <th style="padding: 4px 8px;">Etapa DAG</th>
+              <th style="padding: 4px 8px;">Intertravamento Booleano (Etapa 01)</th>
+              <th style="padding: 4px 8px;">Ação Topológica no SCADA (Etapa 02)</th>
+              <th style="padding: 4px 8px;">Grau de Entrada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 3px 8px;"><strong>1. Acoplamento</strong></td>
+              <td style="padding: 3px 8px;">Trava inserida (<code>BV_LOCKED == 1</code>)</td>
+              <td style="padding: 3px 8px;">Nó raiz do DAG &rarr; Libera verificação inicial</td>
+              <td style="padding: 3px 8px;"><span style="color:#34d399; font-weight:bold;">in-deg = 0 &rarr; Fila</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 8px;"><strong>2. Handshake &amp; Teste</strong></td>
+              <td style="padding: 3px 8px;"><code>IRDA_OK == 1</code> &amp; Pulso 50 bar estanque</td>
+              <td style="padding: 3px 8px;">Validação física antes de liberar abertura de válvulas</td>
+              <td style="padding: 3px 8px;"><span style="color:#38bdf8; font-weight:bold;">in-deg = 1 &rarr; Aprovado</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 8px;"><strong>3. Chiller T40 &amp; Cascata</strong></td>
+              <td style="padding: 3px 8px;"><code>TT_201 &le; -40 &deg;C</code> &amp; Rampa LP&rarr;MP&rarr;HP</td>
+              <td style="padding: 3px 8px;">Dijkstra calcula caminho ótimo nas pressões da cascata</td>
+              <td style="padding: 3px 8px;"><span style="color:#38bdf8; font-weight:bold;">in-deg = 1 &rarr; Ativo</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 3px 8px;"><strong>4. Purga &amp; Desacople</strong></td>
+              <td style="padding: 3px 8px;">700 bar atingido &amp; <code>PRESS_MANG &lt; 2 bar</code></td>
+              <td style="padding: 3px 8px;">Nó terminal do DAG &rarr; Despressurização segura da linha</td>
+              <td style="padding: 3px 8px;"><span style="color:#fbbf24; font-weight:bold;">Conclusão do DAG</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="card" style="border-left: 3px solid #0284c7; padding: 8px 12px;">
+            <div class="card-title" style="color: #38bdf8; font-size: 0.8rem; margin-bottom: 2px;">Algoritmo de Kahn</div>
+            <p class="card-text" style="font-size: 0.72rem;">Elimina nós de grau zero sequencialmente. Se restar algum nó, detecta deadlocks ou ciclos ilícitos e aborta.</p>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #10b981; padding: 8px 12px;">
+            <div class="card-title" style="color: #34d399; font-size: 0.8rem; margin-bottom: 2px;">Camadas Interligadas</div>
+            <p class="card-text" style="font-size: 0.72rem;">Camada Hidráulica (dutos) + Segurança SIS (chamas/gás) + Robótica (PIG/AGV) integradas no mesmo núcleo matemático.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>15 / 18</span>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         SLIDE 16: CICLO DE VARREDURA SCADA (100 ms)
+         ==================================================================== -->
+    <section>
+      <div class="slide-header">
+        <span class="topic-badge">INTEGRAÇÃO SCADA</span>
+        <h2 class="slide-title">Ciclo de Varredura (100 ms) e <span>Execução Algorítmica</span></h2>
+        <p class="slide-subtitle">Um único ciclo de varredura (100 ms) integra o grafo topológico, Dijkstra, busca e validação de precedência:</p>
+      </div>
+
+      <div class="slide-body">
+        <!-- 4 ETAPAS HORIZONTAIS DA VARREDURA -->
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+          <div class="card" style="border-top: 3px solid #0284c7; padding: 10px 12px;">
+            <div style="font-size: 0.7rem; font-weight: 800; color: #38bdf8;">1. AQUISIÇÃO (10 ms)</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.82rem; margin: 2px 0;">Leitura de Sensores</div>
+            <p class="card-text">Pressão (PT), temperatura (TT), gás (AT) e estado de chaves (ZS).</p>
+          </div>
+
+          <div class="card" style="border-top: 3px solid #0284c7; padding: 10px 12px;">
+            <div style="font-size: 0.7rem; font-weight: 800; color: #38bdf8;">2. GRAFO (25 ms)</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.82rem; margin: 2px 0;">Ajuste de Pesos</div>
+            <p class="card-text">Atualização de pesos das arestas. Se falha, W = &infin; isolando o duto.</p>
+          </div>
+
+          <div class="card" style="border-top: 3px solid #10b981; padding: 10px 12px;">
+            <div style="font-size: 0.7rem; font-weight: 800; color: #34d399;">3. ROTEAMENTO (40 ms)</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.82rem; margin: 2px 0;">Dijkstra, BFS &amp; Kahn</div>
+            <p class="card-text">Cálculo de rota mínima e verificação de raio de isolamento em &lt;1 ms.</p>
+          </div>
+
+          <div class="card" style="border-top: 3px solid #0284c7; padding: 10px 12px;">
+            <div style="font-size: 0.7rem; font-weight: 800; color: #38bdf8;">4. ATUAÇÃO (25 ms)</div>
+            <div style="font-weight: 700; color: #fff; font-size: 0.82rem; margin: 2px 0;">Comandos de Saída</div>
+            <p class="card-text">Acionamento de solenoides XV, chiller HEX e atualização da IHM.</p>
+          </div>
+        </div>
+
+        <!-- DIAGRAMA VISUAL DO CICLO TEMPORAL DETERMINÍSTICO (100 MS) -->
+        <div class="graph-frame" style="height: 65px; padding: 6px 14px; flex-direction: column; justify-content: center;">
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 4px;">
+            <span style="font-size: 0.68rem; font-weight: 800; color: #38bdf8; text-transform: uppercase;">
+              CRONOGRAMA DO CICLO DETERMINÍSTICO (100 ms)
+            </span>
+            <span style="color: #34d399; font-size: 0.68rem; font-weight: 700;">
+              Tempo Real Estrito &bull; Margem de Segurança: 24 ms (24%)
+            </span>
+          </div>
+          <svg viewBox="0 0 920 28" width="100%" height="24">
+            <!-- Aquisição 10ms -->
+            <rect x="0" y="2" width="90" height="22" rx="4" fill="#0369a1" />
+            <text x="45" y="16" fill="#fff" font-size="8.5" font-weight="700" text-anchor="middle">Aquisição 10ms</text>
+            
+            <!-- Grafo 25ms -->
+            <rect x="94" y="2" width="225" height="22" rx="4" fill="#0284c7" />
+            <text x="206" y="16" fill="#fff" font-size="8.5" font-weight="700" text-anchor="middle">Ajuste de Pesos 25ms</text>
+            
+            <!-- Roteamento 40ms -->
+            <rect x="323" y="2" width="365" height="22" rx="4" fill="#059669" />
+            <text x="505" y="16" fill="#fff" font-size="8.5" font-weight="700" text-anchor="middle">Roteamento &amp; Algoritmos 40ms (Dijkstra &lt; 0.8ms)</text>
+            
+            <!-- Atuação 25ms -->
+            <rect x="692" y="2" width="228" height="22" rx="4" fill="#0284c7" />
+            <text x="806" y="16" fill="#fff" font-size="8.5" font-weight="700" text-anchor="middle">Atuação &amp; IHM 25ms</text>
+          </svg>
+        </div>
+
+        <!-- METRICAS DE TEMPO DE RESPOSTA -->
+        <div class="card" style="padding: 12px 18px;">
+          <div style="font-weight: 800; color: #ffffff; font-size: 0.88rem; margin-bottom: 8px;">Métricas de Desempenho e Determinismo</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; text-align: center;">
+            <div style="background: #070d18; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div style="font-size: 1.4rem; font-weight: 800; color: #38bdf8;">&lt; 0,8 ms</div>
+              <div style="font-size: 0.72rem; color: #94a3b8;">Execução do Dijkstra (8 nós)</div>
+            </div>
+            <div style="background: #070d18; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div style="font-size: 1.4rem; font-weight: 800; color: #34d399;">&lt; 0,5 ms</div>
+              <div style="font-size: 0.72rem; color: #94a3b8;">Busca BFS de Isolamento</div>
+            </div>
+            <div style="background: #070d18; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color);">
+              <div style="font-size: 1.4rem; font-weight: 800; color: #ffffff;">100 ms</div>
+              <div style="font-size: 0.72rem; color: #94a3b8;">Ciclo Total do SCADA (24% folga)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>16 / 18</span>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         SLIDE 17: CONCLUSÃO E SINERGIA
+         ==================================================================== -->
+    <section>
+      <div class="slide-header">
+        <span class="topic-badge">CONCLUSÃO</span>
+        <h2 class="slide-title">Síntese dos Resultados e <span>Sinergia com a Etapa 01</span></h2>
+        <p class="slide-subtitle">A união da lógica proposicional com a teoria dos grafos confere robustez cibernética e operacional:</p>
+      </div>
+
+      <div class="slide-body">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; flex: 1;">
+          <div class="card" style="border-left: 3px solid #0284c7; display: flex; flex-direction: column; justify-content: center;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 1.2rem;">📊</span>
+              <strong style="color: #ffffff; font-size: 0.92rem;">Modelagem Formal Completa</strong>
+            </div>
+            <p class="card-text">
+              Dígrafo ponderado <i>G</i> = (<i>V</i>, <i>E</i>, <i>W</i>) representando fidedignamente a planta com 8 equipamentos, 9 tubulações e os Setores 100, 200 e 300.
+            </p>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #10b981; display: flex; flex-direction: column; justify-content: center;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 1.2rem;">⚡</span>
+              <strong style="color: #ffffff; font-size: 0.92rem;">Roteamento Resiliente e Seguro</strong>
+            </div>
+            <p class="card-text">
+              Comutação de cascata LP &rarr; MP &rarr; HP via Dijkstra e reponderação dinâmica para W = &infin; isolando vazamentos em menos de 1 ms.
+            </p>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #f59e0b; display: flex; flex-direction: column; justify-content: center;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 1.2rem;">🤖</span>
+              <strong style="color: #ffffff; font-size: 0.92rem;">Otimização Robótica Autônoma</strong>
+            </div>
+            <p class="card-text">
+              Cobertura de 100% dos dutos por robô PIG (Hierholzer) e redução de 7,1% no trajeto de amostragem do AGV (2-Opt).
+            </p>
+          </div>
+
+          <div class="card" style="border-left: 3px solid #0284c7; display: flex; flex-direction: column; justify-content: center;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 1.2rem;">🔗</span>
+              <strong style="color: #ffffff; font-size: 0.92rem;">Sinergia Lógica + Grafos</strong>
+            </div>
+            <p class="card-text">
+              A álgebra booleana (Etapa 01) supervisiona intertravamentos discretos de segurança; a teoria dos grafos (Etapa 02) otimiza caminhos contínuos e logística.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="slide-footer">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>17 / 18</span>
+      </div>
+    </section>
+
+
+    <!-- ====================================================================
+         SLIDE 18: ENCERRAMENTO
+         ==================================================================== -->
+    <section class="center-slide">
+      <div style="width: 70px; height: 70px; border-radius: 50%; background: radial-gradient(circle, rgba(2, 132, 199, 0.3) 0%, rgba(11, 19, 32, 0) 70%); border: 2px solid var(--primary-dark); display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; box-shadow: 0 0 30px rgba(2, 132, 199, 0.4);">
+        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+
+      <div style="font-size: 0.85rem; font-weight: 800; letter-spacing: 0.3em; color: var(--primary-light); text-transform: uppercase; margin-bottom: 0.6rem;">
+        OBRIGADO!
+      </div>
+
+      <h2 style="font-size: 2.2rem !important; font-weight: 800; color: #ffffff; margin: 0 0 0.8rem 0; letter-spacing: -0.02em; text-transform: none !important;">
+        Estação de Reabastecimento de Hidrogênio &mdash; SCADA Core
+      </h2>
+
+      <p style="font-size: 1rem; color: #94a3b8; max-width: 65%; line-height: 1.5; margin: 0 auto 1.5rem auto;">
+        Modelagem em Grafos, Segurança Operacional e Algoritmos de Roteamento Determinístico em Tempo Real.
+      </p>
+
+      <div style="display: inline-flex; flex-direction: column; gap: 6px; background: #111e33; border: 1px solid var(--border-color); padding: 12px 20px; border-radius: 8px; font-size: 0.82rem; color: #cbd5e1; margin-bottom: 1.2rem;">
+        <div><strong>Repositório GitHub:</strong> <span style="color: #38bdf8; font-family: monospace;">github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core</span></div>
+        <div><strong>Website GitHub Pages:</strong> <span style="color: #38bdf8; font-family: monospace;">leovarconrenno.github.io/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/</span></div>
+      </div>
+
+      <div style="font-size: 0.82rem; color: #64748b;">
+        UNIFEI &middot; ECAA08 Automação Industrial &middot; Grupo 9
+      </div>
+
+      <div class="slide-footer" style="width: 100%;">
+        <span>ESTAÇÃO DE REABASTECIMENTO DE HIDROGÊNIO · SCADA-CORE</span>
+        <span>18 / 18</span>
+      </div>
     </section>
 
   </div>
@@ -395,11 +1468,16 @@
 <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
 <script>
   Reveal.initialize({
+    width: 1280,
+    height: 720,
+    margin: 0.04,
+    minScale: 0.2,
+    maxScale: 2.0,
     hash: true,
     slideNumber: 'c/t',
     progress: true,
     controls: true,
-    center: true,
+    center: false,
     transition: 'slide',
     plugins: [ RevealHighlight ]
   });
