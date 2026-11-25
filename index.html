@@ -41,6 +41,7 @@
         <li><a href="#componentes" class="nav-link">⚙️ Componentes</a></li>
         <li><a href="#diagrama" class="nav-link">📐 Diagrama</a></li>
         <li><a href="#grafos" class="nav-link">📊 Grafos</a></li>
+        <li><a href="#arvores" class="nav-link">🌳 Árvores</a></li>
         <li><a href="#equipe" class="nav-link">👥 Equipe</a></li>
       </ul>
 
@@ -62,6 +63,7 @@
       <a href="#componentes" class="nav-link">⚙️ Componentes</a>
       <a href="#diagrama" class="nav-link">📐 Diagrama</a>
       <a href="#grafos" class="nav-link">📊 Grafos — Etapa 02</a>
+      <a href="#arvores" class="nav-link">🌳 Árvores — Etapa 03</a>
       <a href="#equipe" class="nav-link">👥 Equipe</a>
       <a href="https://github.com/Automatica-Reabastecimento-H2-SCADA/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core" target="_blank" rel="noopener noreferrer" class="nav-link" style="color: var(--primary-light);">
         🐙 Repositório GitHub &rarr;
@@ -546,6 +548,126 @@
               Kahn garante ordenação topológica: XV-301 nunca abre antes de BV-301 e HEX-201.
             </p>
             <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-02-grafos/18%20-%20Grafos%20de%20Logistica%20de%20Insumos%20e%20Produtos%20Acabados.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ETAPA 03 — ESTRUTURAS EM ÁRVORE -->
+    <section class="section" id="arvores">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">🌳 Etapa 03 — Estruturas em Árvore Aplicadas ao SCADA</h2>
+          <p class="section-subtitle">
+            Otimização física e de rede, compressão de telemetria, verificação formal, controle reativo e diagnóstico inteligente
+            integrados aos Setores 100, 200 e 300 da Estação de Hidrogênio no simulador <strong>SCADACoreModulo3</strong>.
+          </p>
+        </div>
+        <div style="text-align:center; margin-bottom: 2.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+          <a href="assets/slide/Etapa03_Arvores_SCADA_H2.html"
+             class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+            🎞️ Ver Apresentação Interativa (Reveal.js)
+          </a>
+          <a href="assets/slide/Etapa03_Sala_WebRTC.html"
+             class="btn btn-primary" target="_blank" rel="noopener noreferrer" style="background: linear-gradient(135deg, #0284c7, #00d4ff); border-color: #00d4ff; color: #070d18; font-weight: 700; box-shadow: 0 0 16px rgba(0, 212, 255, 0.35);">
+            📡 Sala Interativa ao Vivo (WebRTC)
+          </a>
+          <a href="assets/slide/Etapa03_Arvores_SCADA_H2.pdf"
+             class="btn btn-outline" target="_blank" rel="noopener noreferrer">
+            📄 Baixar Apresentação Completa (PDF)
+          </a>
+        </div>
+        <div class="components-grid">
+          <div class="component-card">
+            <div class="component-icon">🌲</div>
+            <h3 class="component-name">Aula 19 — Kruskal e Prim (MST)</h3>
+            <p class="component-desc">
+              Árvore Geradora Mínima interligando SUP-100, TK-101/102/103, XV-104, HEX-201, DISP-300 e SCADA-01 com menor extensão linear (66 m).
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2019%20-%20Algoritmo%20de%20Kruskal%20e%20Prim%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🗜️</div>
+            <h3 class="component-name">Aula 20 — Codificação de Huffman</h3>
+            <p class="component-desc">
+              Compressão estatística lossless do vetor de segurança [PT-101, TT-101, AT-101, TT-201, ESD-100], reduzindo 76,3% da largura de banda.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2020%20-%20Algortimo%20de%20Huffman%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">⚖️</div>
+            <h3 class="component-name">Aula 21 — Árvores Binárias (BDT &amp; AVL)</h3>
+            <p class="component-desc">
+              Intertravamento SIS em tempo constante O(1) via BDT e historiador cronológico em Árvore AVL auto-balanceada O(log N) (~129x mais rápida).
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2021%20-%20%C3%81rvores%20Bin%C3%A1rias%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🌿</div>
+            <h3 class="component-name">Aula 22 — Kinodynamic RRT</h3>
+            <p class="component-desc">
+              Síntese probabilística de rampa SAE J2601 (50→700 bar) coordenando HEX-201 (-40 °C) e cascata XV-104 sem violar 85 °C no tanque FCEV.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2022%20-%20Rapidly-exploring%20Random%20Trees%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🌐</div>
+            <h3 class="component-name">Aula 23 — Protocolo RSTP (802.1w)</h3>
+            <p class="component-desc">
+              Prevenção de loops Ethernet L2 em anel óptico entre SW-SCADA, SW-S100..S300 e SW-SIS com failover determinístico abaixo de 200 ms.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2023%20-%20Protocolo%20de%20%C3%81rvore%20Geradora%20(STP%20RSTP)%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🔬</div>
+            <h3 class="component-name">Aula 24 — Redes de Petri &amp; Karp-Miller</h3>
+            <p class="component-desc">
+              Árvore de Cobertura (ω) detectando acúmulo ilimitado em DISP-300 e síntese de lugar complementar K=2 com 0 deadlocks e exclusão mútua.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2024%20-%20%C3%81rvore%20de%20Atingibilidade%20e%20Cobertura%20em%20Redes%20de%20Petri%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🤖</div>
+            <h3 class="component-name">Aula 25 — Behavior Trees</h3>
+            <p class="component-desc">
+              Orquestração modular do ciclo de abastecimento por ticks com preempção imediata para corte SIS caso AT-101 ultrapasse 25% LIE.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2025%20-%20%C3%81rvores%20de%20Comportamento%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🎯</div>
+            <h3 class="component-name">Aula 26 — KD-Trees (Busca 4D)</h3>
+            <p class="component-desc">
+              Indexação espacial de 10.000 estados 4D normalizados para detecção de anomalias via k-NN e auditoria near-miss por intervalo ortogonal.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2026%20-%20KD-Trees%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🩺</div>
+            <h3 class="component-name">Aula 27 — Árvores de Decisão (ID3/C4.5/CART)</h3>
+            <p class="component-desc">
+              Classificação automática e interpretável de falhas (Nominal, Chiller, Sobrepressão, Vazamento) via Gini, Entropia e Gain Ratio (98,7%).
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2027%20-%20%C3%81rvores%20de%20Decis%C3%A3o%20-%20Algoritmos%20Cl%C3%A1ssicos%20de%20Constru%C3%A7%C3%A3o%20de%20%C3%81rvore%20-%20code.ipynb"
+               class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
+          </div>
+          <div class="component-card">
+            <div class="component-icon">🚀</div>
+            <h3 class="component-name">Aula 28 — Simulação Integrada Módulo 3</h3>
+            <p class="component-desc">
+              Validação ponta a ponta do SCADACoreModulo3 unindo RSTP, Huffman, Behavior Tree, AVL, KD-Tree e CART sob falha combinada.
+            </p>
+            <a href="https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2028%20-%20Apresenta%C3%A7%C3%A3o%20e%20Simula%C3%A7%C3%A3o%20do%20M%C3%B3dulo%203%20-%20code.ipynb"
                class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:auto;">📓 Notebook</a>
           </div>
         </div>

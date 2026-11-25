@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sala Interativa WebRTC — Etapa 03 SCADA H₂</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
+  <style>
+
+    :root { --bg: #070d18; --card: #0f172a; --border: #1e293b; --primary: #38bdf8; --accent: #10b981; }
+    html, body { background: var(--bg); color: #e2e8f0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow: hidden; }
+    .reveal { font-size: 24px; }
+    .reveal .slides section { text-align: left; padding: 24px 36px; box-sizing: border-box; height: 100%; display: flex !important; flex-direction: column; justify-content: center; }
+    .reveal .slides section.slide-dark { text-align: center; align-items: center; }
+    .pill { display: inline-block; background: rgba(56,189,248,0.14); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.58em; font-weight: 800; letter-spacing: 0.14em; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }
+    .badge-topic { display: inline-block; align-self: flex-start; background: #0284c7; color: #fff; font-size: 0.52em; font-weight: 800; letter-spacing: 0.12em; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; }
+    .chip { background: #0f172a; border: 1px solid #38bdf8; color: #bae6fd; font-size: 0.62em; font-weight: 700; padding: 5px 12px; border-radius: 8px; }
+    .slide-title { font-size: 1.45em !important; font-weight: 800 !important; color: #fff !important; margin: 0 0 4px 0 !important; line-height: 1.15 !important; }
+    .slide-title span { color: #38bdf8; }
+    .slide-subtitle { font-size: 0.74em; color: #94a3b8; margin: 0 0 12px 0; line-height: 1.4; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
+    .card { background: rgba(15,23,42,0.88); border: 1px solid #1e293b; border-radius: 10px; padding: 11px 14px; }
+    .card-title { font-size: 0.72em; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .card-text { font-size: 0.66em; color: #cbd5e1; margin: 0; line-height: 1.45; }
+    .graph-frame { background: #0b1320; border: 1px solid #1e293b; border-radius: 10px; padding: 8px 10px; width: 100%; box-sizing: border-box; }
+    .callout { background: rgba(2,132,199,0.14); border: 1px solid rgba(56,189,248,0.35); border-left: 4px solid #38bdf8; border-radius: 8px; padding: 9px 13px; font-size: 0.68em; color: #e2e8f0; line-height: 1.45; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.68em; background: #0b1320; border-radius: 8px; overflow: hidden; }
+    th { background: #0369a1; color: #fff; text-align: left; padding: 7px 10px; font-weight: 800; }
+    td { padding: 7px 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+    code { background: #1e293b; color: #38bdf8; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+    .ok { color: #34d399; }
+    .slide-num { position: absolute; bottom: 10px; right: 18px; font-size: 0.55em; color: #64748b; font-weight: 700; }
+
+    /* LOBBY WEBRTC */
+    #webrtc-lobby {
+      position: fixed; inset: 0; z-index: 2000;
+      background: radial-gradient(circle at 20% 20%, #0f2544 0%, #070d18 65%);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+      overflow-y: auto;
+    }
+    .lobby-card {
+      width: 100%; max-width: 520px; background: #0f172a; border: 1px solid #1e3a5f;
+      border-radius: 16px; padding: 28px; box-shadow: 0 24px 60px rgba(0,0,0,0.65);
+    }
+    .lobby-badge { display:inline-block; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-size:11px; font-weight:800; letter-spacing:0.12em; padding:4px 10px; border-radius:999px; margin-bottom:10px; }
+    .lobby-title { margin:0 0 6px 0; font-size:22px; font-weight:800; color:#fff; }
+    .lobby-sub { margin:0 0 20px 0; font-size:13px; color:#94a3b8; line-height:1.5; }
+    .mode-switch { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+    .mode-btn {
+      padding: 12px; border-radius: 10px; border: 1px solid #334155; background: #0b1320;
+      color: #cbd5e1; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s;
+    }
+    .mode-btn.active { background: #0284c7; border-color: #38bdf8; color: #fff; box-shadow: 0 0 18px rgba(56,189,248,0.35); }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display:block; font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:6px; }
+    .form-group input {
+      width: 100%; box-sizing: border-box; padding: 11px 13px; border-radius: 8px;
+      border: 1px solid #334155; background: #070d18; color: #f8fafc; font-size: 14px; outline: none;
+    }
+    .form-group input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.18); }
+    .hint-text { font-size: 11.5px; color: #94a3b8; margin-top: 5px; display: block; }
+    .action-btn {
+      width: 100%; padding: 13px; border: none; border-radius: 10px; font-size: 15px; font-weight: 800;
+      cursor: pointer; background: linear-gradient(135deg, #0284c7, #10b981); color: #fff; margin-top: 6px;
+    }
+    .action-btn:disabled { opacity: 0.6; cursor: wait; }
+    .status-box {
+      margin-top: 14px; padding: 10px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; display: none; line-height: 1.4;
+    }
+    .status-error { display: block; background: rgba(239,68,68,0.15); border: 1px solid #ef4444; color: #fca5a5; }
+    .status-info { display: block; background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #bae6fd; }
+    .hidden { display: none !important; }
+
+    /* HUD SUPERIOR NA SALA ATIVA */
+    #room-hud {
+      position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1500;
+      background: rgba(11,19,32,0.92); border: 1px solid #334155; border-radius: 999px;
+      padding: 6px 14px; display: none; align-items: center; gap: 12px; font-size: 12px;
+      backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0,0,0,0.5); white-space: nowrap;
+    }
+    .role-pill { padding: 3px 10px; border-radius: 999px; font-weight: 800; font-size: 11px; }
+    .role-admin { background: rgba(16,185,129,0.2); border: 1px solid #10b981; color: #34d399; }
+    .role-viewer { background: rgba(245,158,11,0.2); border: 1px solid #f59e0b; color: #fbbf24; }
+    .hud-btn { background: #1e293b; border: 1px solid #475569; color: #e2e8f0; border-radius: 6px; padding: 3px 9px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .hud-btn:hover { border-color: #38bdf8; color: #38bdf8; }
+    .hud-btn-danger:hover { border-color: #ef4444; color: #fca5a5; }
+
+    /* Bloqueio visual extra para espectador */
+    body.viewer-locked .reveal .controls { display: none !important; }
+    #viewer-shield { position: fixed; inset: 0; z-index: 1200; display: none; cursor: default; }
+    body.viewer-locked #viewer-shield { display: block; }
+  </style>
+</head>
+<body>
+  <!-- TELA DE ENTRADA / CRIACAO DE SALA WEBRTC -->
+  <div id="webrtc-lobby">
+    <div class="lobby-card">
+      <div class="lobby-badge">WEBRTC P2P · ETAPA 03 · SCADA-CORE</div>
+      <h1 class="lobby-title">📡 Sala Interativa de Apresentação</h1>
+      <p class="lobby-sub">Sincronização ao vivo de slides via WebRTC. Crie uma sala como administrador ou entre em uma sala existente com senha (admin) ou sem senha (espectador).</p>
+
+      <div class="mode-switch">
+        <button type="button" class="mode-btn active" id="tab-entrar" onclick="switchLobbyTab('join')">🔑 Entrar em Sala</button>
+        <button type="button" class="mode-btn" id="tab-criar" onclick="switchLobbyTab('create')">✨ Criar Sala</button>
+      </div>
+
+      <!-- FORMULARIO ENTRAR -->
+      <form id="form-join" onsubmit="handleJoinRoom(event)">
+        <div class="form-group">
+          <label for="join-room-name">Nome da Sala *</label>
+          <input type="text" id="join-room-name" placeholder="Ex: scada-h2-etapa3" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="join-password">Senha (Opcional)</label>
+          <input type="password" id="join-password" placeholder="Deixe vazio para entrar como Espectador" autocomplete="off">
+          <span class="hint-text">• Caixa vazia → entra apenas como <strong>Espectador</strong>.<br>• Com senha correta → entra como <strong>Administrador</strong> e pode controlar os slides.<br>• Senha incorreta → acesso bloqueado com aviso.</span>
+        </div>
+        <button type="submit" class="action-btn" id="btn-join-submit">Entrar na Sala</button>
+      </form>
+
+      <!-- FORMULARIO CRIAR -->
+      <form id="form-create" class="hidden" onsubmit="handleCreateRoom(event)">
+        <div class="form-group">
+          <label for="create-room-name">Nome da Sala *</label>
+          <input type="text" id="create-room-name" placeholder="Ex: scada-h2-etapa3" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="create-password">Senha de Administrador *</label>
+          <input type="password" id="create-password" placeholder="Defina uma senha para os apresentadores" required autocomplete="off">
+          <span class="hint-text">Compartilhe a senha apenas com outros administradores. Espectadores entram sem senha.</span>
+        </div>
+        <button type="submit" class="action-btn" id="btn-create-submit">Criar Sala e Apresentar</button>
+      </form>
+
+      <div id="lobby-status" class="status-box" role="alert"></div>
+      <div style="margin-top:14px; text-align:center;">
+        <a href="Etapa03_Arvores_SCADA_H2.html" style="font-size:12px; color:#64748b; text-decoration:none;">← Abrir apresentação solo sem sala WebRTC</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD FLUTUANTE DURANTE A SESSAO -->
+  <div id="room-hud">
+    <span id="hud-role" class="role-pill role-admin">👑 Admin</span>
+    <span id="hud-room" style="color:#f8fafc; font-weight:700;">Sala: —</span>
+    <span id="hud-peers" style="color:#94a3b8;">👥 1 conectado</span>
+    <span id="hud-sync" style="color:#38bdf8; font-weight:700;">Slide 1/18</span>
+    <button type="button" class="hud-btn" id="btn-copy-link" onclick="copyInviteLink()">🔗 Link</button>
+    <button type="button" class="hud-btn hud-btn-danger" onclick="leaveRoom()">Sair</button>
+  </div>
+
+  <!-- ESCUDO INVISIVEL PARA IMPEDIR CLIQUE DE AVANCO DO ESPECTADOR -->
+  <div id="viewer-shield" title="Modo Espectador: aguarde o administrador mudar o slide"></div>
+
+  <div class="reveal">
+    <div class="slides">
+
+    <!-- SLIDE 1: CAPA -->
+    <section class="slide-dark">
+      <div class="pill">UNIFEI · ECAA08 AUTOMAÇÃO INDUSTRIAL · ETAPA 03</div>
+      <h1 style="font-size: 2.3rem; font-weight: 800; line-height: 1.15; margin: 0 0 12px 0; color: #fff;">
+        Estruturas em Árvore Aplicadas ao <span style="color:#38bdf8;">SCADA-Core (H₂)</span>
+      </h1>
+      <p style="font-size: 1rem; color: #94a3b8; max-width: 85%; margin: 0 auto 18px auto; line-height: 1.5;">
+        Árvores geradoras mínimas, protocolos L2, compressão lossless, historiadores balanceados e espaciais, verificação formal, controle preditivo e diagnóstico inteligente.
+      </p>
+      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+        <span class="chip">Setor 100 · SUP-100 · TK-101/102/103 · XV-104</span>
+        <span class="chip" style="border-color:#10b981; color:#34d399;">Setor 200 · Chiller HEX-201 (-40 °C)</span>
+        <span class="chip" style="border-color:#f59e0b; color:#fbbf24;">Setor 300 · DISP-300 · SAE J2601</span>
+      </div>
+      <div style="font-size:0.78rem; color:#64748b;">Estação de Reabastecimento de Hidrogênio (700 bar) · Grupo 9</div>
+      <div class="slide-num">1 / 18</div>
+    </section>
+
+    <!-- SLIDE 2: AGENDA POR TOPICOS -->
+    <section>
+      <span class="badge-topic">VISÃO GERAL DA ETAPA 03</span>
+      <h2 class="slide-title">Arquitetura por <span>Tópicos Temáticos</span></h2>
+      <p class="slide-subtitle">A Etapa 03 organiza 9 técnicas de estruturas em árvore em 4 grandes pilares do SCADA-Core:</p>
+      <div class="grid-2" style="margin-top: 10px;">
+        <div class="card" style="border-left: 4px solid #10b981;">
+          <div class="card-title" style="color:#34d399;">01 · Infraestrutura e Rede Resiliente</div>
+          <p class="card-text">Dimensionamento de eletrodutos e barramento SCADA com <strong>Kruskal &amp; Prim (MST 66 m)</strong> e quebra de laços Ethernet em anel com <strong>RSTP IEEE 802.1w</strong> (&lt;200 ms).</p>
+        </div>
+        <div class="card" style="border-left: 4px solid #38bdf8;">
+          <div class="card-title" style="color:#38bdf8;">02 · Telemetria, Segurança e Historiador</div>
+          <p class="card-text">Compressão <strong>Huffman (-76,3% banda)</strong>, intertravamento SIS <strong>BDT O(1)</strong>, indexação temporal <strong>AVL O(log N)</strong> e busca espacial 4D via <strong>KD-Tree</strong>.</p>
+        </div>
+        <div class="card" style="border-left: 4px solid #f59e0b;">
+          <div class="card-title" style="color:#fbbf24;">03 · Verificação Formal e Controle Reativo</div>
+          <p class="card-text">Prova formal de limitação com <strong>Redes de Petri / Karp-Miller (ω)</strong>, trajetórias termodinâmicas seguras por <strong>Kinodynamic RRT</strong> e orquestração por <strong>Behavior Trees</strong>.</p>
+        </div>
+        <div class="card" style="border-left: 4px solid #a855f7;">
+          <div class="card-title" style="color:#c084fc;">04 · Diagnóstico Inteligente e Integração</div>
+          <p class="card-text">Indução automática de regras auditáveis via <strong>ID3, C4.5 e CART</strong> e consolidação ponta a ponta no simulador <strong>SCADACoreModulo3</strong>.</p>
+        </div>
+      </div>
+      <div class="slide-num">2 / 18</div>
+    </section>
+
+    <!-- SLIDE 3: DIVISOR TOPICO 01 -->
+    <section class="slide-dark">
+      <div class="pill">TÓPICO 01</div>
+      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Topologia Mínima e Redes Industriais</h2>
+      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 70%; margin:0 auto;">
+        Interligação física econômica dos Setores 100, 200 e 300 (MST) e convergência determinística em anel óptico (RSTP).
+      </p>
+      <div class="slide-num">3 / 18</div>
+    </section>
+
+    <!-- SLIDE 4: MST KRUSKAL E PRIM -->
+    <section>
+      <span class="badge-topic">TÓPICO 01</span>
+      <h2 class="slide-title">Árvore Geradora Mínima: <span>Kruskal e Prim</span></h2>
+      <p class="slide-subtitle">Interligação de 8 equipamentos da HRS com comprimento mínimo sem ciclos redundantes (<strong>66 metros</strong>):</p>
+      <div class="graph-frame"><svg viewBox="0 0 620 195" width="100%" height="185" style="display:block;">
+  <!-- Arestas descartadas (tracejadas) -->
+  <line x1="70" y1="95" x2="170" y2="35" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="108" y="57" fill="#64748b" font-size="8.5" font-weight="700">12m</text>
+  <line x1="170" y1="35" x2="170" y2="155" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="176" y="98" fill="#64748b" font-size="8.5" font-weight="700">16m</text>
+  <line x1="70" y1="95" x2="310" y2="155" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="195" y="138" fill="#64748b" font-size="8.5" font-weight="700">15m</text>
+  <line x1="310" y1="155" x2="430" y2="95" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="378" y="136" fill="#64748b" font-size="8.5" font-weight="700">17m</text>
+  <line x1="70" y1="95" x2="430" y2="165" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="255" y="176" fill="#64748b" font-size="8.5" font-weight="700">18m</text>
+  <line x1="430" y1="165" x2="555" y2="95" stroke="#475569" stroke-width="1.5" stroke-dasharray="4,4"/>
+  <text x="502" y="142" fill="#64748b" font-size="8.5" font-weight="700">22m</text>
+
+  <!-- Arestas da MST (66m total, verde brilhante) -->
+  <line x1="70" y1="95" x2="170" y2="155" stroke="#10b981" stroke-width="3.2"/>
+  <text x="103" y="137" fill="#34d399" font-size="9" font-weight="800">10m</text>
+  <line x1="170" y1="155" x2="310" y2="95" stroke="#10b981" stroke-width="3.2"/>
+  <text x="232" y="118" fill="#34d399" font-size="9" font-weight="800">8m</text>
+  <line x1="170" y1="35" x2="310" y2="95" stroke="#10b981" stroke-width="3.2"/>
+  <text x="242" y="58" fill="#34d399" font-size="9" font-weight="800">6m</text>
+  <line x1="310" y1="155" x2="310" y2="95" stroke="#10b981" stroke-width="3.2"/>
+  <text x="317" y="128" fill="#34d399" font-size="9" font-weight="800">8m</text>
+  <line x1="310" y1="95" x2="430" y2="95" stroke="#10b981" stroke-width="3.2"/>
+  <text x="364" y="88" fill="#34d399" font-size="9" font-weight="800">9m</text>
+  <line x1="430" y1="95" x2="555" y2="95" stroke="#10b981" stroke-width="3.2"/>
+  <text x="486" y="88" fill="#34d399" font-size="9" font-weight="800">11m</text>
+  <line x1="430" y1="95" x2="430" y2="165" stroke="#10b981" stroke-width="3.2"/>
+  <text x="438" y="134" fill="#34d399" font-size="9" font-weight="800">14m</text>
+
+  <!-- Nos da Planta -->
+  <circle cx="70" cy="95" r="22" fill="#0f172a" stroke="#38bdf8" stroke-width="2.2"/>
+  <text x="70" y="98" fill="#f8fafc" font-size="9" font-weight="800" text-anchor="middle">SUP-100</text>
+
+  <circle cx="170" cy="155" r="20" fill="#065f46" stroke="#10b981" stroke-width="2"/>
+  <text x="170" y="158" fill="#fff" font-size="9" font-weight="800" text-anchor="middle">TK-101</text>
+
+  <circle cx="170" cy="35" r="20" fill="#065f46" stroke="#10b981" stroke-width="2"/>
+  <text x="170" y="38" fill="#fff" font-size="9" font-weight="800" text-anchor="middle">TK-102</text>
+
+  <circle cx="310" cy="155" r="20" fill="#065f46" stroke="#10b981" stroke-width="2"/>
+  <text x="310" y="158" fill="#fff" font-size="9" font-weight="800" text-anchor="middle">TK-103</text>
+
+  <circle cx="310" cy="95" r="22" fill="#0284c7" stroke="#38bdf8" stroke-width="2.2"/>
+  <text x="310" y="98" fill="#fff" font-size="9" font-weight="800" text-anchor="middle">XV-104</text>
+
+  <circle cx="430" cy="95" r="22" fill="#0f172a" stroke="#34d399" stroke-width="2.2"/>
+  <text x="430" y="98" fill="#fff" font-size="9" font-weight="800" text-anchor="middle">HEX-201</text>
+
+  <circle cx="555" cy="95" r="22" fill="#0f172a" stroke="#f59e0b" stroke-width="2.2"/>
+  <text x="555" y="98" fill="#fff" font-size="8.5" font-weight="800" text-anchor="middle">DISP-300</text>
+
+  <rect x="392" y="148" width="76" height="30" rx="7" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+  <text x="430" y="167" fill="#e9d5ff" font-size="9" font-weight="800" text-anchor="middle">SCADA-01</text>
+</svg></div>
+      <div class="grid-2" style="margin-top:8px;">
+        <div class="card"><div class="card-title" style="color:#38bdf8;">Kruskal — O(|E| log |E|)</div><p class="card-text">Ordena as 13 rotas por distância e usa <em>Union-Find</em> para rejeitar ciclos. Ideal na fase de orçamento global (FEED).</p></div>
+        <div class="card"><div class="card-title" style="color:#34d399;">Prim — O(|E| log |V|)</div><p class="card-text">Expande uma árvore contínua via <em>Min-Heap</em> a partir de <code>SCADA-01</code>. Ideal para lançamento de cabos em campo; concentra grau 4 em <code>XV-104</code>.</p></div>
+      </div>
+      <div class="slide-num">4 / 18</div>
+    </section>
+
+    <!-- SLIDE 5: RSTP -->
+    <section>
+      <span class="badge-topic">TÓPICO 01</span>
+      <h2 class="slide-title">Resiliência Ethernet L2 com <span>RSTP (IEEE 802.1w)</span></h2>
+      <p class="slide-subtitle">Topologia em anel sem laços lógicos (evita <em>Broadcast Storm</em> e <em>MAC Flapping</em>) com failover em &lt;200 ms:</p>
+      <div class="graph-frame"><svg viewBox="0 0 760 155" width="100%" height="145" style="display:block;">
+  <!-- PAINEL ESQUERDO: NORMAL -->
+  <rect x="5" y="5" width="365" height="145" rx="10" fill="#0b1320" stroke="#1e293b"/>
+  <text x="187" y="22" fill="#34d399" font-size="9.5" font-weight="800" text-anchor="middle">1. OPERAÇÃO NORMAL (ROOT: SW-SCADA · CUSTO S100=2.000)</text>
+  <line x1="187" y1="45" x2="75" y2="85" stroke="#10b981" stroke-width="2.5"/>
+  <line x1="187" y1="45" x2="300" y2="85" stroke="#10b981" stroke-width="2.5"/>
+  <line x1="75" y1="85" x2="110" y2="132" stroke="#10b981" stroke-width="2.5"/>
+  <line x1="300" y1="85" x2="265" y2="132" stroke="#10b981" stroke-width="2.5"/>
+  <line x1="110" y1="132" x2="265" y2="132" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,3"/>
+  <line x1="75" y1="85" x2="300" y2="85" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="115" y="61" fill="#34d399" font-size="7.5" font-weight="700">10G (2k)</text>
+  <text x="242" y="61" fill="#34d399" font-size="7.5" font-weight="700">1G (20k)</text>
+  <text x="187" y="80" fill="#f87171" font-size="7" font-weight="700" text-anchor="middle">100M Alt [Discarding]</text>
+  <text x="187" y="126" fill="#f87171" font-size="7" font-weight="700" text-anchor="middle">1G Alt [Discarding]</text>
+  <circle cx="187" cy="45" r="14" fill="#ca8a04" stroke="#fde047" stroke-width="2"/><text x="187" y="48" fill="#0f172a" font-size="6.8" font-weight="900" text-anchor="middle">SCADA</text>
+  <circle cx="75" cy="85" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="75" y="88" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">S100</text>
+  <circle cx="300" cy="85" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="300" y="88" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">SIS</text>
+  <circle cx="110" cy="132" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="110" y="135" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">S200</text>
+  <circle cx="265" cy="132" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="265" y="135" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">S300</text>
+
+  <!-- PAINEL DIREITO: FAILOVER -->
+  <rect x="390" y="5" width="365" height="145" rx="10" fill="#0b1320" stroke="#1e293b"/>
+  <text x="572" y="22" fill="#38bdf8" font-size="9.5" font-weight="800" text-anchor="middle">2. FAILOVER &lt;200 ms (CORTE 10G · S200↔S300 FORWARDING)</text>
+  <line x1="572" y1="45" x2="460" y2="85" stroke="#334155" stroke-width="1.5" stroke-dasharray="2,4"/>
+  <text x="504" y="61" fill="#ef4444" font-size="8" font-weight="900">✕ ROMPIDA</text>
+  <line x1="572" y1="45" x2="685" y2="85" stroke="#10b981" stroke-width="2.5"/>
+  <line x1="460" y1="85" x2="495" y2="132" stroke="#10b981" stroke-width="2.5"/>
+  <line x1="685" y1="85" x2="650" y2="132" stroke="#10b981" stroke-width="2.5"/>
+  <line x1="495" y1="132" x2="650" y2="132" stroke="#38bdf8" stroke-width="3"/>
+  <line x1="460" y1="85" x2="685" y2="85" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="572" y="114" fill="#38bdf8" font-size="7.2" font-weight="800" text-anchor="middle">✓ S200↔S300 ATIVADA (Custo 80k)</text>
+  <circle cx="572" cy="45" r="14" fill="#ca8a04" stroke="#fde047" stroke-width="2"/><text x="572" y="48" fill="#0f172a" font-size="6.8" font-weight="900" text-anchor="middle">SCADA</text>
+  <circle cx="460" cy="85" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="460" y="88" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">S100</text>
+  <circle cx="685" cy="85" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="685" y="88" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">SIS</text>
+  <circle cx="495" cy="132" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="495" y="135" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">S200</text>
+  <circle cx="650" cy="132" r="14" fill="#1e293b" stroke="#38bdf8"/><text x="650" y="135" fill="#fff" font-size="6.8" font-weight="800" text-anchor="middle">S300</text>
+</svg></div>
+      <div class="callout" style="margin-top:8px;">
+        <strong>Conformidade LOPA / IEC 61511:</strong> Mesmo com alta disponibilidade RSTP no SCADA-Core, o botão <code>ESD-100</code> e as válvulas <code>XV-101..103</code>/<code>XV-301</code> mantêm intertravamento <em>hardwired</em> independente da camada Ethernet.
+      </div>
+      <div class="slide-num">5 / 18</div>
+    </section>
+
+    <!-- SLIDE 6: DIVISOR TOPICO 02 -->
+    <section class="slide-dark">
+      <div class="pill">TÓPICO 02</div>
+      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Telemetria, Segurança e Historiadores</h2>
+      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+        Compressão Huffman, decisão booleana SIS em O(1), indexação temporal AVL e busca espacial multivariável KD-Tree.
+      </p>
+      <div class="slide-num">6 / 18</div>
+    </section>
+
+    <!-- SLIDE 7: HUFFMAN -->
+    <section>
+      <span class="badge-topic">TÓPICO 02</span>
+      <h2 class="slide-title">Compressão Lossless via <span>Árvore de Huffman</span></h2>
+      <p class="slide-subtitle">Vetor de segurança <code>[PT-101, TT-101, AT-101, TT-201, ESD-100]</code> (5 bits fixos) comprimido sem perda:</p>
+      <div class="graph-frame"><svg viewBox="0 0 580 155" width="100%" height="145" style="display:block;">
+  <!-- Arestas -->
+  <line x1="170" y1="22" x2="75" y2="60" stroke="#10b981" stroke-width="2.4"/>
+  <line x1="170" y1="22" x2="265" y2="55" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="265" y1="55" x2="185" y2="92" stroke="#10b981" stroke-width="2"/>
+  <line x1="265" y1="55" x2="355" y2="85" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="355" y1="85" x2="285" y2="125" stroke="#10b981" stroke-width="2"/>
+  <line x1="355" y1="85" x2="435" y2="112" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="435" y1="112" x2="375" y2="142" stroke="#10b981" stroke-width="1.8"/>
+  <line x1="435" y1="112" x2="505" y2="140" stroke="#38bdf8" stroke-width="1.8"/>
+
+  <!-- Bits -->
+  <text x="112" y="38" fill="#34d399" font-size="9" font-weight="800">0</text>
+  <text x="225" y="36" fill="#38bdf8" font-size="9" font-weight="800">1</text>
+  <text x="215" y="72" fill="#34d399" font-size="8.5" font-weight="800">0</text>
+  <text x="315" y="68" fill="#38bdf8" font-size="8.5" font-weight="800">1</text>
+  <text x="310" y="103" fill="#34d399" font-size="8.5" font-weight="800">0</text>
+  <text x="400" y="96" fill="#38bdf8" font-size="8.5" font-weight="800">1</text>
+
+  <!-- Raiz e Nos internos -->
+  <rect x="135" y="8" width="70" height="24" rx="6" fill="#0284c7"/>
+  <text x="170" y="23" fill="#fff" font-size="8.5" font-weight="800" text-anchor="middle">Raiz (1.000)</text>
+
+  <circle cx="265" cy="55" r="14" fill="#1e293b" stroke="#38bdf8"/>
+  <text x="265" y="58" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle">0.100</text>
+
+  <circle cx="355" cy="85" r="13" fill="#1e293b" stroke="#38bdf8"/>
+  <text x="355" y="88" fill="#fff" font-size="7.5" font-weight="700" text-anchor="middle">0.050</text>
+
+  <circle cx="435" cy="112" r="12" fill="#1e293b" stroke="#38bdf8"/>
+  <text x="435" y="115" fill="#fff" font-size="7" font-weight="700" text-anchor="middle">0.025</text>
+
+  <!-- Folhas -->
+  <rect x="15" y="54" width="120" height="28" rx="6" fill="#065f46" stroke="#10b981"/>
+  <text x="75" y="66" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">'00000' Nominal (90%)</text>
+  <text x="75" y="77" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle">Código: 0 (1 bit)</text>
+
+  <rect x="130" y="88" width="110" height="26" rx="6" fill="#0f172a" stroke="#38bdf8"/>
+  <text x="185" y="100" fill="#cbd5e1" font-size="7.5" font-weight="700" text-anchor="middle">'00010' TT-201 (5%)</text>
+  <text x="185" y="110" fill="#38bdf8" font-size="7.5" font-weight="800" text-anchor="middle">Código: 10 (2 bits)</text>
+
+  <rect x="230" y="122" width="110" height="26" rx="6" fill="#0f172a" stroke="#f59e0b"/>
+  <text x="285" y="134" fill="#cbd5e1" font-size="7.5" font-weight="700" text-anchor="middle">'10000' PT-101 (2.5%)</text>
+  <text x="285" y="144" fill="#fbbf24" font-size="7.5" font-weight="800" text-anchor="middle">Código: 110 (3 bits)</text>
+
+  <rect x="348" y="132" width="90" height="20" rx="5" fill="#0f172a" stroke="#f59e0b"/>
+  <text x="393" y="145" fill="#fbbf24" font-size="7" font-weight="800" text-anchor="middle">TT-101: 1110</text>
+
+  <rect x="448" y="128" width="122" height="24" rx="5" fill="#7f1d1d" stroke="#ef4444"/>
+  <text x="509" y="143" fill="#fecaca" font-size="7" font-weight="800" text-anchor="middle">AT-101: 11110 | ESD: 11111</text>
+</svg></div>
+      <div class="grid-3" style="margin-top:8px;">
+        <div class="card"><div class="card-title" style="color:#38bdf8;">Entropia H(S) = 0,6480</div><p class="card-text">Limite teórico de Shannon dado que o estado nominal <code>00000</code> ocorre em 90% das amostras.</p></div>
+        <div class="card"><div class="card-title" style="color:#34d399;">L = 1,1850 bits (-76,3%)</div><p class="card-text">Reduz de 250 bps para 59,25 bps em varredura de 20 ms num enlace RS-485 de 9600 bps.</p></div>
+        <div class="card"><div class="card-title" style="color:#fbbf24;">Enquadramento + CRC-16</div><p class="card-text">Código <em>prefix-free</em> decodificado em O(k≤5) protegido contra ruído EMI por cabeçalho <code>0xA5</code> e CRC-16.</p></div>
+      </div>
+      <div class="slide-num">7 / 18</div>
+    </section>
+
+    <!-- SLIDE 8: BDT + AVL -->
+    <section>
+      <span class="badge-topic">TÓPICO 02</span>
+      <h2 class="slide-title">Segurança <span>BDT O(1)</span> e Historiador <span>AVL O(log N)</span></h2>
+      <p class="slide-subtitle">Árvore estática de curto-circuito para o SIS (SIL-3) combinada a árvore auto-balanceada para séries temporais:</p>
+      <div class="graph-frame"><svg viewBox="0 0 600 135" width="100%" height="125" style="display:block;">
+  <line x1="70" y1="30" x2="180" y2="30" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="180" y1="30" x2="295" y2="30" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="295" y1="30" x2="410" y2="30" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="410" y1="30" x2="525" y2="30" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="525" y1="30" x2="525" y2="95" stroke="#10b981" stroke-width="2.5"/>
+
+  <line x1="70" y1="30" x2="70" y2="95" stroke="#ef4444" stroke-width="2"/>
+  <line x1="180" y1="30" x2="180" y2="95" stroke="#ef4444" stroke-width="2"/>
+  <line x1="295" y1="30" x2="295" y2="95" stroke="#ef4444" stroke-width="2"/>
+  <line x1="410" y1="30" x2="410" y2="95" stroke="#ef4444" stroke-width="2"/>
+
+  <!-- Nos internos -->
+  <rect x="26" y="14" width="88" height="30" rx="6" fill="#0f172a" stroke="#38bdf8"/><text x="70" y="33" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">ESD-100 == 1?</text>
+  <rect x="132" y="14" width="96" height="30" rx="6" fill="#0f172a" stroke="#38bdf8"/><text x="180" y="33" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">AT &gt; 25% LIE?</text>
+  <rect x="245" y="14" width="100" height="30" rx="6" fill="#0f172a" stroke="#38bdf8"/><text x="295" y="33" fill="#fff" font-size="7.5" font-weight="800" text-anchor="middle">PT101&gt;400 / 103&gt;1k?</text>
+  <rect x="366" y="14" width="88" height="30" rx="6" fill="#0f172a" stroke="#38bdf8"/><text x="410" y="33" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">TT &gt; 85 °C?</text>
+  <rect x="480" y="14" width="90" height="30" rx="6" fill="#0f172a" stroke="#38bdf8"/><text x="525" y="33" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">BV-301 == 0?</text>
+
+  <!-- Folhas Trip vs Normal -->
+  <rect x="28" y="88" width="84" height="28" rx="6" fill="#7f1d1d" stroke="#ef4444"/><text x="70" y="105" fill="#fecaca" font-size="7.5" font-weight="800" text-anchor="middle">TRIP ESD</text>
+  <rect x="138" y="88" width="84" height="28" rx="6" fill="#7f1d1d" stroke="#ef4444"/><text x="180" y="105" fill="#fecaca" font-size="7.5" font-weight="800" text-anchor="middle">TRIP FUGA H₂</text>
+  <rect x="250" y="88" width="90" height="28" rx="6" fill="#7f1d1d" stroke="#ef4444"/><text x="295" y="105" fill="#fecaca" font-size="7.5" font-weight="800" text-anchor="middle">TRIP PRESSÃO</text>
+  <rect x="368" y="88" width="84" height="28" rx="6" fill="#7f1d1d" stroke="#ef4444"/><text x="410" y="105" fill="#fecaca" font-size="7.5" font-weight="800" text-anchor="middle">TRIP TÉRMICO</text>
+  <rect x="478" y="88" width="94" height="28" rx="6" fill="#065f46" stroke="#10b981"/><text x="525" y="105" fill="#d1fae5" font-size="7.5" font-weight="800" text-anchor="middle">OPERAÇÃO NORMAL</text>
+</svg></div>
+      <table style="margin-top:8px;">
+        <thead><tr><th>Estrutura</th><th>Chave / Critério</th><th>Mecanismo</th><th>Desempenho Medido (N=2.000)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>BDT (Estática)</strong></td><td><code>ESD-100, AT&gt;25%, PT101/103, TT, BV</code></td><td>Curto-circuito h=5</td><td><strong>3,17 µs/amostra</strong> · O(1)</td></tr>
+          <tr><td><strong>AVL (Dinâmica)</strong></td><td>Timestamp UNIX τ (ms)</td><td>Rotações LL, RR, LR, RL (|BF|≤1)</td><td><strong>Altura 11</strong> · <strong>129×</strong> mais rápida (0,098 vs 12,6 ms)</td></tr>
+        </tbody>
+      </table>
+      <div class="slide-num">8 / 18</div>
+    </section>
+
+    <!-- SLIDE 9: KD-TREE -->
+    <section>
+      <span class="badge-topic">TÓPICO 02</span>
+      <h2 class="slide-title">Detecção de Anomalias 4D com <span>KD-Tree</span></h2>
+      <p class="slide-subtitle">Indexação por hiperplanos alternados (<code>a = d mod 4</code>) sobre <code>[PT-101, TT-101, PT-201, AT-101]</code> normalizados:</p>
+      <div class="grid-2" style="align-items:center;">
+        <div class="graph-frame"><svg viewBox="0 0 420 145" width="100%" height="135" style="display:block;">
+  <rect x="15" y="12" width="390" height="120" rx="6" fill="#070d18" stroke="#334155"/>
+  <!-- Caixa Range Search -->
+  <rect x="275" y="20" width="115" height="52" fill="rgba(16,185,129,0.16)" stroke="#10b981" stroke-width="1.8" stroke-dasharray="4,3"/>
+  <text x="332" y="33" fill="#34d399" font-size="7.5" font-weight="800" text-anchor="middle">Range Near-Miss</text>
+  <!-- Hiperplanos KD -->
+  <line x1="215" y1="12" x2="215" y2="132" stroke="#f59e0b" stroke-width="2"/>
+  <text x="219" y="24" fill="#fbbf24" font-size="7.5" font-weight="800">d=0: PT-101</text>
+  <line x1="15" y1="82" x2="215" y2="82" stroke="#a855f7" stroke-width="1.6" stroke-dasharray="3,3"/>
+  <line x1="215" y1="56" x2="405" y2="56" stroke="#a855f7" stroke-width="1.6" stroke-dasharray="3,3"/>
+  <text x="220" y="67" fill="#c084fc" font-size="7.5" font-weight="800">d=1: TT-101</text>
+  <!-- Amostras normais -->
+  <circle cx="80" cy="105" r="3.5" fill="#38bdf8"/><circle cx="120" cy="95" r="3.5" fill="#38bdf8"/>
+  <circle cx="155" cy="112" r="3.5" fill="#38bdf8"/><circle cx="185" cy="92" r="3.5" fill="#38bdf8"/>
+  <circle cx="140" cy="62" r="3.5" fill="#38bdf8"/><circle cx="255" cy="98" r="3.5" fill="#38bdf8"/>
+  <!-- Near-miss e Query -->
+  <circle cx="310" cy="48" r="4" fill="#ef4444"/><circle cx="350" cy="42" r="4" fill="#ef4444"/>
+  <circle cx="332" cy="54" r="14" fill="none" stroke="#facc15" stroke-width="1.2" stroke-dasharray="2,2"/>
+  <polygon points="332,45 335,51 341,51 336,55 338,61 332,57 326,61 328,55 323,51 329,51" fill="#facc15" stroke="#0f172a" stroke-width="0.8"/>
+  <text x="352" y="65" fill="#facc15" font-size="7.5" font-weight="800">q (Ao vivo)</text>
+</svg></div>
+        <div>
+          <div class="card" style="margin-bottom:8px;"><div class="card-title" style="color:#facc15;">Busca k-NN (Branch-and-Bound)</div><p class="card-text">Só explora o ramo irmão se a distância ao hiperplano for menor que <code>d_best</code>. Mede desvio anômalo ao vivo antes do trip físico.</p></div>
+          <div class="card"><div class="card-title" style="color:#34d399;">Range Search &amp; Benchmark (N=10.000)</div><p class="card-text">200 consultas em <strong>37,9 ms</strong> vs 118,3 ms linear; identifica instantaneamente os 40 eventos <em>near-miss</em>. (Reconstruída em batch para evitar degradação).</p></div>
+        </div>
+      </div>
+      <div class="slide-num">9 / 18</div>
+    </section>
+
+    <!-- SLIDE 10: DIVISOR TOPICO 03 -->
+    <section class="slide-dark">
+      <div class="pill">TÓPICO 03</div>
+      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Verificação Formal, RRT e Behavior Trees</h2>
+      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+        Prova matemática de ausência de sobrepressão/deadlock, planejamento termodinâmico seguro e preempção reativa em tempo real.
+      </p>
+      <div class="slide-num">10 / 18</div>
+    </section>
+
+    <!-- SLIDE 11: REDES DE PETRI -->
+    <section>
+      <span class="badge-topic">TÓPICO 03</span>
+      <h2 class="slide-title">Redes de Petri e <span>Karp-Miller (ω)</span></h2>
+      <p class="slide-subtitle">Verificação formal de <em>Boundedness</em>, <em>Deadlock-freedom</em> e exclusão mútua entre <code>HEX-201</code> e <code>ESD-100</code>:</p>
+      <div class="graph-frame"><svg viewBox="0 0 600 130" width="100%" height="122" style="display:block;">
+  <!-- Fluxo principal -->
+  <line x1="70" y1="45" x2="490" y2="45" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="295" y1="45" x2="295" y2="100" stroke="#ef4444" stroke-width="2"/>
+  <line x1="295" y1="100" x2="65" y2="100" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,3"/>
+  <line x1="65" y1="100" x2="65" y2="45" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,3"/>
+  <line x1="400" y1="45" x2="400" y2="100" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3"/>
+  <line x1="400" y1="100" x2="490" y2="100" stroke="#10b981" stroke-width="2"/>
+  <line x1="490" y1="100" x2="490" y2="45" stroke="#10b981" stroke-width="2"/>
+
+  <!-- Lugares P1..P6 -->
+  <circle cx="65" cy="45" r="20" fill="#0284c7" stroke="#bae6fd" stroke-width="2"/>
+  <text x="65" y="43" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">P1</text>
+  <text x="65" y="54" fill="#e0f2fe" font-size="6.5" text-anchor="middle">SUP-100</text>
+
+  <rect x="115" y="33" width="48" height="24" rx="4" fill="#1e293b" stroke="#38bdf8"/>
+  <text x="139" y="48" fill="#38bdf8" font-size="7.5" font-weight="800" text-anchor="middle">t1:XV103</text>
+
+  <circle cx="195" cy="45" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="195" y="48" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">P2</text>
+
+  <circle cx="295" cy="45" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="2"/>
+  <text x="295" y="48" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">P3:HEX</text>
+
+  <rect x="342" y="33" width="52" height="24" rx="4" fill="#1e293b" stroke="#38bdf8"/>
+  <text x="368" y="48" fill="#38bdf8" font-size="7.5" font-weight="800" text-anchor="middle">t3:Lote</text>
+
+  <circle cx="490" cy="45" r="22" fill="#0f172a" stroke="#f59e0b" stroke-width="2.2"/>
+  <text x="490" y="43" fill="#fbbf24" font-size="8" font-weight="800" text-anchor="middle">P4 (ω→2)</text>
+  <text x="490" y="54" fill="#cbd5e1" font-size="6.5" text-anchor="middle">DISP-300</text>
+
+  <circle cx="295" cy="100" r="18" fill="#7f1d1d" stroke="#ef4444" stroke-width="2"/>
+  <text x="295" y="103" fill="#fecaca" font-size="7.5" font-weight="800" text-anchor="middle">P5:ESD</text>
+
+  <circle cx="400" cy="100" r="20" fill="#065f46" stroke="#10b981" stroke-width="2"/>
+  <text x="400" y="98" fill="#fff" font-size="7.5" font-weight="800" text-anchor="middle">P6 (K=2)</text>
+  <text x="400" y="108" fill="#a7f3d0" font-size="6" text-anchor="middle">Compl.</text>
+</svg></div>
+      <div class="grid-2" style="margin-top:8px;">
+        <div class="card" style="border-top:3px solid #f59e0b;"><div class="card-title" style="color:#fbbf24;">Cenário A — Sem Controle (8 estados)</div><p class="card-text">Acúmulo em <code>P4</code> gera símbolo <strong>ω</strong>, provando risco de sobrepressão contínua em <code>TK-103</code> sem drenagem.</p></div>
+        <div class="card" style="border-top:3px solid #10b981;"><div class="card-title" style="color:#34d399;">Cenário B — Lugar Complementar P6 (12 estados)</div><p class="card-text">Invariante <code>M(P4)+M(P6)=K_max=2</code> elimina ω, garante <strong>0 deadlocks</strong> e exclusão mútua estrita.</p></div>
+      </div>
+      <div class="slide-num">11 / 18</div>
+    </section>
+
+    <!-- SLIDE 12: RRT -->
+    <section>
+      <span class="badge-topic">TÓPICO 03</span>
+      <h2 class="slide-title">Trajetórias SAE J2601 via <span>Kinodynamic RRT</span></h2>
+      <p class="slide-subtitle">Exploração aleatória rápida em espaço híbrido <code>(PT-301, TT-301, TT-201) × XV-104</code> desviando da zona térmica proibida:</p>
+      <div class="grid-2" style="align-items:center;">
+        <div class="graph-frame"><svg viewBox="0 0 440 140" width="100%" height="130" style="display:block;">
+  <rect x="35" y="10" width="385" height="105" fill="#070d18" stroke="#334155"/>
+  <!-- Zona insegura >= 85 C -->
+  <rect x="35" y="10" width="385" height="28" fill="rgba(239,68,68,0.20)"/>
+  <line x1="35" y1="38" x2="420" y2="38" stroke="#ef4444" stroke-width="1.8" stroke-dasharray="5,3"/>
+  <text x="415" y="27" fill="#fca5a5" font-size="8" font-weight="800" text-anchor="end">Zona Proibida Z_obs (TT-301 &gt; 85 °C)</text>
+  <!-- Transicoes cascata -->
+  <line x1="205" y1="10" x2="205" y2="115" stroke="#64748b" stroke-width="1" stroke-dasharray="2,3"/>
+  <text x="205" y="128" fill="#94a3b8" font-size="7.5" text-anchor="middle">350 bar (LP→MP)</text>
+  <line x1="340" y1="10" x2="340" y2="115" stroke="#a855f7" stroke-width="1" stroke-dasharray="2,3"/>
+  <text x="340" y="128" fill="#c084fc" font-size="7.5" text-anchor="middle">650 bar (MP→HP)</text>
+  <!-- Sem chiller (viola 85 C) -->
+  <path d="M 55,90 Q 170,48 310,16" fill="none" stroke="#f97316" stroke-width="2.2" stroke-dasharray="4,3"/>
+  <text x="285" y="21" fill="#fdba74" font-size="7.5" font-weight="800">Sem Chiller (&gt;100 °C)</text>
+  <!-- Ramos RRT + Rota segura HEX-201 -->
+  <line x1="150" y1="68" x2="185" y2="42" stroke="#475569" stroke-width="1.2"/>
+  <line x1="230" y1="50" x2="275" y2="40" stroke="#ef4444" stroke-width="1.4" stroke-dasharray="2,2"/>
+  <path d="M 55,90 L 145,67 L 235,48 L 315,62 L 385,78" fill="none" stroke="#10b981" stroke-width="2.8"/>
+  <circle cx="55" cy="90" r="4" fill="#38bdf8"/><circle cx="385" cy="78" r="5" fill="#10b981" stroke="#fff"/>
+  <text x="385" y="94" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle">716 bar · 50.8°C</text>
+  <text x="20" y="65" fill="#94a3b8" font-size="7.5" transform="rotate(-90 20,65)" text-anchor="middle">TT-301 (°C)</text>
+</svg></div>
+        <div>
+          <div class="card" style="margin-bottom:8px;"><div class="card-title" style="color:#34d399;">Convergência Segura com HEX-201</div><p class="card-text">Em 179 iterações (52 ms), encontra rota em 30 passos (<code>LP → MP → HP</code>) até <strong>716,4 bar · 50,8 °C</strong> com chiller a <strong>-40,0 °C</strong>.</p></div>
+          <div class="card"><div class="card-title" style="color:#f87171;">Barreira SIS (COLLISION_FREE)</div><p class="card-text">Descarta <strong>4 ramos inseguros</strong> acima de 85 °C; sem o chiller (malha aberta), o efeito Joule-Thomson dispara <code>TT-301 &gt; 100 °C</code>.</p></div>
+        </div>
+      </div>
+      <div class="slide-num">12 / 18</div>
+    </section>
+
+    <!-- SLIDE 13: BEHAVIOR TREES -->
+    <section>
+      <span class="badge-topic">TÓPICO 03</span>
+      <h2 class="slide-title">Orquestração Reativa com <span>Behavior Trees</span></h2>
+      <p class="slide-subtitle">Avaliação cíclica por <em>ticks</em> (<code>SUCCESS / FAILURE / RUNNING</code>) evitando explosão combinatória de FSMs:</p>
+      <div class="graph-frame"><svg viewBox="0 0 580 140" width="100%" height="130" style="display:block;">
+  <line x1="290" y1="30" x2="185" y2="62" stroke="#38bdf8" stroke-width="2"/>
+  <line x1="290" y1="30" x2="480" y2="62" stroke="#ef4444" stroke-width="2"/>
+  <line x1="185" y1="62" x2="65" y2="112" stroke="#38bdf8" stroke-width="1.6"/>
+  <line x1="185" y1="62" x2="165" y2="112" stroke="#38bdf8" stroke-width="1.6"/>
+  <line x1="185" y1="62" x2="275" y2="112" stroke="#10b981" stroke-width="1.8"/>
+  <line x1="185" y1="62" x2="375" y2="112" stroke="#38bdf8" stroke-width="1.6"/>
+
+  <rect x="215" y="8" width="150" height="26" rx="6" fill="#0284c7"/><text x="290" y="25" fill="#fff" font-size="8.5" font-weight="800" text-anchor="middle">? Fallback Raiz (SCADA)</text>
+  <rect x="105" y="50" width="160" height="24" rx="6" fill="#1e293b" stroke="#38bdf8"/><text x="185" y="65" fill="#e0f2fe" font-size="8" font-weight="800" text-anchor="middle">→ Sequence: Ciclo SAE J2601</text>
+  <rect x="415" y="50" width="145" height="28" rx="6" fill="#7f1d1d" stroke="#ef4444"/><text x="487" y="63" fill="#fecaca" font-size="7.5" font-weight="800" text-anchor="middle">[Action] TRIP SIS</text><text x="487" y="73" fill="#fca5a5" font-size="6.8" text-anchor="middle">XV-101/301=0, ALM=1</text>
+
+  <rect x="12" y="102" width="106" height="28" rx="5" fill="#0f172a" stroke="#f59e0b"/><text x="65" y="119" fill="#fbbf24" font-size="7.3" font-weight="800" text-anchor="middle">(Cond) SIS_OK?</text>
+  <rect x="124" y="102" width="90" height="28" rx="5" fill="#0f172a" stroke="#38bdf8"/><text x="169" y="119" fill="#cbd5e1" font-size="7.3" font-weight="700" text-anchor="middle">Pré-Abastec.</text>
+  <rect x="220" y="102" width="110" height="28" rx="5" fill="#065f46" stroke="#10b981"/><text x="275" y="119" fill="#d1fae5" font-size="7.3" font-weight="800" text-anchor="middle">HEX(-40°C) + Cascata</text>
+  <rect x="336" y="102" width="84" height="28" rx="5" fill="#0f172a" stroke="#38bdf8"/><text x="378" y="119" fill="#cbd5e1" font-size="7.3" font-weight="700" text-anchor="middle">Liberar Bico</text>
+</svg></div>
+      <div class="grid-2" style="margin-top:8px;">
+        <div class="card"><div class="card-title" style="color:#34d399;">Ciclo Nominal SAE J2601</div><p class="card-text">Estanqueidade → Chiller <code>HEX-201</code> estabilizado exatamente em <strong>-40,0 °C</strong> → Cascata <code>TK-101/102/103</code> até 700 bar.</p></div>
+        <div class="card"><div class="card-title" style="color:#f87171;">Preempção no Mesmo Tick</div><p class="card-text">Com vazamento <code>AT-101 = 34% &gt; 25% LIE</code> no Tick 10, <code>SIS_OK</code> retorna <code>FAILURE</code> e o <code>Fallback</code> aciona <code>TRIP SIS</code> instantaneamente.</p></div>
+      </div>
+      <div class="slide-num">13 / 18</div>
+    </section>
+
+    <!-- SLIDE 14: DIVISOR TOPICO 04 -->
+    <section class="slide-dark">
+      <div class="pill">TÓPICO 04</div>
+      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Diagnóstico Inteligente e Integração</h2>
+      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+        Classificação automática de falhas via Árvores de Decisão (ID3, C4.5, CART) e arquitetura integrada SCADACoreModulo3.
+      </p>
+      <div class="slide-num">14 / 18</div>
+    </section>
+
+    <!-- SLIDE 15: ID3 C4.5 CART -->
+    <section>
+      <span class="badge-topic">TÓPICO 04</span>
+      <h2 class="slide-title">Árvores de Decisão: <span>ID3, C4.5 e CART</span></h2>
+      <p class="slide-subtitle">Indução de regras transparentes e auditáveis contra IEC 61511 sobre telemetria da HRS (600 amostras, 4 classes):</p>
+      <div class="grid-2" style="align-items:center;">
+        <div class="graph-frame"><svg viewBox="0 0 420 140" width="100%" height="130" style="display:block;">
+  <rect x="25" y="12" width="380" height="110" fill="#070d18" stroke="#334155"/>
+  <!-- Regioes aprendidas CART -->
+  <rect x="25" y="12" width="380" height="44" fill="rgba(245,158,11,0.18)"/>
+  <rect x="25" y="56" width="230" height="66" fill="rgba(16,185,129,0.16)"/>
+  <rect x="255" y="56" width="150" height="66" fill="rgba(239,68,68,0.18)"/>
+  <!-- Linhas de corte reais -->
+  <line x1="25" y1="56" x2="405" y2="56" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,3"/>
+  <line x1="255" y1="56" x2="255" y2="122" stroke="#ef4444" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="140" y="92" fill="#34d399" font-size="9" font-weight="800" text-anchor="middle">Nominal</text>
+  <text x="330" y="92" fill="#fca5a5" font-size="8.5" font-weight="800" text-anchor="middle">Sobrepressão Cascata</text>
+  <text x="215" y="37" fill="#fbbf24" font-size="8.5" font-weight="800" text-anchor="middle">Falha_Chiller_Termica (TT-101 &gt; 55.9 °C)</text>
+  <text x="258" y="116" fill="#f87171" font-size="7" font-weight="700">PT-101=381.8 bar</text>
+</svg></div>
+        <div>
+          <table style="font-size:0.72rem; margin-bottom:8px;">
+            <thead><tr><th>Algoritmo</th><th>Critério</th><th>Treino</th><th>Teste</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CART</strong></td><td>Impureza de Gini</td><td>99,56%</td><td><strong class="ok">98,67%</strong></td></tr>
+              <tr><td><strong>ID3 / Binário</strong></td><td>Ganho (Entropia)</td><td>99,33%</td><td>98,67%</td></tr>
+              <tr><td><strong>C4.5</strong></td><td><em>Gain Ratio</em></td><td>99,11%</td><td>98,00%</td></tr>
+            </tbody>
+          </table>
+          <div class="callout" style="font-size:0.72rem;">Fronteiras reais extraídas do CART 2D: <code>PT-101 = 381,8 bar</code> e <code>TT-101 = 55,9 °C</code>, sem caixas-pretas opacas.</div>
+        </div>
+      </div>
+      <div class="slide-num">15 / 18</div>
+    </section>
+
+    <!-- SLIDE 16: ARQUITETURA MODULO 3 -->
+    <section>
+      <span class="badge-topic">TÓPICO 04 · AULA 28</span>
+      <h2 class="slide-title">Arquitetura Integrada: <span>SCADACoreModulo3</span></h2>
+      <p class="slide-subtitle">Fluxo completo das 9 técnicas de árvores executando em conjunto dentro de cada ciclo de varredura do SCADA:</p>
+      <div class="graph-frame"><svg viewBox="0 0 760 120" width="100%" height="112" style="display:block;">
+  <line x1="95" y1="60" x2="660" y2="60" stroke="#38bdf8" stroke-width="2.5"/>
+  <line x1="290" y1="60" x2="540" y2="100" stroke="#10b981" stroke-width="2" stroke-dasharray="3,3"/>
+  <rect x="10" y="34" width="105" height="52" rx="8" fill="#0f172a" stroke="#38bdf8"/><text x="62" y="56" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">Campo ISA-5.1</text><text x="62" y="70" fill="#94a3b8" font-size="6.8" text-anchor="middle">PT/TT/AT/ESD</text>
+  <rect x="135" y="34" width="105" height="52" rx="8" fill="#0f172a" stroke="#10b981"/><text x="187" y="56" fill="#34d399" font-size="8" font-weight="800" text-anchor="middle">RSTP + MST</text><text x="187" y="70" fill="#94a3b8" font-size="6.8" text-anchor="middle">Aulas 19 &amp; 23</text>
+  <rect x="260" y="34" width="105" height="52" rx="8" fill="#0f172a" stroke="#38bdf8"/><text x="312" y="56" fill="#38bdf8" font-size="8" font-weight="800" text-anchor="middle">Huffman</text><text x="312" y="70" fill="#94a3b8" font-size="6.8" text-anchor="middle">Aula 20 (-76%)</text>
+  <rect x="385" y="34" width="115" height="52" rx="8" fill="#065f46" stroke="#10b981"/><text x="442" y="56" fill="#fff" font-size="8" font-weight="800" text-anchor="middle">BDT + BT + RRT</text><text x="442" y="70" fill="#a7f3d0" font-size="6.8" text-anchor="middle">Aulas 21, 22, 25</text>
+  <rect x="520" y="34" width="110" height="52" rx="8" fill="#0f172a" stroke="#f59e0b"/><text x="575" y="56" fill="#fbbf24" font-size="8" font-weight="800" text-anchor="middle">AVL + KD-Tree</text><text x="575" y="70" fill="#94a3b8" font-size="6.8" text-anchor="middle">Aulas 21 &amp; 26</text>
+  <rect x="650" y="34" width="100" height="52" rx="8" fill="#1e293b" stroke="#a855f7"/><text x="700" y="56" fill="#e9d5ff" font-size="8" font-weight="800" text-anchor="middle">Árvore CART</text><text x="700" y="70" fill="#94a3b8" font-size="6.8" text-anchor="middle">Aula 27 (Diagn.)</text>
+</svg></div>
+      <div class="grid-3" style="margin-top:8px;">
+        <div class="card"><div class="card-title" style="color:#34d399;">Camada de Rede</div><p class="card-text">MST (66 m) + RSTP validam o caminho de menor custo até <code>SW-SCADA</code> a cada operação.</p></div>
+        <div class="card"><div class="card-title" style="color:#38bdf8;">Camada de Controle</div><p class="card-text">Huffman comprime telemetria (-80% no ciclo nominal) enquanto <code>BDT + Behavior Tree</code> protegem o bico <code>DISP-300</code>.</p></div>
+        <div class="card"><div class="card-title" style="color:#c084fc;">Camada Analítica</div><p class="card-text"><code>AVL</code> indexa todos os ticks (altura 4), <code>KD-Tree</code> calcula escore de anomalia e <code>CART</code> diagnostica a causa raiz.</p></div>
+      </div>
+      <div class="slide-num">16 / 18</div>
+    </section>
+
+    <!-- SLIDE 17: CENARIOS DE ESTRESSE AULA 28 -->
+    <section>
+      <span class="badge-topic">TÓPICO 04 · VALIDAÇÃO</span>
+      <h2 class="slide-title">Validação Integrada: <span>Cenários de Estresse</span></h2>
+      <p class="slide-subtitle">Execução ponta a ponta no simulador <code>SCADACoreModulo3</code> (Aula 28):</p>
+      <table style="margin-top:10px;">
+        <thead><tr><th>Indicador</th><th>Cenário A (Nominal 700 bar)</th><th>Cenário B (Corte Fibra 10G + Vazamento AT-301)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Rede RSTP (Aula 23)</strong></td><td>Root <code>SW-SCADA</code> · Custo S100 = 2.000</td><td>Failover ativo · Custo S100 = 80.000 (<strong class="ok">Conexa</strong>)</td></tr>
+          <tr><td><strong>Huffman (Aula 20)</strong></td><td>Economia de <strong>80,0%</strong> (1 bit/amostra)</td><td>Economia de <strong>70,0%</strong> (sinaliza código de fuga)</td></tr>
+          <tr><td><strong>BDT + BT (Aulas 21/25)</strong></td><td>Cascata <code>TK-101→102→103</code> · 700 bar OK</td><td>Preempção no Tick 8 (<code>AT=34%&gt;25% LIE</code> · <code>XV-301=0</code>)</td></tr>
+          <tr><td><strong>AVL + KD-Tree + CART</strong></td><td>AVL h=4 · KD dist≈0,01 · <code>Nominal</code></td><td>KD-Tree detecta desvio (<code>Dist=1,28</code>) · CART: <strong style="color:#f87171;">Vazamento_H2</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="callout" style="margin-top:10px;">
+        <strong>Resultado:</strong> Mesmo sob falha simultânea de comunicação e vazamento de hidrogênio, o sistema mantém supervisão via failover RSTP, realiza o corte seguro em &lt;1 tick e isola a causa raiz automaticamente.
+      </div>
+      <div class="slide-num">17 / 18</div>
+    </section>
+
+    <!-- SLIDE 18: ENCERRAMENTO -->
+    <section class="slide-dark">
+      <div class="pill">CONCLUSÃO · ETAPA 03</div>
+      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">SCADA-Core Completo: Etapas 01, 02 e 03</h2>
+      <div class="grid-3" style="margin: 16px auto; max-width: 92%; text-align:left;">
+        <div class="card"><div class="card-title" style="color:#38bdf8;">Etapa 01 · Lógica</div><p class="card-text">Proposições ISA-5.1, intertravamentos e regras booleanas de segurança funcional.</p></div>
+        <div class="card"><div class="card-title" style="color:#34d399;">Etapa 02 · Grafos</div><p class="card-text">Dígrafo hidráulico, Dijkstra dinâmico, detecção de vazamentos, PIG (Euler) e AGV (TSP).</p></div>
+        <div class="card"><div class="card-title" style="color:#fbbf24;">Etapa 03 · Árvores</div><p class="card-text">MST/RSTP, Huffman, BDT/AVL/KD-Tree, Petri/RRT/Behavior Trees e diagnóstico CART.</p></div>
+      </div>
+      <p style="font-size:0.82rem; color:#64748b;">UNIFEI · ECAA08 Automação Industrial · Estação de Reabastecimento de Hidrogênio</p>
+      <div class="slide-num">18 / 18</div>
+    </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script>
+    const PEER_PREFIX = "unifei-scada-h2-etapa03-room-";
+    const PEER_CFG = {
+      debug: 1,
+      config: {
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+          { urls: "stun:stun1.l.google.com:19302" },
+          { urls: "stun:stun.cloudflare.com:3478" }
+        ]
+      }
+    };
+
+    let revealReady = false;
+    let peer = null;
+    let isHost = false;
+    let userRole = null; // 'admin' | 'viewer'
+    let currentRoomName = "";
+    let hostPasswordHash = "";
+    let hostClients = new Map(); // peerId -> { conn, role }
+    let clientConn = null;
+    let isApplyingRemote = false;
+    let slideState = { h: 0, v: 0, f: 0, seq: 0 };
+
+    Reveal.initialize({
+      width: 1280, height: 720, margin: 0.04,
+      hash: false, history: false, slideNumber: false, transition: 'fade'
+    }).then(() => {
+      revealReady = true;
+    });
+
+    function normalizeRoomSlug(name) {
+      return name.trim().toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9_-]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    }
+
+    async function sha256Hex(text) {
+      if (window.crypto && window.crypto.subtle) {
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+      }
+      // Fallback deterministico simples caso nao esteja em contexto seguro
+      let h = 2166136261;
+      for (let i = 0; i < text.length; i++) {
+        h ^= text.charCodeAt(i);
+        h = Math.imul(h, 16777619);
+      }
+      return (h >>> 0).toString(16);
+    }
+
+    function showStatus(msg, isError = false) {
+      const el = document.getElementById("lobby-status");
+      el.textContent = msg;
+      el.className = "status-box " + (isError ? "status-error" : "status-info");
+    }
+
+    function switchLobbyTab(tab) {
+      const joinForm = document.getElementById("form-join");
+      const createForm = document.getElementById("form-create");
+      const tabJoin = document.getElementById("tab-entrar");
+      const tabCreate = document.getElementById("tab-criar");
+      document.getElementById("lobby-status").className = "status-box";
+      if (tab === "join") {
+        joinForm.classList.remove("hidden");
+        createForm.classList.add("hidden");
+        tabJoin.classList.add("active");
+        tabCreate.classList.remove("active");
+      } else {
+        createForm.classList.remove("hidden");
+        joinForm.classList.add("hidden");
+        tabCreate.classList.add("active");
+        tabJoin.classList.remove("active");
+      }
+    }
+
+    function setButtonsBusy(busy) {
+      document.getElementById("btn-join-submit").disabled = busy;
+      document.getElementById("btn-create-submit").disabled = busy;
+    }
+
+    function enterPresentation(role, roomName) {
+      userRole = role;
+      currentRoomName = roomName;
+      document.getElementById("webrtc-lobby").classList.add("hidden");
+      document.getElementById("room-hud").style.display = "flex";
+      document.getElementById("hud-room").textContent = "Sala: " + roomName;
+
+      const roleEl = document.getElementById("hud-role");
+      if (role === "admin") {
+        document.body.classList.remove("viewer-locked");
+        roleEl.className = "role-pill role-admin";
+        roleEl.textContent = isHost ? "👑 Admin (Criador)" : "👑 Admin";
+        Reveal.configure({ controls: true, keyboard: true, touch: true, overview: true });
+      } else {
+        document.body.classList.add("viewer-locked");
+        roleEl.className = "role-pill role-viewer";
+        roleEl.textContent = "👁️ Espectador";
+        Reveal.configure({ controls: false, keyboard: false, touch: false, overview: false });
+      }
+      applySlideState(slideState);
+    }
+
+    function applySlideState(st) {
+      if (!revealReady) return;
+      isApplyingRemote = true;
+      Reveal.slide(st.h || 0, st.v || 0, st.f || 0);
+      document.getElementById("hud-sync").textContent = `Slide ${(st.h || 0) + 1}/18`;
+      setTimeout(() => { isApplyingRemote = false; }, 80);
+    }
+
+    function getCountsPayload() {
+      let admins = 1; // Host
+      let viewers = 0;
+      hostClients.forEach(c => {
+        if (c.role === "admin") admins++;
+        else if (c.role === "viewer") viewers++;
+      });
+      return { admins, viewers, total: admins + viewers };
+    }
+
+    function updateHudCounts(counts) {
+      document.getElementById("hud-peers").textContent = `👥 ${counts.total} (${counts.admins} admin · ${counts.viewers} espec.)`;
+    }
+
+    function hostBroadcast(msg, excludePeerId = null) {
+      hostClients.forEach((entry, pid) => {
+        if (pid !== excludePeerId && entry.conn && entry.conn.open) {
+          entry.conn.send(msg);
+        }
+      });
+    }
+
+    // =========================================================================
+    // CRIAR SALA (HOST)
+    // =========================================================================
+    async function handleCreateRoom(e) {
+      e.preventDefault();
+      const rawName = document.getElementById("create-room-name").value.trim();
+      const pwd = document.getElementById("create-password").value;
+      const slug = normalizeRoomSlug(rawName);
+      if (!slug || !pwd) {
+        showStatus("Informe um nome válido para a sala e uma senha.", true);
+        return;
+      }
+      if (typeof Peer === "undefined") {
+        showStatus("Biblioteca WebRTC (PeerJS) não carregou. Verifique sua conexão.", true);
+        return;
+      }
+
+      setButtonsBusy(true);
+      showStatus("Criando sala WebRTC '" + rawName + "'...");
+      hostPasswordHash = await sha256Hex(pwd);
+      const hostId = PEER_PREFIX + slug;
+
+      if (peer) { try { peer.destroy(); } catch (_) {} }
+      isHost = true;
+      hostClients.clear();
+      peer = new Peer(hostId, PEER_CFG);
+
+      let settled = false;
+      peer.on("open", () => {
+        settled = true;
+        setButtonsBusy(false);
+        slideState = { h: 0, v: 0, f: 0, seq: 0 };
+        enterPresentation("admin", rawName);
+        updateHudCounts(getCountsPayload());
+      });
+
+      peer.on("error", (err) => {
+        setButtonsBusy(false);
+        if (!settled) {
+          if (err.type === "unavailable-id") {
+            showStatus("Já existe uma sala ativa com o nome '" + rawName + "'. Escolha outro nome ou entre nela.", true);
+          } else {
+            showStatus("Erro ao criar sala WebRTC: " + err.type, true);
+          }
+        }
+      });
+
+      peer.on("connection", (conn) => {
+        conn.on("data", async (data) => {
+          if (!data || typeof data !== "object") return;
+
+          if (data.type === "HELLO") {
+            const incomingPwd = typeof data.password === "string" ? data.password : "";
+            // Caixa de senha vazia -> modo espectador
+            if (incomingPwd === "") {
+              hostClients.set(conn.peer, { conn, role: "viewer" });
+              const counts = getCountsPayload();
+              conn.send({ type: "AUTH_OK", role: "viewer", state: slideState, counts });
+              updateHudCounts(counts);
+              hostBroadcast({ type: "PEERS_UPDATE", counts }, conn.peer);
+              return;
+            }
+
+            // Caixa de senha preenchida -> validar senha
+            const incomingHash = await sha256Hex(incomingPwd);
+            if (incomingHash === hostPasswordHash) {
+              hostClients.set(conn.peer, { conn, role: "admin" });
+              const counts = getCountsPayload();
+              conn.send({ type: "AUTH_OK", role: "admin", state: slideState, counts });
+              updateHudCounts(counts);
+              hostBroadcast({ type: "PEERS_UPDATE", counts }, conn.peer);
+            } else {
+              conn.send({
+                type: "AUTH_ERR",
+                message: "Senha incorreta! Para entrar apenas como espectador, deixe o campo de senha vazio."
+              });
+              setTimeout(() => { try { conn.close(); } catch (_) {} }, 150);
+            }
+          } else if (data.type === "REQ_SLIDE") {
+            const entry = hostClients.get(conn.peer);
+            if (!entry || entry.role !== "admin") return; // Seguranca: espectador jamais altera slide
+            slideState = { h: data.h || 0, v: data.v || 0, f: data.f || 0, seq: slideState.seq + 1 };
+            applySlideState(slideState);
+            hostBroadcast({ type: "SYNC_SLIDE", state: slideState });
+          }
+        });
+
+        conn.on("close", () => {
+          if (hostClients.has(conn.peer)) {
+            hostClients.delete(conn.peer);
+            const counts = getCountsPayload();
+            updateHudCounts(counts);
+            hostBroadcast({ type: "PEERS_UPDATE", counts });
+          }
+        });
+      });
+    }
+
+    // =========================================================================
+    // ENTRAR EM SALA (ADMIN COM SENHA OU ESPECTADOR SEM SENHA)
+    // =========================================================================
+    function handleJoinRoom(e) {
+      e.preventDefault();
+      const rawName = document.getElementById("join-room-name").value.trim();
+      const pwd = document.getElementById("join-password").value; // Vazio = espectador; preenchido = valida senha
+      const slug = normalizeRoomSlug(rawName);
+      if (!slug) {
+        showStatus("Informe o nome da sala.", true);
+        return;
+      }
+      if (typeof Peer === "undefined") {
+        showStatus("Biblioteca WebRTC (PeerJS) não carregou. Verifique sua conexão.", true);
+        return;
+      }
+
+      setButtonsBusy(true);
+      showStatus("Conectando à sala '" + rawName + "' via WebRTC...");
+      if (peer) { try { peer.destroy(); } catch (_) {} }
+      isHost = false;
+      const hostId = PEER_PREFIX + slug;
+      peer = new Peer(PEER_CFG);
+
+      let authDone = false;
+      const timeoutTimer = setTimeout(() => {
+        if (!authDone) {
+          setButtonsBusy(false);
+          showStatus("Tempo esgotado ao conectar à sala '" + rawName + "'. Verifique o nome da sala ou se o criador está online.", true);
+          try { peer.destroy(); } catch (_) {}
+        }
+      }, 10000);
+
+      peer.on("open", () => {
+        clientConn = peer.connect(hostId, { reliable: true });
+        clientConn.on("open", () => {
+          clientConn.send({ type: "HELLO", password: pwd });
+        });
+
+        clientConn.on("data", (data) => {
+          if (!data || typeof data !== "object") return;
+          if (data.type === "AUTH_OK") {
+            authDone = true;
+            clearTimeout(timeoutTimer);
+            setButtonsBusy(false);
+            slideState = data.state || { h: 0, v: 0, f: 0, seq: 0 };
+            enterPresentation(data.role, rawName);
+            if (data.counts) updateHudCounts(data.counts);
+          } else if (data.type === "AUTH_ERR") {
+            authDone = true;
+            clearTimeout(timeoutTimer);
+            setButtonsBusy(false);
+            showStatus(data.message || "Senha incorreta.", true);
+            try { clientConn.close(); peer.destroy(); } catch (_) {}
+          } else if (data.type === "SYNC_SLIDE") {
+            slideState = data.state;
+            applySlideState(slideState);
+          } else if (data.type === "PEERS_UPDATE") {
+            updateHudCounts(data.counts);
+          }
+        });
+
+        clientConn.on("close", () => {
+          if (authDone && userRole !== null) {
+            document.getElementById("hud-peers").textContent = "⚠️ Criador desconectado";
+            document.getElementById("hud-peers").style.color = "#fca5a5";
+          }
+        });
+      });
+
+      peer.on("error", (err) => {
+        if (!authDone) {
+          clearTimeout(timeoutTimer);
+          setButtonsBusy(false);
+          if (err.type === "peer-unavailable") {
+            showStatus("Sala '" + rawName + "' não encontrada ou ainda não foi criada.", true);
+          } else {
+            showStatus("Falha de conexão WebRTC: " + err.type, true);
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // SINCRONIZACAO DE SLIDES PELO REVEAL.JS
+    // =========================================================================
+    function onLocalSlideChange() {
+      if (!revealReady || isApplyingRemote || !userRole) return;
+      const idx = Reveal.getIndices();
+      const h = idx.h || 0, v = idx.v || 0, f = idx.f || 0;
+
+      // Se espectador tentar alterar por qualquer meio, reverte imediatamente
+      if (userRole === "viewer") {
+        applySlideState(slideState);
+        return;
+      }
+
+      document.getElementById("hud-sync").textContent = `Slide ${h + 1}/18`;
+
+      if (isHost) {
+        slideState = { h, v, f, seq: slideState.seq + 1 };
+        hostBroadcast({ type: "SYNC_SLIDE", state: slideState });
+      } else if (clientConn && clientConn.open) {
+        slideState = { h, v, f, seq: slideState.seq };
+        clientConn.send({ type: "REQ_SLIDE", h, v, f });
+      }
+    }
+
+    Reveal.on("slidechanged", onLocalSlideChange);
+    Reveal.on("fragmentshown", onLocalSlideChange);
+    Reveal.on("fragmenthidden", onLocalSlideChange);
+
+    function copyInviteLink() {
+      const u = new URL(window.location.href);
+      u.searchParams.set("room", currentRoomName);
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(u.toString()).then(() => {
+          const btn = document.getElementById("btn-copy-link");
+          btn.textContent = "✓ Copiado!";
+          setTimeout(() => { btn.textContent = "🔗 Link"; }, 1800);
+        });
+      }
+    }
+
+    function leaveRoom() {
+      userRole = null;
+      isHost = false;
+      if (peer) { try { peer.destroy(); } catch (_) {} peer = null; }
+      document.body.classList.remove("viewer-locked");
+      document.getElementById("room-hud").style.display = "none";
+      document.getElementById("webrtc-lobby").classList.remove("hidden");
+      document.getElementById("lobby-status").className = "status-box";
+    }
+
+    // Pre-preencher sala se vier ?room=... na URL
+    const initRoom = new URLSearchParams(window.location.search).get("room");
+    if (initRoom) {
+      document.getElementById("join-room-name").value = initRoom;
+    }
+  </script>
+</body>
+</html>
