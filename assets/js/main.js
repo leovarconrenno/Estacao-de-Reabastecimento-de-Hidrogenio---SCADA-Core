@@ -670,47 +670,105 @@
   // 6. EQUIPE DO PROJETO (GITHUB API + FALLBACK ROBUSTO GRUPO 9)
   // ==========================================================================
   const REPO_CONTRIBUTORS_API = 'https://api.github.com/repos/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/contributors';
+  const REPO_STATS_API = 'https://api.github.com/repos/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/stats/contributors';
   const REPO_URL = 'https://github.com/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core';
 
+  const FALLBACK_LINE_STATS = {
+    marcelocandelaria: { adds: 16063, dels: 6823 },
+    joaoomago: { adds: 55680, dels: 24149 },
+    leovarconrenno: { adds: 2512, dels: 341 },
+    'leo-unifei': { adds: 541, dels: 5510 }
+  };
+
   const FALLBACK_MEMBERS = [
-    {
-      login: 'JoaoOMago',
-      name: 'João Pedro',
-      html_url: 'https://github.com/JoaoOMago',
-      avatar_url: 'https://avatars.githubusercontent.com/u/164713970?v=4',
-      commits: '112 commits'
-    },
     {
       login: 'MarceloCandelaria',
       name: 'Marcelo Candelaria',
       html_url: 'https://github.com/MarceloCandelaria',
       avatar_url: 'https://avatars.githubusercontent.com/u/148222438?v=4',
-      commits: '108 commits'
+      commitCount: 131,
+      commits: '131 commits',
+      adds: 16063,
+      dels: 6823
+    },
+    {
+      login: 'JoaoOMago',
+      name: 'João Pedro',
+      html_url: 'https://github.com/JoaoOMago',
+      avatar_url: 'https://avatars.githubusercontent.com/u/164713970?v=4',
+      commitCount: 127,
+      commits: '127 commits',
+      adds: 55680,
+      dels: 24149
     },
     {
       login: 'leovarconrenno',
       name: 'Leo Vargas',
       html_url: 'https://github.com/leovarconrenno',
       avatar_url: 'https://avatars.githubusercontent.com/u/315107902?v=4',
-      commits: '12 commits'
+      commitCount: 15,
+      commits: '15 commits',
+      adds: 2512,
+      dels: 341
     },
     {
-      login: 'luca-augusto',
-      name: 'Luca Augusto',
-      html_url: 'https://github.com/luca-augusto',
-      avatar_url: 'https://avatars.githubusercontent.com/u/108502392?v=4',
-      commits: 'Colaborador'
+      login: 'Leo-unifei',
+      name: 'Leo Vargas (UNIFEI)',
+      html_url: 'https://github.com/Leo-unifei',
+      avatar_url: 'https://avatars.githubusercontent.com/u/262969934?v=4',
+      commitCount: 1,
+      commits: '1 commit',
+      adds: 541,
+      dels: 5510
     }
   ];
 
+  function fmtNum(n) {
+    return Number(n || 0).toLocaleString('pt-BR');
+  }
+
+  function renderTeamSummary(members) {
+    const summaryEl = document.getElementById('team-stats-summary');
+    if (!summaryEl) return;
+    const totalCommits = members.reduce((s, m) => s + (m.commitCount || 0), 0);
+    const totalAdds = members.reduce((s, m) => s + (m.adds || 0), 0);
+    const totalDels = members.reduce((s, m) => s + (m.dels || 0), 0);
+    const net = totalAdds - totalDels;
+    const netStr = (net >= 0 ? '+' : '') + fmtNum(net);
+    summaryEl.innerHTML = `
+      <span class="team-stat-pill">📦 ${fmtNum(totalCommits)} commits (equipe)</span>
+      <span class="team-stat-pill stat-add">+${fmtNum(totalAdds)} linhas adicionadas</span>
+      <span class="team-stat-pill stat-del">-${fmtNum(totalDels)} linhas removidas</span>
+      <span class="team-stat-pill stat-net">Saldo: ${netStr} linhas</span>
+    `;
+  }
+
   function renderContributorCards(container, members) {
+    renderTeamSummary(members);
+    const maxVol = Math.max(1, ...members.map(m => (m.adds || 0) + (m.dels || 0)));
     let html = '';
     members.forEach(member => {
+      const adds = Number(member.adds || 0);
+      const dels = Number(member.dels || 0);
+      const net = adds - dels;
+      const netSign = net >= 0 ? '+' : '';
+      const wAdd = Math.max(adds > 0 ? 3 : 0, Math.round((adds / maxVol) * 100));
+      const wDel = Math.max(dels > 0 ? 3 : 0, Math.round((dels / maxVol) * 100));
+
       html += `
         <a href="${member.html_url}" target="_blank" rel="noopener noreferrer" class="contributor-card" title="Ver perfil de ${member.name || member.login} no GitHub">
           <img src="${member.avatar_url}" alt="${member.name || member.login}" class="contributor-avatar" loading="lazy" />
           <span class="contributor-login">@${member.login}</span>
-          <span class="contributor-commits">${member.commits || member.role || 'Membro da Equipe'}</span>
+          <span class="contributor-commits"><strong>${member.commits || member.role || 'Membro da Equipe'}</strong></span>
+          <div class="contributor-lines">
+            <span class="lines-added">+${fmtNum(adds)}</span>
+            <span class="lines-removed">-${fmtNum(dels)}</span>
+          </div>
+          <div class="contributor-diff-bar" title="Adicionadas: +${fmtNum(adds)} | Removidas: -${fmtNum(dels)}">
+            <div class="diff-bar-add" style="width:${wAdd}%"></div>
+            <div class="diff-bar-del" style="width:${wDel}%"></div>
+          </div>
+          <span class="contributor-net">Saldo: ${netSign}${fmtNum(net)} linhas</span>
         </a>
       `;
     });
@@ -730,25 +788,47 @@
     `;
 
     try {
-      const res = await fetch(REPO_CONTRIBUTORS_API);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+      const [contribRes, statsRes] = await Promise.all([
+        fetch(REPO_CONTRIBUTORS_API),
+        fetch(REPO_STATS_API).catch(() => null)
+      ]);
+      if (!contribRes.ok) throw new Error(`HTTP ${contribRes.status}`);
+      const data = await contribRes.json();
 
       if (!Array.isArray(data) || data.length === 0) {
         throw new Error('Nenhum colaborador retornado.');
+      }
+
+      const liveLineStats = {};
+      if (statsRes && statsRes.status === 200) {
+        const statsJson = await statsRes.json();
+        if (Array.isArray(statsJson)) {
+          statsJson.forEach(item => {
+            const loginKey = item?.author?.login?.toLowerCase();
+            if (!loginKey || !Array.isArray(item.weeks)) return;
+            const adds = item.weeks.reduce((sum, w) => sum + (w.a || 0), 0);
+            const dels = item.weeks.reduce((sum, w) => sum + (w.d || 0), 0);
+            liveLineStats[loginKey] = { adds, dels };
+          });
+        }
       }
 
       // Filtra bots
       const humanUsers = data.filter(u => !u.login.includes('[bot]'));
 
       const mapped = humanUsers.map(user => {
-        const fallbackMatch = FALLBACK_MEMBERS.find(m => m.login.toLowerCase() === user.login.toLowerCase());
+        const key = user.login.toLowerCase();
+        const fallbackMatch = FALLBACK_MEMBERS.find(m => m.login.toLowerCase() === key);
+        const lineData = liveLineStats[key] || FALLBACK_LINE_STATS[key] || { adds: 0, dels: 0 };
         return {
           login: user.login,
           name: fallbackMatch ? fallbackMatch.name : user.login,
           html_url: user.html_url,
           avatar_url: user.avatar_url,
-          commits: `${user.contributions} ${user.contributions === 1 ? 'commit' : 'commits'}`
+          commitCount: user.contributions || 0,
+          commits: `${user.contributions} ${user.contributions === 1 ? 'commit' : 'commits'}`,
+          adds: lineData.adds,
+          dels: lineData.dels
         };
       });
 
