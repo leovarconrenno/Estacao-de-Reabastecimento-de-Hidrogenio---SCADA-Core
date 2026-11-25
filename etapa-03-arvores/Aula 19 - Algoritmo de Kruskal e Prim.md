@@ -1,103 +1,99 @@
-# Relatório Técnico: Otimização Topológica de Estação de Reabastecimento de Hidrogênio (HRS)
+# Aula 19: Otimização de Infraestrutura com Algoritmos de Kruskal e Prim
 
-**Dimensionamento Mínimo de Malha de Utilidades e Redes SCADA com Algoritmos de Kruskal e Prim**
+<a href="https://colab.research.google.com/github/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2019%20-%20Algoritmo%20de%20Kruskal%20e%20Prim%20-%20code.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-### Informações do Projeto
+## 1. Situação-Problema
 
-| Parâmetro | Detalhe | 
-| ----- | ----- | 
-| **Unidade Industrial** | Estação de Reabastecimento de Hidrogênio (HRS - *Hydrogen Refueling Station*) | 
-| **Aplicação** | Interconexão de Tubulações (Alta/Baixa Pressão) e Cabeamento de Controle SCADA | 
-| **Método Formulado** | Árvore Geradora Mínima (MST — *Minimum Spanning Tree*) | 
-| **Código do Projeto** | ECAA08-SISTEMA-SCADA-HRS | 
+Nas Etapas 01 e 02, estruturamos a **Estação de Reabastecimento de Hidrogênio — SCADA Core** em três setores operacionais integrados à Sala de Controle:
+* **Setor 100 (Suprimento e Armazenamento em Cascata):** Manifold de entrada `SUP-100` (*Inlet Header*), bancos de cilindros `TK-101` (LP — $400\text{ bar}$), `TK-102` (MP — $700\text{ bar}$), `TK-103` (HP — $1000\text{ bar}$) e válvula direcional 4/3 vias `XV-104`.
+* **Setor 200 (Condicionamento Térmico):** Trocador criogênico / chiller `HEX-201` (`M-201`, mantendo `TT-201 <= -40 °C`).
+* **Setor 300 (Dispensação Veicular):** Dispensador `DISP-300` (protocolo SAE J2601, `BV-301`, `COM-301`).
+* **Supervisão Central:** Painel `SCADA-01` na sala de controle.
 
-## 1. Contextualização e Objetivo de Engenharia
+Para interligar fisicamente todos esses módulos com eletrodutos de instrumentação (sinais $4\text{–}20\text{ mA}$ / Modbus) e bandejamento de utilidades usando o **menor comprimento linear possível** e **sem formar laços fechados redundantes**, modelamos a planta como um grafo não-direcionado ponderado e buscamos sua **Árvore Geradora Mínima (MST — *Minimum Spanning Tree*)**.
 
-No dimensionamento eletromecânico e hidráulico de uma Estação de Reabastecimento de Hidrogênio (HRS), a otimização dos leitos de tubulação e dos barramentos de comunicação industrial SCADA representa um fator crítico. Tubulações de hidrogênio sob alta pressão requerem materiais dispendiosos (aço inox especial) e rotas precisas para mitigação de riscos, impactando diretamente no CAPEX (*Capital Expenditure*) e OPEX (*Operational Expenditure*).
+---
 
-O objetivo deste estudo é modelar o *layout* das unidades de geração, armazenamento e abastecimento como um grafo não direcionado e valorado $G = (V, E, w)$ e determinar a topologia de conexão de menor extensão linear contínua utilizando os algoritmos de **Kruskal** e **Prim**.
+## 2. Fundamentos Teóricos: Árvore Geradora Mínima (MST)
 
-## 2. Formulação Matemática da Rede
+Dado um grafo conexo, não-direcionado e ponderado $G = (V, E, w)$ com $\vert V \vert = 8$ equipamentos e $\vert E \vert = 13$ rotas viáveis de leito de cabos/tubulação, uma árvore geradora $T = (V, E_T)$ conecta todos os vértices com exatamente $\vert E_T \vert = \vert V \vert - 1 = 7$ arestas, minimizando:
+$$W(T) = \sum_{e \in E_T} w(e)$$
 
-A estação é representada por um conjunto de vértices $V$ (equipamentos de processo e controle) e arestas $E$ (rotas de interconexão viáveis), onde o peso $w(e)$ quantifica a distância física em metros entre os equipamentos:
+### 2.1. Algoritmo de Kruskal (Foco em Arestas + *Union-Find*)
+Ordena todas as arestas em ordem crescente de distância $w(e)$ e seleciona iterativamente a menor aresta que conecte dois componentes ainda disjuntos (verificado em tempo quase constante $\mathcal{O}(\alpha(V))$ via estrutura *Disjoint Set Union* com compressão de caminho). Complexidade: $\mathcal{O}(\vert E \vert \log \vert E \vert)$.
 
-* **Vértices (**$V$**):**
+### 2.2. Algoritmo de Prim (Foco em Vértices + *Min-Heap*)
+Inicia no nó raiz `SCADA-01` (Sala de Controle) e expande uma única árvore contínua, sempre escolhendo na fila de prioridades a aresta de menor peso que liga um equipamento já conectado a um equipamento ainda fora da árvore. Complexidade: $\mathcal{O}(\vert E \vert \log \vert V \vert)$ com *heap* binário.
 
-  * $v_1$: `ELET-01` — Eletrolisador (Geração)
-  * $v_2$: `PURIF-01` — Purificador de $\text{H}_2$ (Tratamento)
-  * $v_3$: `TK-BP` — Tanque de Baixa Pressão (Armazenamento)
-  * $v_4$: `COMP-01` — Compressor Principal (Compressão)
-  * $v_5$: `TK-AP` — Tanque de Alta Pressão (Armazenamento)
-  * $v_6$: `RESF-01` — Sistema de Resfriamento / Chiller (Condicionamento)
-  * $v_7$: `DISP-01` — Dispenser de Hidrogênio (Abastecimento)
-  * $v_8$: `SCADA-01` — Centro de Controle SCADA (Automação)
+---
 
-## 3. Algoritmo de Kruskal (Abordagem Baseada em Arestas)
+## 3. Modelagem da Rede dos Setores 100, 200 e 300
 
-O algoritmo de Kruskal adota uma estratégia gulosa (*greedy*) baseada nas arestas do grafo. As arestas são ordenadas em ordem crescente de peso e inseridas na solução uma a uma, desde que não formem ciclos (verificado através da estrutura de dados *Union-Find*).
+### 3.1. Vértices ($V$) da Planta HRS
 
-Para $\vert{}V\vert{} = 8$ vértices, a Árvore Geradora Mínima (MST) conterá exatamente $\vert{}V\vert{} - 1 = 7$ arestas.
+| Vértice | Tag na Planta | Setor | Função Principal |
+| :---: | :--- | :---: | :--- |
+| $v_1$ | `SUP-100` | Setor 100 | Manifold de suprimento (*Inlet Header*) |
+| $v_2$ | `TK-101` | Setor 100 | Banco de Baixa Pressão (LP — $400\text{ bar}$) |
+| $v_3$ | `TK-102` | Setor 100 | Banco de Média Pressão (MP — $700\text{ bar}$) |
+| $v_4$ | `TK-103` | Setor 100 | Banco de Alta Pressão (HP — $1000\text{ bar}$) |
+| $v_5$ | `XV-104` | Setor 100 | Válvula direcional 4/3 vias de seleção |
+| $v_6$ | `HEX-201` | Setor 200 | Chiller criogênico ($-40^\circ\text{C}$) |
+| $v_7$ | `DISP-300` | Setor 300 | Dispensador veicular FCEV (SAE J2601) |
+| $v_8$ | `SCADA-01` | Controle | Servidor supervisório central |
 
-| Ordem | Aresta $e$ | Trecho Conectado | Distância $w(e)$ | Ciclo Detectado? | Decisão de Projeto | 
-| ----- | ----- | ----- | ----- | ----- | ----- | 
-| 1 | $(v_1, v_2)$ | `ELET-01` $\leftrightarrow$ `PURIF-01` | $5\text{ m}$ | Não | **INCLUÍDA** | 
-| 2 | $(v_6, v_7)$ | `RESF-01` $\leftrightarrow$ `DISP-01` | $5\text{ m}$ | Não | **INCLUÍDA** | 
-| 3 | $(v_3, v_4)$ | `TK-BP` $\leftrightarrow$ `COMP-01` | $8\text{ m}$ | Não | **INCLUÍDA** | 
-| 4 | $(v_2, v_3)$ | `PURIF-01` $\leftrightarrow$ `TK-BP` | $10\text{ m}$ | Não | **INCLUÍDA** | 
-| 5 | $(v_4, v_5)$ | `COMP-01` $\leftrightarrow$ `TK-AP` | $12\text{ m}$ | Não | **INCLUÍDA** | 
-| 6 | $(v_3, v_8)$ | `TK-BP` $\leftrightarrow$ `SCADA-01` | $15\text{ m}$ | Não | **INCLUÍDA** | 
-| 7 | $(v_5, v_6)$ | `TK-AP` $\leftrightarrow$ `RESF-01` | $15\text{ m}$ | Não | **INCLUÍDA** | 
-| 8 | $(v_4, v_8)$ | `COMP-01` $\leftrightarrow$ `SCADA-01` | $18\text{ m}$ | Sim (via `TK-BP`) | **REJEITADA** | 
-| 9 | $(v_2, v_8)$ | `PURIF-01` $\leftrightarrow$ `SCADA-01` | $20\text{ m}$ | Sim (via `TK-BP`) | **REJEITADA** | 
-| 10 | $(v_5, v_7)$ | `TK-AP` $\leftrightarrow$ `DISP-01` | $20\text{ m}$ | Sim (via `RESF-01`) | **REJEITADA** | 
-| 11 | $(v_6, v_8)$ | `RESF-01` $\leftrightarrow$ `SCADA-01` | $22\text{ m}$ | Sim (via Rede) | **REJEITADA** | 
-| 12 | $(v_1, v_8)$ | `ELET-01` $\leftrightarrow$ `SCADA-01` | $25\text{ m}$ | Sim (via Rede) | **REJEITADA** | 
-| 13 | $(v_3, v_6)$ | `TK-BP` $\leftrightarrow$ `RESF-01` | $28\text{ m}$ | Sim (via `COMP-01`, `TK-AP`) | **REJEITADA** | 
-| 14 | $(v_7, v_8)$ | `DISP-01` $\leftrightarrow$ `SCADA-01` | $30\text{ m}$ | Sim (via Rede) | **REJEITADA** | 
+### 3.2. Execução Passo a Passo (Kruskal)
 
-**Comprimento total da infraestrutura via Kruskal:**
+| Ordem | Trecho ($u \leftrightarrow v$) | Distância | Ciclo? | Decisão |
+| :---: | :--- | :---: | :---: | :--- |
+| 1 | `TK-102` $\leftrightarrow$ `XV-104` | $6\text{ m}$ | Não | **INCLUÍDA** |
+| 2 | `TK-101` $\leftrightarrow$ `XV-104` | $8\text{ m}$ | Não | **INCLUÍDA** |
+| 3 | `TK-103` $\leftrightarrow$ `XV-104` | $8\text{ m}$ | Não | **INCLUÍDA** |
+| 4 | `XV-104` $\leftrightarrow$ `HEX-201` | $9\text{ m}$ | Não | **INCLUÍDA** |
+| 5 | `SUP-100` $\leftrightarrow$ `TK-101` | $10\text{ m}$ | Não | **INCLUÍDA** |
+| 6 | `HEX-201` $\leftrightarrow$ `DISP-300` | $11\text{ m}$ | Não | **INCLUÍDA** |
+| 7 | `SUP-100` $\leftrightarrow$ `TK-102` | $12\text{ m}$ | Sim (`SUP-100`-`TK-101`-`XV-104`-`TK-102`) | **REJEITADA** |
+| 8 | `SCADA-01` $\leftrightarrow$ `HEX-201` | $14\text{ m}$ | Não | **INCLUÍDA** |
 
-$$
-W_{\text{Kruskal}} = 5 + 5 + 8 + 10 + 12 + 15 + 15 = 70\text{ metros}
-$$
+Comprimento total mínimo obtido por ambos os algoritmos (Kruskal e Prim a partir de `SCADA-01`):
+$$W_{\text{MST}} = 6 + 8 + 8 + 9 + 10 + 11 + 14 = 66\text{ metros}$$
 
-## 4. Algoritmo de Prim (Abordagem Baseada em Vértices)
+```mermaid
+graph LR
+    SCADA["SCADA-01<br/>Controle"] -- "14 m (MST)" --- HEX["HEX-201<br/>Setor 200"]
+    HEX -- "11 m (MST)" --- DISP["DISP-300<br/>Setor 300"]
+    HEX -- "9 m (MST)" --- XV["XV-104<br/>Setor 100"]
+    XV -- "8 m (MST)" --- TK1["TK-101 (LP)"]
+    XV -- "6 m (MST)" --- TK2["TK-102 (MP)"]
+    XV -- "8 m (MST)" --- TK3["TK-103 (HP)"]
+    TK1 -- "10 m (MST)" --- SUP["SUP-100<br/>Setor 100"]
 
-O algoritmo de Prim expande uma única arborescência a partir de um nó raiz inicial (definido como o eletrolisador $v_1$ / `ELET-01`), adicionando a cada passo a aresta de menor peso que conecta a árvore em crescimento a um nó da fronteira não visitado.
+    SUP -.- |"12 m"| TK2
+    SUP -.- |"15 m"| TK3
+    SCADA -.- |"18 m"| SUP
+    SCADA -.- |"22 m"| DISP
+    TK1 -.- |"16 m"| TK2
+    TK3 -.- |"17 m"| HEX
+```
 
-| Iteração | Vértices na Árvore ($S$) | Arestas de Corte Elegíveis | Aresta Selecionada | Nó Adicionado | Custo | 
-| ----- | ----- | ----- | ----- | ----- | ----- | 
-| **Inicial** | $\{v_1\}$ | $(v_1, v_2): 5$, $(v_1, v_8): 25$ | $(v_1, v_2)$ | $v_2$ (`PURIF-01`) | $5\text{ m}$ | 
-| **1** | $\{v_1, v_2\}$ | $(v_2, v_3): 10$, $(v_2, v_8): 20, \dots$ | $(v_2, v_3)$ | $v_3$ (`TK-BP`) | $10\text{ m}$ | 
-| **2** | $\{v_1, v_2, v_3\}$ | $(v_3, v_4): 8$, $(v_3, v_8): 15, \dots$ | $(v_3, v_4)$ | $v_4$ (`COMP-01`) | $8\text{ m}$ | 
-| **3** | $\{v_1, v_2, v_3, v_4\}$ | $(v_4, v_5): 12$, $(v_4, v_8): 18, \dots$ | $(v_4, v_5)$ | $v_5$ (`TK-AP`) | $12\text{ m}$ | 
-| **4** | $\{v_1, v_2, v_3, v_4, v_5\}$ | $(v_3, v_8): 15$, $(v_5, v_6): 15, \dots$ | $(v_3, v_8)$ | $v_8$ (`SCADA-01`) | $15\text{ m}$ | 
-| **5** | $\{v_1, v_2, v_3, v_4, v_5, v_8\}$ | $(v_5, v_6): 15$, $(v_5, v_7): 20, \dots$ | $(v_5, v_6)$ | $v_6$ (`RESF-01`) | $15\text{ m}$ | 
-| **6** | $\{v_1, v_2, v_3, v_4, v_5, v_6, v_8\}$ | $(v_6, v_7): 5$, $(v_5, v_7): 20, \dots$ | $(v_6, v_7)$ | $v_7$ (`DISP-01`) | $5\text{ m}$ | 
+---
 
-**Comprimento total da infraestrutura via Prim:**
+## 4. Exemplo Resolvido
 
-$$
-W_{\text{Prim}} = 5 + 10 + 8 + 12 + 15 + 15 + 5 = 70\text{ metros}
-$$
+**Pergunta:** Por que, na topologia MST acima, `XV-104` concentra grau 4 (conectando `TK-101`, `TK-102`, `TK-103` e `HEX-201`)?
 
-## 5. Representação Esquemática da Rede e Otimização MST
+**Resolução:** Na planta real (conforme a Aula 18), `XV-104` é a válvula direcional 4/3 vias que recebe as linhas dos três tanques em cascata e encaminha o fluxo selecionado para o trocador `HEX-201`. Como os trechos até `XV-104` são os mais curtos ($6\text{ m}$ a $9\text{ m}$), tanto Kruskal quanto Prim escolhem `XV-104` como concentrador natural da malha do Setor 100, evitando cabeamentos paralelos redundantes a partir de `SUP-100`.
 
-![Figura 1](img/HRS_Kruskal_Prim.jpeg)
-*Figura 1: Diagrama conceitual comparativo entre os algoritmos de Kruskal (orientado a arestas) e Prim (orientado a vértices) aplicados à otimização da malha da Estação de Reabastecimento de Hidrogênio.*
+---
 
-## 6. Análise Comparativa e Decisão Industrial
+## 5. Atividades de Investigação
 
-> 💡 **Recomendações de Aplicação Industrial (FEED vs. Montagem em Campo)**
->
-> Ambos os métodos garantem equivalência no comprimento total de tubulações e leitos de cabos ($70\text{ metros}$). A escolha da metodologia depende da fase do projeto de engenharia:
->
-> * **Algoritmo de Kruskal** $\mathcal{O}(\vert{}E\vert{} \log \vert{}E\vert{})$**:** É ideal para a fase de projeto conceitual e básico (*FEED - Front-End Engineering Design*), onde a matriz global de distâncias da planta da HRS pode ser analisada em software para estimar os quantitativos e o orçamento do aço inox de alta pressão.
->
-> * **Algoritmo de Prim** $\mathcal{O}(\vert{}E\vert{} + \vert{}V\vert{} \log \vert{}V\vert{})$**:** É ideal para a etapa de execução e montagem eletromecânica em campo. Permite que a equipe de automação lance o barramento SCADA de forma contínua a partir da sala de controle ou da unidade geradora principal, expandindo a rede conectada sem deixar ilhas de comunicação pendentes.
+1. Execute o notebook e confirme que `kruskal_mst` e `prim_mst` convergem para o mesmo custo total de $66\text{ m}$.
+2. Simule a instalação de um segundo dispensador `DISP-301` no Setor 300 a $7\text{ m}$ de `DISP-300` e $16\text{ m}$ de `HEX-201`. Qual aresta entra na MST?
+3. Em qual fase do projeto da HRS você aplicaria Kruskal (orçamento global) vs. Prim (lançamento contínuo de cabos a partir de `SCADA-01`)?
 
-## 7. Referências Técnicas
+---
 
-1. CORMEN, T. H. et al. **Algoritmos: Teoria e Prática**. 3. ed. Rio de Janeiro: Elsevier, 2012.
+## 6. Entregável da Aula 19
 
-2. PETERS, M. S.; TIMMERHAUS, K. D. **Plant Design and Economics for Chemical Engineers**. 5th ed. New York: McGraw-Hill, 2003.
+* **Módulo `kruskal_mst` e `prim_mst` em Python:** Implementação com *Union-Find* e *Min-Heap* aplicada aos Setores 100, 200 e 300 da Estação de Hidrogênio, com tabela de passos e visualização gráfica.

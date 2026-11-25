@@ -1,116 +1,96 @@
-# Modelagem e Análise Formal com Redes de Petri: Árvore de Atingibilidade e Árvore de Cobertura
-## Estudo de Caso: Sistema de Compressão, Armazenamento em Cascata e Dispensação da Estação de Hidrogênio (HRS)
+# Aula 24: Árvore de Atingibilidade e Cobertura em Redes de Petri
+
+<a href="https://colab.research.google.com/github/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2024%20-%20%C3%81rvore%20de%20Atingibilidade%20e%20Cobertura%20em%20Redes%20de%20Petri%20-%20code.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
+## 1. Situação-Problema
+
+Na **Estação de Reabastecimento de Hidrogênio — SCADA Core**, o ciclo de carregamento em cascata (`SUP-100` $\to$ `TK-101/102/103` $\to$ `XV-104` $\to$ `HEX-201` $\to$ `DISP-300`) envolve eventos concorrentes e assíncronos sob restrições físicas rígidas (`PT-103 <= 1000 bar`, `AT-101..301 <= 25% LIE`, `ESD-100 = 0`).
+
+Precisamos comprovar formalmente, antes da programação do CLP, que:
+1. O banco de alta pressão `TK-103` não sofre **acúmulo ilimitado** de lotes sem drenagem pelo `DISP-300` (**Limitação / *Boundedness***);
+2. O ciclo não entra em travamento mútuo (**Ausência de *Deadlock***);
+3. O estado de operação ativa e o estado de parada de emergência (`ESD-100`) são **mutuamente exclusivos** (**Segurança / *Safety***).
 
 ---
 
-## 1. Introdução Didática: Por que Redes de Petri na Automação de Hidrogênio?
+## 2. Fundamentos Teóricos: Redes de Petri e Algoritmo de Karp-Miller
 
-Em uma **Estação de Reabastecimento de Hidrogênio (HRS)** — envolvendo o **Setor 100 (`ELET-01`, `PURIF-01`, `TK-BP`, `COMP-01`)**, **Setor 200 (`TK-AP`, `RESF-01`)** e **Setor 300 (`DISP-01`)** — os eventos operacionais ocorrem de forma **concorrente, assíncrona e sob restrições físicas rígidas** (pressão máxima em `TK-BP` $< 400\text{ bar}$, linha `PT-201` $< 900\text{ bar}$, temperatura $< 85^\circ\text{C}$ e concentração atmosférica `AT-101` $< 40\%\text{ LFL}$).
+Uma Rede de Petri marcada é dada pela quíntupla $N = (P, T, Pre, Post, M_0)$, onde:
+* **$P$** é o conjunto de **Lugares** (condições ou buffers de $\text{H}_2$);
+* **$T$** é o conjunto de **Transições** (eventos e comandos SCADA);
+* **$Pre, Post \in \mathbb{N}^{|P| \times |T|}$** definem os arcos de pré e pós-condição;
+* **$M_0 \in \mathbb{N}^{|P|}$** é a marcação inicial.
 
-Enquanto máquinas de estados finitos clássicas sofrem com explosão combinatória ao representar paralelismo, as **Redes de Petri (RdP)** permitem verificar formalmente propriedades críticas de segurança **antes** da implementação em CLP:
-* **Limitação (*Boundedness*):** Garante que o banco de alta pressão `TK-AP` nunca excederá sua capacidade nominal de lotes comprimidos.
-* **Ausência de Bloqueio (*Deadlock-freedom*):** Garante que o ciclo de compressão e abastecimento não travará aguardando válvulas ou permissivos mútuos.
-* **Segurança (*Safety*):** Prova matematicamente que estados proibidos (ex.: compressor `COMP-01` ativo simultaneamente ao disparo de `ESD-100`) são **inatingíveis**.
+Uma transição $t_j$ está habilitada em $M$ se $M \ge Pre(:, j)$. Ao disparar, gera $M' = M + (Post - Pre) \cdot \vec{e}_j$.
 
----
-
-## 2. Definição Formal da Rede de Petri Marcada
-
-Uma Rede de Petri marcada é definida pela quíntupla:
-$$N = (P, T, Pre, Post, M_0)$$
-
-Onde:
-* **$P = \{p_1, p_2, \dots, p_m\}$:** Conjunto finito de **Lugares** (condições operacionais, estados de equipamentos ou lotes de hidrogênio).
-* **$T = \{t_1, t_2, \dots, t_n\}$:** Conjunto finito de **Transições** ($P \cap T = \emptyset$, eventos ou comandos SCADA).
-* **$Pre: P \times T \to \mathbb{N}$:** Matriz de pré-incidência (pré-requisitos de disparo).
-* **$Post: P \times T \to \mathbb{N}$:** Matriz de pós-incidência (efeitos após o disparo).
-* **$M_0: P \to \mathbb{N}$:** Vetor de **Marcação Inicial** (*tokens* no instante $k = 0$).
-
-### Regra de Habilitação e Equação de Estado
-Uma transição $t_j \in T$ está **habilitada** em $M$ se, e somente se:
-$$M(p_i) \ge Pre(p_i, t_j), \quad \forall p_i \in P$$
-
-Ao disparar $t_j$, o sistema evolui para $M'$ pela equação fundamental:
-$$M' = M + C \cdot \vec{e}_j$$
-onde $C = Post - Pre$ é a **Matriz de Incidência** ($m \times n$) e $\vec{e}_j$ é o vetor canônico de $t_j$.
+### Árvore de Atingibilidade vs. Árvore de Cobertura ($\omega$)
+* Se o conjunto de marcações atingíveis $R(N, M_0)$ é finito, construímos a **Árvore de Atingibilidade** completa.
+* Se algum lugar cresce indefinidamente, aplicamos o **Algoritmo de Karp-Miller (1969)**: sempre que uma nova marcação $M'$ domina um ancestral $M$ ($M' \ge M$ e $M' \neq M$), substituímos as coordenadas estritamente maiores por **$\omega$** ($\omega \pm k = \omega$), tornando a **Árvore de Cobertura** finita e decidindo formalmente a ilimitação da planta.
 
 ---
 
-## 3. Modelagem Aplicada à Estação de Hidrogênio (HRS)
+## 3. Modelagem na Estação de Hidrogênio (HRS)
 
-Modelamos o subsistema de **Purificação/Sucção em `TK-BP`, Compressão em `COMP-01`, Acúmulo no Banco `TK-AP` e Intertravamento `ESD-100`**.
+| Lugar | Significado na HRS | Transição | Evento / Comando SCADA |
+| :---: | :--- | :---: | :--- |
+| **$p_1$** | `SUP-100` pronto para suprimento | **$t_1$** | Abrir `XV-103` (admissão para `TK-103`) |
+| **$p_2$** | Transferência para `TK-103` liberada | **$t_2$** | Iniciar condicionamento em `HEX-201` (`M-201=1`) |
+| **$p_3$** | Lote em preparação térmica (`HEX-201`) | **$t_3$** | Concluir lote pronto para `DISP-300` |
+| **$p_4$** | Lotes acumulados aguardando `DISP-300` | **$t_4$** | Trip `ESD-100` / fuga `AT-101 > 25% LIE` |
+| **$p_5$** | Estado de Parada Segura (`ESD-100` ativo) | **$t_5$** | Purga com $\text{N}_2$ e Reset manual |
 
-### 3.1. Mapeamento dos Lugares ($P$) e Transições ($T$)
+#### Estrutura da Rede de Petri Marcada (Lugares $\leftrightarrow$ Transições)
 
-| Símbolo | Descrição Física na Estação HRS | Interpretação das Fichas (*Tokens*) |
-| :---: | :--- | :--- |
-| **$p_1$** | Compressor `COMP-01` Ocioso / Pronto | $1$ ficha = compressor despressurizado e disponível para ciclo. |
-| **$p_2$** | Admissão de $\text{H}_2$ de `TK-BP` Liberada | $1$ ficha = válvula `XV-101` aberta e `PURIF-01` em regime. |
-| **$p_3$** | Compressão em Curso (`COMP-01` Ativo) | $1$ ficha = compressão até $850\text{ bar}$ monitorada por `PT-101` / `TT-101`. |
-| **$p_4$** | Banco de Alta Pressão `TK-AP` | $k$ fichas = lotes de $\text{H}_2$ comprimido acumulados para o `DISP-01`. |
-| **$p_5$** | Falha / Intertravamento SIS (`ESD-100` / Fuga `AT-101`) | $1$ ficha = parada de emergência acionada (`XV-101=0`, `XV-301=0`). |
-
-| Símbolo | Evento / Ação de Controle | Pré-condições ($Pre$) | Pós-condições ($Post$) |
-| :---: | :--- | :--- | :--- |
-| **$t_1$** | **Abrir Admissão `XV-101`** (Sucção `TK-BP`) | $p_1$ ($1$) | $p_2$ ($1$) |
-| **$t_2$** | **Partir Compressor `COMP-01`** | $p_2$ ($1$) | $p_3$ ($1$) |
-| **$t_3$** | **Concluir Compressão e Armazenar em `TK-AP`** | $p_3$ ($1$) | $p_1$ ($1$), $p_4$ ($1$) |
-| **$t_4$** | **Disparar `ESD-100`** (Sobrepressão `PT-101` ou Fuga `AT-101`) | $p_3$ ($1$) | $p_5$ ($1$) |
-| **$t_5$** | **Reset Manual após Inspeção e Purga com $\text{N}_2$** | $p_5$ ($1$) | $p_1$ ($1$) |
-
----
-
-## 4. Parte A: Árvore de Atingibilidade (Subsistema Limitado)
-
-Analisando primeiro o ciclo de controle do compressor sobre $\{p_1, p_2, p_3, p_5\}$ com $M_0 = [1, 0, 0, 0]^T$:
-
-```
-                    M0 = [1, 0, 0, 0]  (COMP-01 Pronto)
-                           |
-                          t1 (Abrir XV-101)
-                           v
-                    M1 = [0, 1, 0, 0]  (Admissão H2 Liberada)
-                           |
-                          t2 (Partir COMP-01)
-                           v
-                    M2 = [0, 0, 1, 0]  (Compressão Ativa)
-                      /          \
-         t3 (Normal) /            \ t4 (Trip SIS / AT-101)
-                    v              v
-       M3 = [1, 0, 0, 0]        M4 = [0, 0, 0, 1]  (ESD-100 Ativo)
-          (Duplicado)                  |
-                                      t5 (Purga N2 e Reset)
-                                       v
-                                M5 = [1, 0, 0, 0]
-                                   (Duplicado)
+```mermaid
+flowchart LR
+    P1(("p1: SUP-100<br/>Pronto (1 token)")) --> T1["t1: Abrir XV-103"]
+    T1 --> P2(("p2: TK-103<br/>Admissão"))
+    P2 --> T2["t2: Partir HEX-201"]
+    T2 --> P3(("p3: HEX-201<br/>Ativo"))
+    P3 --> T3["t3: Lote Pronto"]
+    T3 --> P1
+    T3 --> P4(("p4: Buffer<br/>DISP-300"))
+    P3 --> T4["t4: Trip ESD-100"]
+    T4 --> P5(("p5: Parada<br/>Segura SIS"))
+    P5 --> T5["t5: Purga N2<br/>+ Reset"]
+    T5 --> P1
+    P6(("p6: Espaço Livre<br/>K_max=2 [Cen. B]")) -.-> T3
+    P4 -.-> T6["t6: Dispensar<br/>FCEV [Cen. B]"]
+    T6 -.-> P6
 ```
 
-### Diagnóstico de Engenharia (Parte A):
-* **1-Limitada (*Safe*):** $R(N, M_0) = \{M_0, M_1, M_2, M_4\}$ é finito; nunca ocorrem duas partidas simultâneas de `COMP-01`.
-* **Livre de *Deadlocks*:** Mesmo após um *trip* de segurança ($M_4$), existe retorno controlado ($t_5 \to M_0$).
-* **Exclusão Mútua:** É matematicamente impossível ter $M(p_3) = 1$ e $M(p_5) = 1$ ao mesmo tempo.
+#### Árvore de Cobertura (Cenário A — Sem Limite em `DISP-300`)
+
+```mermaid
+graph LR
+    M0["M0: [1, 0, 0, 0, 0]<br/>SUP-100 Pronto"] -- "t1 (XV-103)" --> M1["M1: [0, 1, 0, 0, 0]"]
+    M1 -- "t2 (HEX-201)" --> M2["M2: [0, 0, 1, 0, 0]<br/>Condicionamento Ativo"]
+    M2 -- "t3 (Lote p/ DISP-300)" --> M3["M3: [1, 0, 0, w, 0]<br/>Acúmulo Ilimitado (w)"]
+    M2 -- "t4 (ESD-100)" --> M4["M4: [0, 0, 0, 0, 1]<br/>Trip SIS"]
+    M4 -- "t5 (Purga N2 + Reset)" --> M0
+```
+
+### Síntese de Controle via Lugar Complementar
+No **Cenário A** (sem modelar o consumo do `DISP-300`), $p_4$ cresce sem limite e gera $\omega$. No **Cenário B**, adicionamos o lugar complementar $p_6$ (`ESPACO_LIVRE_DISP`) com $M_0(p_6) = K_{\max} = 2$ lotes e a transição $t_6$ (`DISP-300` conclui abastecimento FCEV), garantindo o invariante $M(p_4) + M(p_6) = 2$ e eliminando $\omega$.
 
 ---
 
-## 5. Parte B: Árvore de Cobertura (Sistema Ilimitado e Símbolo $\omega$)
+## 4. Exemplo Resolvido
 
-Ao incluir o banco `TK-AP` ($p_4$) sem acoplar o consumo do dispenser `DISP-01`, cada ciclo $t_1 \to t_2 \to t_3$ deposita um novo lote em $p_4$, gerando estados infinitos:
-$$[1,0,0,0,0] \xrightarrow{t_1 t_2 t_3} [1,0,0,1,0] \xrightarrow{t_1 t_2 t_3} [1,0,0,2,0] \to \dots \to \infty$$
+**Pergunta:** Por que o surgimento do símbolo $\omega$ na coordenada $p_4$ no Cenário A indica uma falha de projeto no intertravamento supervisório?
 
-Pelo **Algoritmo de Karp-Miller**, quando uma marcação $M'$ domina um ancestral $M$ ($M' \ge M$ e $M' \neq M$), substituímos as coordenadas estritamente maiores por **$\omega$** ($\omega \pm c = \omega$):
-
-* $M_0 = [1, 0, 0, 0, 0]^T \xrightarrow{t_1} M_1 = [0, 1, 0, 0, 0]^T \xrightarrow{t_2} M_2 = [0, 0, 1, 0, 0]^T$
-* $M_2 \xrightarrow{t_3} M'_3 = [1, 0, 0, 1, 0]^T$. Como $M'_3 > M_0$ em $p_4$, temos $M_3 = [1, 0, 0, \omega, 0]^T$.
-* O surgimento de $\omega$ em `TK-AP` prova formalmente **risco de sobrepressão por acúmulo ilimitado** caso não haja controle de capacidade máxima.
-
-### Síntese de Controle (Lugar Complementar)
-Para tornar a planta **$K$-limitada** e eliminar o risco de sobrepressão em `TK-AP`, adiciona-se o lugar complementar $p_6$ (`TKAP_ESPACO_LIVRE`) com $M_0(p_6) = K_{\max} = 2$ lotes, consumido por $t_3$ e devolvido pelo evento de dispensação $t_{\text{disp}}$ (`DISP-01`), garantindo o invariante estrutural:
-$$M(p_4) + M(p_6) = K_{\max} = 2$$
+**Resolução:** O símbolo $\omega$ demonstra que o ciclo $t_1 \to t_2 \to t_3$ pode ser repetido arbitrariamente sem que nenhum veículo FCEV esteja consumindo hidrogênio em `DISP-300`. Na planta física, isso corresponde a continuar injetando gás sem vazão de saída, levando à violação de `PT-103 > 1000 bar` e abertura mecânica da `PSV-103`. A introdução do lugar complementar $p_6$ garante que o CLP bloqueie novas transferências quando `TK-103` / buffer atingir $K_{\max}$.
 
 ---
 
-## 6. Referências Técnicas
+## 5. Atividades de Investigação
 
-1. MURATA, T. **Petri Nets: Properties, Analysis and Applications**. Proceedings of the IEEE, v. 77, n. 4, p. 541–580, 1989.
-2. KARP, R. M.; MILLER, R. E. **Parallel Program Schemata**. Journal of Computer and System Sciences, v. 3, n. 2, p. 147–195, 1969.
-3. ISO 19880-1. **Gaseous Hydrogen — Fuelling Stations — Part 1: General Requirements**. Geneva: ISO, 2020.
+1. Execute o notebook e compare o número de estados atingíveis entre o Cenário A ($\omega$) e o Cenário B (limitado com $K_{\max} = 2$).
+2. Altere $M_0(p_6)$ para $K_{\max} = 3$ no Cenário B e verifique como o número de marcações no grafo de atingibilidade cresce.
+3. Confirme na função `auditar_propriedades_rdp` que não existe nenhuma marcação onde $M(p_3) > 0$ e $M(p_5) > 0$ simultaneamente (exclusão mútua entre operação e `ESD-100`).
+
+---
+
+## 6. Entregável da Aula 24
+
+* **Verificador Formal de Redes de Petri em Python:** Implementação do algoritmo de Karp-Miller ($\omega$), síntese de lugar complementar e auditoria automática de limitação, vivacidade e segurança.

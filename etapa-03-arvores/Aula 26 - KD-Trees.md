@@ -1,9 +1,8 @@
-# Indexação Multidimensional e Detecção de Anomalias com KD-Trees
-## Estação de Reabastecimento de Hidrogênio (HRS) • Historiador SCADA-Core
+# Aula 26: Indexação Multidimensional e Detecção de Anomalias com KD-Trees
 
----
+<a href="https://colab.research.google.com/github/leovarconrenno/Estacao-de-Reabastecimento-de-Hidrogenio---SCADA-Core/blob/main/etapa-03-arvores/Aula%2026%20-%20KD-Trees%20-%20code.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-## 1. Contextualização no Historiador Multivariável da HRS
+## 1. Situação-Problema
 
 Na **Aula 21**, utilizamos uma árvore **AVL** unidimensional para indexar séries temporais pela chave escalar *timestamp* ($\tau$). Contudo, no diagnóstico avançado de processos da **Estação de Reabastecimento de Hidrogênio (HRS)**, o operador e os módulos de manutenção preditiva precisam consultar o historiador não apenas pelo tempo, mas **pela similaridade entre estados físicos multivariáveis**.
 
@@ -14,7 +13,7 @@ Uma busca linear (*brute-force*) em um histórico com $N = 10^6$ amostras possui
 
 ---
 
-## 2. Definição Formal e Construção da KD-Tree
+## 2. Fundamentos Teóricos: Construção da KD-Tree
 
 Uma **KD-Tree** é uma árvore binária de busca espacial que organiza pontos em $\mathbb{R}^k$:
 
@@ -26,7 +25,7 @@ Uma **KD-Tree** é uma árvore binária de busca espacial que organiza pontos em
    * Todos os pontos na subárvore esquerda satisfazem $x[a] \le \text{pivô}[a]$.
    * Todos os pontos na subárvore direita satisfazem $x[a] > \text{pivô}[a]$.
 
-### Exemplo de Particionamento 2D (`PT-101` $\times$ `TT-101`)
+### Particionamento 2D (`PT-101` $\times$ `TT-101`)
 
 ```mermaid
 graph TD
@@ -53,30 +52,49 @@ graph TD
 ## 3. Algoritmos de Consulta no `SCADA-Core`
 
 ### 3.1. Busca do Vizinho Mais Próximo ($k$-NN) com Poda *Branch-and-Bound*
-Dado um vetor de telemetria ao vivo $\mathbf{q} \in \mathbb{R}^4$ (normalizado por *z-score* ou escala nominal dos sensores), deseja-se encontrar o registro histórico mais próximo:
+Dado um vetor de telemetria ao vivo $\mathbf{q} \in \mathbb{R}^4$ normalizado pelas escalas nominais dos sensores (`[400 bar, 85 °C, 900 bar, 25 % LIE]`):
 1. Desce-se na árvore comparando $\mathbf{q}[a]$ com o pivô até atingir uma folha (melhor candidato inicial com distância $d_{\text{best}}$).
 2. No retorno recursivo (*backtracking*), verifica-se a distância perpendicular até o hiperplano de corte:
    $$\delta = |\mathbf{q}[a] - \text{pivô}[a]|$$
 3. **Regra de Poda:** Só é necessário explorar o ramo irmão se $\delta < d_{\text{best}}$ (isto é, se a hiperesfera de raio $d_{\text{best}}$ centrada em $\mathbf{q}$ cruzar o hiperplano divisor).
 
-**Aplicação na HRS:** Detecção de anomalias baseada em distância (*Out-of-Distribution*). Se a distância ao vizinho mais próximo nominal ultrapassar um limiar $\tau_{\text{anom}}$, o SCADA-Core emite alerta preditivo antes do disparo físico do SIS.
-
 ### 3.2. Busca por Intervalo Ortogonal (*Orthogonal Range Search*)
-Dado um hiper-retângulo de operação $R = [l_1, u_1] \times \dots \times [l_k, u_k]$ (ex.: auditoria de eventos *near-miss* onde `PT-101` $\in [370, 400]\text{ bar}$ e `TT-101` $\in [60, 85]^\circ\text{C}$), a KD-Tree poda subárvores inteiras cujo intervalo no eixo $a$ não intersecta $[l_a, u_a]$.
+Dado um hiper-retângulo de operação $R = [l_1, u_1] \times \dots \times [l_k, u_k]$ (ex.: auditoria de eventos *near-miss* onde `PT-101` $\in [370, 400]\text{ bar}$, `TT-101` $\in [60, 85]^\circ\text{C}$ e `AT-101` $\in [10, 25]\%\text{ LIE}$), a KD-Tree poda subárvores inteiras cujo intervalo no eixo $a$ não intersecta $[l_a, u_a]$.
 
-### Complexidade Computacional
-
-| Operação | Caso Médio (Dados Balanceados) | Pior Caso |
+### Complexidade e Limitações Práticas
+| Operação | Caso Médio (Baixa Dimensão) | Pior Caso / Alta Dimensão ($k \gg 20$) |
 | :--- | :---: | :---: |
 | **Construção da KD-Tree** | $\mathcal{O}(N \log N)$ | $\mathcal{O}(N \log^2 N)$ |
-| **Busca Vizinho Mais Próximo ($k$-NN)** | $\mathcal{O}(\log N)$ | $\mathcal{O}(N)$ (alta dimensão) |
+| **Busca Vizinho Mais Próximo ($k$-NN)** | $\mathcal{O}(\log N)$ | $\mathcal{O}(N)$ (*maldição da dimensionalidade*) |
 | **Busca por Intervalo Ortogonal ($k=4$)** | $\mathcal{O}(N^{1 - 1/k} + M)$ | $\mathcal{O}(N)$ |
 
-*Onde $M$ é o número de pontos retornados dentro do hiper-retângulo.*
+> **Nota de Engenharia (AVL vs. KD-Tree):** Enquanto a AVL (Aula 21) suporta inserções contínuas em fluxo mantendo balanceamento $\mathcal{O}(\log N)$ via rotações, a KD-Tree estática não permite rotações simples e é reconstruída periodicamente em *batch* no historiador.
 
 ---
 
-## 4. Referências Técnicas
+## 4. Exemplo Resolvido
+
+**Pergunta:** Por que normalizamos `[PT-101, TT-101, PT-201, AT-101]` antes de construir a KD-Tree de diagnóstico na HRS?
+
+**Resolução:** `PT-201` varia em centenas de $\text{bar}$ ($\sim 700\text{–}900\text{ bar}$), enquanto `AT-101` varia entre $0$ e $25\%\text{ LIE}$. Sem normalização, uma variação de $5\text{ bar}$ em `PT-201` dominaria completamente a métrica euclidiana e mascararia um vazamento perigoso de $15\%\text{ LIE}$ em `AT-101`. Dividindo cada eixo por sua escala crítica nominal, todas as dimensões passam a ter peso físico comparável.
+
+---
+
+## 5. Atividades de Investigação
+
+1. Execute o notebook e compare o ganho de tempo da KD-Tree frente à varredura linear para $200$ consultas em $N = 10.000$ amostras.
+2. Inspecione no gráfico 2D a posição do ponto anômalo `q_anomalo` e o retângulo de busca *near-miss*.
+3. Teste aumentar a dimensão sintética de $k = 4$ para $k = 30$ variáveis e observe a perda de eficiência da poda (*curse of dimensionality*).
+
+---
+
+## 6. Entregável da Aula 26
+
+* **Módulo `KDTree` em Python (`knn_search` e `range_search`):** Indexação 4D normalizada de histórico operacional, auditoria de *near-miss*, benchmark contra busca linear e visualização do particionamento espacial 2D.
+
+---
+
+## 7. Referências Técnicas
 
 1. BENTLEY, J. L. **Multidimensional Binary Search Trees Used for Associative Searching**. Communications of the ACM, v. 18, n. 9, p. 509–517, 1975.
 2. DE BERG, M. et al. **Computational Geometry: Algorithms and Applications**. 3rd ed. Berlin: Springer, 2008.

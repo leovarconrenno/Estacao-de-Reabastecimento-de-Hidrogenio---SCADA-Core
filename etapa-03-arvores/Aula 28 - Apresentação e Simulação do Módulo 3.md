@@ -11,7 +11,7 @@ O objetivo é demonstrar como todas as estruturas de **Árvores** desenvolvidas 
 | Camada do `SCADA-Core` | Estrutura de Árvore (Módulo 3) | Papel Operacional na Estação HRS |
 | :--- | :--- | :--- |
 | **Infraestrutura & Rede** | **Kruskal / Prim (Aula 19)** + **RSTP (Aula 23)** | Garante topologia acíclica mínima e *failover* $< 1\text{ s}$ entre `SW-SCADA`, `SW-S100`, `SW-S200`, `SW-S300` e `SW-SIS`. |
-| **Telemetria de Campo** | **Codificação de Huffman (Aula 20)** | Comprime em até $76{,}3\%$ o vetor binário de estado `[PT-101, TT-101, AT-101, PT-201, ESD-100]` sem perda de informação. |
+| **Telemetria de Campo** | **Codificação de Huffman (Aula 20)** | Comprime em até $76{,}3\%$ o vetor binário de estado `[PT-101, TT-101, AT-101/301, TT-201, ESD-100]` sem perda de informação. |
 | **Segurança Funcional (SIS)** | **BDT (Aula 21)** + **Redes de Petri (Aula 24)** | Garante tempo de resposta $\mathcal{O}(1)$ no intertravamento e prova ausência de *deadlock* e acúmulo ilimitado ($\omega$) em `TK-103`. |
 | **Orquestração & Controle** | **Behavior Tree (Aula 25)** + **RRT (Aula 22)** | Orquestra o ciclo SAE J2601 (`BV-301`, `COM-301`, `HEX-201`, `XV-104` cascata `TK-101 -> TK-102 -> TK-103`) com preempção reativa. |
 | **Historiador & Diagnóstico** | **AVL (Aula 21)** + **KD-Tree (Aula 26)** + **CART (Aula 27)** | Indexa séries temporais em $\mathcal{O}(\log N)$, detecta anomalias 4D e classifica falhas (`Nominal`, `Falha_Chiller`, `Sobrepressao`, `Vazamento_H2`). |
