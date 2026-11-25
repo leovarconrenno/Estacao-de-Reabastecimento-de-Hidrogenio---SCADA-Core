@@ -924,7 +924,7 @@
     let clientConn = null;
     let isApplyingRemote = false;
     let slideState = { h: 0, v: 0, f: 0, seq: 0 };
-    let quizState = { active: false, phase: "question", qIdx: 0, session: 0 };
+    let quizState = { active: false, phase: "question", qIdx: 0, session: 0, revealed: false };
     let localQuizProgress = {}; // qIdx -> { tried: [], solved: false, earnedPoint: false, lastMsg: "", lastOk: null }
     let localScore = 0;
     let hudIdleTimer = null;
@@ -1538,7 +1538,8 @@
           active: true,
           phase: "question",
           qIdx: 0,
-          session: (quizState.session || 0) + 1
+          session: (quizState.session || 0) + 1,
+          revealed: false
         };
         const devs = getDevicesPayload();
         devicesList = devs;
@@ -1546,15 +1547,19 @@
         hostBroadcast({ type: "DEVICES_UPDATE", devices: devs });
         hostBroadcast({ type: "QUIZ_STATE", quizState });
       } else if (action === "prev") {
-        quizState = { ...quizState, phase: "question", qIdx: Math.max(0, (quizState.qIdx || 0) - 1) };
+        quizState = { ...quizState, phase: "question", qIdx: Math.max(0, (quizState.qIdx || 0) - 1), revealed: false };
         applyQuizState(quizState);
         hostBroadcast({ type: "QUIZ_STATE", quizState });
       } else if (action === "next") {
         if ((quizState.qIdx || 0) < QUIZ_QUESTIONS.length - 1) {
-          quizState = { ...quizState, phase: "question", qIdx: quizState.qIdx + 1 };
+          quizState = { ...quizState, phase: "question", qIdx: quizState.qIdx + 1, revealed: false };
         } else {
-          quizState = { ...quizState, phase: "finished" };
+          quizState = { ...quizState, phase: "finished", revealed: false };
         }
+        applyQuizState(quizState);
+        hostBroadcast({ type: "QUIZ_STATE", quizState });
+      } else if (action === "toggleReveal") {
+        quizState = { ...quizState, revealed: !quizState.revealed };
         applyQuizState(quizState);
         hostBroadcast({ type: "QUIZ_STATE", quizState });
       } else if (action === "finish") {
@@ -1709,20 +1714,31 @@
         const letters = ["A", "B", "C", "D"];
 
         if (userRole === "admin") {
-          // Administrador: ve todas as opcoes bloqueadas para pontuacao, com status Certo/Errado e descricao
+          // Administrador: opcoes neutras ate clicar em "Revelar Resposta"; sempre bloqueadas para pontuacao
+          const isRev = !!quizState.revealed;
           let optsHtml = "";
           qObj.options.forEach((optText, i) => {
             const isOk = i === qObj.correctIndex;
-            const cls = isOk ? "quiz-opt-btn quiz-opt-correct" : "quiz-opt-btn quiz-opt-wrong";
-            const badge = isOk ? "✅ CORRETA" : "❌ ERRADA";
-            const desc = isOk ? qObj.okDesc : ((qObj.wrongReasons && qObj.wrongReasons[i]) || "");
-            optsHtml += `
-              <button type="button" class="${cls}" disabled>
-                <div><strong>${letters[i]})</strong> ${escapeHtml(optText)} <span style="float:right; font-weight:800;">${badge}</span></div>
-                <span class="quiz-opt-admin-desc">${escapeHtml(desc)}</span>
-              </button>`;
+            if (isRev) {
+              const cls = isOk ? "quiz-opt-btn quiz-opt-correct" : "quiz-opt-btn quiz-opt-wrong";
+              const badge = isOk ? "✅ CORRETA" : "❌ ERRADA";
+              const desc = isOk ? qObj.okDesc : ((qObj.wrongReasons && qObj.wrongReasons[i]) || "");
+              optsHtml += `
+                <button type="button" class="${cls}" disabled>
+                  <div><strong>${letters[i]})</strong> ${escapeHtml(optText)} <span style="float:right; font-weight:800;">${badge}</span></div>
+                  <span class="quiz-opt-admin-desc">${escapeHtml(desc)}</span>
+                </button>`;
+            } else {
+              optsHtml += `
+                <button type="button" class="quiz-opt-btn" disabled>
+                  <div><strong>${letters[i]})</strong> ${escapeHtml(optText)}</div>
+                </button>`;
+            }
           });
-          bodyEl.innerHTML = `<h3 class="quiz-question">${escapeHtml(qObj.q)}</h3><div class="quiz-options">${optsHtml}</div>`;
+          const hintLine = isRev
+            ? ""
+            : `<p style="margin:10px 0 0 0; font-size:12px; color:#94a3b8;">Resposta oculta para projeção. Clique em <strong>👁️ Revelar Resposta</strong> quando os espectadores terminarem de responder.</p>`;
+          bodyEl.innerHTML = `<h3 class="quiz-question">${escapeHtml(qObj.q)}</h3><div class="quiz-options">${optsHtml}</div>${hintLine}`;
         } else {
           // Espectador: opcoes clicaveis; verde se certa, vermelho se errada + motivo do erro; ponto so de primeira
           const prog = localQuizProgress[qIdx] || { tried: [], solved: false, earnedPoint: false, lastMsg: "", lastOk: null };
@@ -1751,6 +1767,9 @@
       if (userRole === "admin") {
         adminBarEl.classList.remove("hidden");
         const isLast = (quizState.qIdx || 0) >= QUIZ_QUESTIONS.length - 1;
+        const revealBtn = quizState.phase !== "finished"
+          ? `<button type="button" id="btn-quiz-reveal" class="quiz-nav-btn" style="border-color:#f59e0b; color:#fbbf24;" onclick="sendQuizAction('toggleReveal')">${quizState.revealed ? '🙈 Ocultar Resposta' : '👁️ Revelar Resposta'}</button>`
+          : "";
         const nextBtn = quizState.phase === "finished"
           ? `<button type="button" class="quiz-nav-btn quiz-nav-primary" onclick="sendQuizAction('start')">🔄 Reiniciar Quiz</button>`
           : (isLast
@@ -1759,6 +1778,7 @@
         adminBarEl.innerHTML = `
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button type="button" id="btn-quiz-devices" class="quiz-nav-btn" onclick="openDevicesModal()">👥 Dispositivos (${devicesList.length})</button>
+            ${revealBtn}
             <button type="button" id="btn-quiz-close" class="quiz-nav-btn" onclick="sendQuizAction('close')">✕ Voltar aos Slides</button>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
