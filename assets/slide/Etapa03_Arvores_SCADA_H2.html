@@ -10,28 +10,37 @@
 
     :root { --bg: #070d18; --card: #0f172a; --border: #1e293b; --primary: #38bdf8; --accent: #10b981; }
     html, body { background: var(--bg); color: #e2e8f0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow: hidden; }
-    .reveal { font-size: 24px; }
-    .reveal .slides section { text-align: left; padding: 24px 36px; box-sizing: border-box; height: 100%; display: flex !important; flex-direction: column; justify-content: center; }
+    .reveal { font-size: 27px; }
+    .reveal .slides section { text-align: left; padding: 20px 36px 46px 36px; box-sizing: border-box; height: 100%; display: flex !important; flex-direction: column; justify-content: center; gap: 6px; }
     .reveal .slides section.slide-dark { text-align: center; align-items: center; }
-    .pill { display: inline-block; background: rgba(56,189,248,0.14); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.58em; font-weight: 800; letter-spacing: 0.14em; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }
-    .badge-topic { display: inline-block; align-self: flex-start; background: #0284c7; color: #fff; font-size: 0.52em; font-weight: 800; letter-spacing: 0.12em; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; }
-    .chip { background: #0f172a; border: 1px solid #38bdf8; color: #bae6fd; font-size: 0.62em; font-weight: 700; padding: 5px 12px; border-radius: 8px; }
-    .slide-title { font-size: 1.45em !important; font-weight: 800 !important; color: #fff !important; margin: 0 0 4px 0 !important; line-height: 1.15 !important; }
+    .cover-title { font-size: 2.35em !important; font-weight: 800 !important; line-height: 1.15 !important; margin: 0 0 14px 0 !important; color: #fff !important; text-transform: none !important; }
+    .cover-sub { font-size: 1.0em; color: #94a3b8; max-width: 88%; margin: 0 auto 20px auto; line-height: 1.5; }
+    .cover-foot { font-size: 0.78em; color: #64748b; font-weight: 600; margin-top: 6px; }
+    .divider-title { font-size: 2.15em !important; font-weight: 800 !important; color: #fff !important; margin: 10px 0 !important; text-transform: none !important; }
+    .divider-sub { font-size: 1.0em; color: #94a3b8; max-width: 78%; margin: 0 auto; line-height: 1.5; }
+    .pill { display: inline-block; background: rgba(56,189,248,0.14); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.62em; font-weight: 800; letter-spacing: 0.14em; padding: 5px 14px; border-radius: 999px; margin-bottom: 10px; }
+    .badge-topic { display: inline-block; align-self: flex-start; background: #0284c7; color: #fff; font-size: 0.56em; font-weight: 800; letter-spacing: 0.12em; padding: 4px 12px; border-radius: 999px; margin-bottom: 2px; }
+    .chip { background: #0f172a; border: 1px solid #38bdf8; color: #bae6fd; font-size: 0.68em; font-weight: 700; padding: 7px 14px; border-radius: 8px; }
+    .slide-title { font-size: 1.62em !important; font-weight: 800 !important; color: #fff !important; margin: 0 !important; line-height: 1.14 !important; text-transform: none !important; }
     .slide-title span { color: #38bdf8; }
-    .slide-subtitle { font-size: 0.74em; color: #94a3b8; margin: 0 0 12px 0; line-height: 1.4; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
-    .card { background: rgba(15,23,42,0.88); border: 1px solid #1e293b; border-radius: 10px; padding: 11px 14px; }
-    .card-title { font-size: 0.72em; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
-    .card-text { font-size: 0.66em; color: #cbd5e1; margin: 0; line-height: 1.45; }
-    .graph-frame { background: #0b1320; border: 1px solid #1e293b; border-radius: 10px; padding: 8px 10px; width: 100%; box-sizing: border-box; }
-    .callout { background: rgba(2,132,199,0.14); border: 1px solid rgba(56,189,248,0.35); border-left: 4px solid #38bdf8; border-radius: 8px; padding: 9px 13px; font-size: 0.68em; color: #e2e8f0; line-height: 1.45; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.68em; background: #0b1320; border-radius: 8px; overflow: hidden; }
-    th { background: #0369a1; color: #fff; text-align: left; padding: 7px 10px; font-weight: 800; }
-    td { padding: 7px 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
-    code { background: #1e293b; color: #38bdf8; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+    .slide-subtitle { font-size: 0.80em; color: #94a3b8; margin: 0 0 6px 0; line-height: 1.38; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+    .card { background: rgba(15,23,42,0.9); border: 1px solid #1e293b; border-radius: 12px; padding: 14px 17px; }
+    .card-title { font-size: 0.80em; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .card-text { font-size: 0.72em; color: #cbd5e1; margin: 0; line-height: 1.46; }
+    .graph-frame { background: #0b1320; border: 1px solid #1e293b; border-radius: 12px; padding: 8px 14px; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+    .graph-frame svg { width: 100% !important; height: auto !important; max-height: 300px; display: block; }
+    .grid-2 .graph-frame svg { max-height: 400px; }
+    .callout { background: rgba(2,132,199,0.15); border: 1px solid rgba(56,189,248,0.38); border-left: 5px solid #38bdf8; border-radius: 10px; padding: 12px 16px; font-size: 0.76em; color: #e2e8f0; line-height: 1.46; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.76em; background: #0b1320; border-radius: 10px; overflow: hidden; }
+    th { background: #0369a1; color: #fff; text-align: left; padding: 9px 13px; font-weight: 800; }
+    td { padding: 9px 13px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+    code { background: #1e293b; color: #38bdf8; padding: 1px 6px; border-radius: 4px; font-size: 0.92em; }
     .ok { color: #34d399; }
-    .slide-num { position: absolute; bottom: 10px; right: 18px; font-size: 0.55em; color: #64748b; font-weight: 700; }
+    .slide-num { position: absolute; bottom: 14px; left: 36px; font-size: 0.56em; color: #64748b; font-weight: 700; letter-spacing: 0.04em; }
+    .reveal .controls { bottom: 10px !important; right: 16px !important; }
+    .quiz-webrtc-only { display: none; }
 
     .room-shortcut { position: fixed; top: 12px; right: 16px; z-index: 99; background: rgba(15,23,42,0.85); border: 1px solid #38bdf8; color: #38bdf8; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; backdrop-filter: blur(6px); }
     .room-shortcut:hover { background: #0284c7; color: #fff; }
@@ -45,18 +54,18 @@
     <!-- SLIDE 1: CAPA -->
     <section class="slide-dark">
       <div class="pill">UNIFEI · ECAA08 AUTOMAÇÃO INDUSTRIAL · ETAPA 03</div>
-      <h1 style="font-size: 2.3rem; font-weight: 800; line-height: 1.15; margin: 0 0 12px 0; color: #fff;">
+      <h1 class="cover-title">
         Estruturas em Árvore Aplicadas ao <span style="color:#38bdf8;">SCADA-Core (H₂)</span>
       </h1>
-      <p style="font-size: 1rem; color: #94a3b8; max-width: 85%; margin: 0 auto 18px auto; line-height: 1.5;">
+      <p class="cover-sub">
         Árvores geradoras mínimas, protocolos L2, compressão lossless, historiadores balanceados e espaciais, verificação formal, controle preditivo e diagnóstico inteligente.
       </p>
-      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:22px;">
         <span class="chip">Setor 100 · SUP-100 · TK-101/102/103 · XV-104</span>
         <span class="chip" style="border-color:#10b981; color:#34d399;">Setor 200 · Chiller HEX-201 (-40 °C)</span>
         <span class="chip" style="border-color:#f59e0b; color:#fbbf24;">Setor 300 · DISP-300 · SAE J2601</span>
       </div>
-      <div style="font-size:0.78rem; color:#64748b;">Estação de Reabastecimento de Hidrogênio (700 bar) · Grupo 9</div>
+      <div class="cover-foot">Estação de Reabastecimento de Hidrogênio (700 bar) · Grupo 9</div>
       <div class="slide-num">1 / 18</div>
     </section>
 
@@ -89,8 +98,8 @@
     <!-- SLIDE 3: DIVISOR TOPICO 01 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 01</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Topologia Mínima e Redes Industriais</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 70%; margin:0 auto;">
+      <h2 class="divider-title">Topologia Mínima e Redes Industriais</h2>
+      <p class="divider-sub">
         Interligação física econômica dos Setores 100, 200 e 300 (MST) e convergência determinística em anel óptico (RSTP).
       </p>
       <div class="slide-num">3 / 18</div>
@@ -215,8 +224,8 @@
     <!-- SLIDE 6: DIVISOR TOPICO 02 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 02</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Telemetria, Segurança e Historiadores</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+      <h2 class="divider-title">Telemetria, Segurança e Historiadores</h2>
+      <p class="divider-sub">
         Compressão Huffman, decisão booleana SIS em O(1), indexação temporal AVL e busca espacial multivariável KD-Tree.
       </p>
       <div class="slide-num">6 / 18</div>
@@ -365,8 +374,8 @@
     <!-- SLIDE 10: DIVISOR TOPICO 03 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 03</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Verificação Formal, RRT e Behavior Trees</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+      <h2 class="divider-title">Verificação Formal, RRT e Behavior Trees</h2>
+      <p class="divider-sub">
         Prova matemática de ausência de sobrepressão/deadlock, planejamento termodinâmico seguro e preempção reativa em tempo real.
       </p>
       <div class="slide-num">10 / 18</div>
@@ -490,8 +499,8 @@
     <!-- SLIDE 14: DIVISOR TOPICO 04 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 04</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Diagnóstico Inteligente e Integração</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+      <h2 class="divider-title">Diagnóstico Inteligente e Integração</h2>
+      <p class="divider-sub">
         Classificação automática de falhas via Árvores de Decisão (ID3, C4.5, CART) e arquitetura integrada SCADACoreModulo3.
       </p>
       <div class="slide-num">14 / 18</div>
@@ -502,7 +511,7 @@
       <span class="badge-topic">TÓPICO 04</span>
       <h2 class="slide-title">Árvores de Decisão: <span>ID3, C4.5 e CART</span></h2>
       <p class="slide-subtitle">Indução de regras transparentes e auditáveis contra IEC 61511 sobre telemetria da HRS (600 amostras, 4 classes):</p>
-      <div class="grid-2" style="align-items:center;">
+      <div class="grid-2" style="align-items:stretch;">
         <div class="graph-frame"><svg viewBox="0 0 420 140" width="100%" height="130" style="display:block;">
   <rect x="25" y="12" width="380" height="110" fill="#070d18" stroke="#334155"/>
   <!-- Regioes aprendidas CART -->
@@ -517,8 +526,8 @@
   <text x="215" y="37" fill="#fbbf24" font-size="8.5" font-weight="800" text-anchor="middle">Falha_Chiller_Termica (TT-101 &gt; 55.9 °C)</text>
   <text x="258" y="116" fill="#f87171" font-size="7" font-weight="700">PT-101=381.8 bar</text>
 </svg></div>
-        <div>
-          <table style="font-size:0.72rem; margin-bottom:8px;">
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:12px;">
+          <table>
             <thead><tr><th>Algoritmo</th><th>Critério</th><th>Treino</th><th>Teste</th></tr></thead>
             <tbody>
               <tr><td><strong>CART</strong></td><td>Impureza de Gini</td><td>99,56%</td><td><strong class="ok">98,67%</strong></td></tr>
@@ -526,7 +535,7 @@
               <tr><td><strong>C4.5</strong></td><td><em>Gain Ratio</em></td><td>99,11%</td><td>98,00%</td></tr>
             </tbody>
           </table>
-          <div class="callout" style="font-size:0.72rem;">Fronteiras reais extraídas do CART 2D: <code>PT-101 = 381,8 bar</code> e <code>TT-101 = 55,9 °C</code>, sem caixas-pretas opacas.</div>
+          <div class="callout">Fronteiras reais extraídas do CART 2D: <code>PT-101 = 381,8 bar</code> e <code>TT-101 = 55,9 °C</code>, sem caixas-pretas opacas.</div>
         </div>
       </div>
       <div class="slide-num">15 / 18</div>
@@ -578,13 +587,16 @@
     <!-- SLIDE 18: ENCERRAMENTO -->
     <section class="slide-dark">
       <div class="pill">CONCLUSÃO · ETAPA 03</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">SCADA-Core Completo: Etapas 01, 02 e 03</h2>
-      <div class="grid-3" style="margin: 16px auto; max-width: 92%; text-align:left;">
+      <h2 class="divider-title">SCADA-Core Completo: Etapas 01, 02 e 03</h2>
+      <div class="grid-3" style="margin: 20px auto; max-width: 96%; text-align:left;">
         <div class="card"><div class="card-title" style="color:#38bdf8;">Etapa 01 · Lógica</div><p class="card-text">Proposições ISA-5.1, intertravamentos e regras booleanas de segurança funcional.</p></div>
         <div class="card"><div class="card-title" style="color:#34d399;">Etapa 02 · Grafos</div><p class="card-text">Dígrafo hidráulico, Dijkstra dinâmico, detecção de vazamentos, PIG (Euler) e AGV (TSP).</p></div>
         <div class="card"><div class="card-title" style="color:#fbbf24;">Etapa 03 · Árvores</div><p class="card-text">MST/RSTP, Huffman, BDT/AVL/KD-Tree, Petri/RRT/Behavior Trees e diagnóstico CART.</p></div>
       </div>
-      <p style="font-size:0.82rem; color:#64748b;">UNIFEI · ECAA08 Automação Industrial · Estação de Reabastecimento de Hidrogênio</p>
+      <p class="cover-foot">UNIFEI · ECAA08 Automação Industrial · Estação de Reabastecimento de Hidrogênio</p>
+      <div class="quiz-webrtc-only" style="margin-top:12px;">
+        <button type="button" id="btn-launch-quiz" class="quiz-launch-btn" onclick="adminStartQuiz()">🎯 Iniciar Quiz Interativo (5 Perguntas)</button>
+      </div>
       <div class="slide-num">18 / 18</div>
     </section>
 
@@ -592,7 +604,7 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
   <script>
-    Reveal.initialize({ width: 1280, height: 720, margin: 0.04, hash: true, slideNumber: false, transition: 'fade' });
+    Reveal.initialize({ width: 1280, height: 720, margin: 0.02, hash: true, slideNumber: false, transition: 'fade' });
   </script>
 </body>
 </html>

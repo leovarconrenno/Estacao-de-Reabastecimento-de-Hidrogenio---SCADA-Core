@@ -10,28 +10,37 @@
 
     :root { --bg: #070d18; --card: #0f172a; --border: #1e293b; --primary: #38bdf8; --accent: #10b981; }
     html, body { background: var(--bg); color: #e2e8f0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 0; overflow: hidden; }
-    .reveal { font-size: 24px; }
-    .reveal .slides section { text-align: left; padding: 24px 36px; box-sizing: border-box; height: 100%; display: flex !important; flex-direction: column; justify-content: center; }
+    .reveal { font-size: 27px; }
+    .reveal .slides section { text-align: left; padding: 20px 36px 46px 36px; box-sizing: border-box; height: 100%; display: flex !important; flex-direction: column; justify-content: center; gap: 6px; }
     .reveal .slides section.slide-dark { text-align: center; align-items: center; }
-    .pill { display: inline-block; background: rgba(56,189,248,0.14); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.58em; font-weight: 800; letter-spacing: 0.14em; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }
-    .badge-topic { display: inline-block; align-self: flex-start; background: #0284c7; color: #fff; font-size: 0.52em; font-weight: 800; letter-spacing: 0.12em; padding: 3px 10px; border-radius: 999px; margin-bottom: 6px; }
-    .chip { background: #0f172a; border: 1px solid #38bdf8; color: #bae6fd; font-size: 0.62em; font-weight: 700; padding: 5px 12px; border-radius: 8px; }
-    .slide-title { font-size: 1.45em !important; font-weight: 800 !important; color: #fff !important; margin: 0 0 4px 0 !important; line-height: 1.15 !important; }
+    .cover-title { font-size: 2.35em !important; font-weight: 800 !important; line-height: 1.15 !important; margin: 0 0 14px 0 !important; color: #fff !important; text-transform: none !important; }
+    .cover-sub { font-size: 1.0em; color: #94a3b8; max-width: 88%; margin: 0 auto 20px auto; line-height: 1.5; }
+    .cover-foot { font-size: 0.78em; color: #64748b; font-weight: 600; margin-top: 6px; }
+    .divider-title { font-size: 2.15em !important; font-weight: 800 !important; color: #fff !important; margin: 10px 0 !important; text-transform: none !important; }
+    .divider-sub { font-size: 1.0em; color: #94a3b8; max-width: 78%; margin: 0 auto; line-height: 1.5; }
+    .pill { display: inline-block; background: rgba(56,189,248,0.14); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-size: 0.62em; font-weight: 800; letter-spacing: 0.14em; padding: 5px 14px; border-radius: 999px; margin-bottom: 10px; }
+    .badge-topic { display: inline-block; align-self: flex-start; background: #0284c7; color: #fff; font-size: 0.56em; font-weight: 800; letter-spacing: 0.12em; padding: 4px 12px; border-radius: 999px; margin-bottom: 2px; }
+    .chip { background: #0f172a; border: 1px solid #38bdf8; color: #bae6fd; font-size: 0.68em; font-weight: 700; padding: 7px 14px; border-radius: 8px; }
+    .slide-title { font-size: 1.62em !important; font-weight: 800 !important; color: #fff !important; margin: 0 !important; line-height: 1.14 !important; text-transform: none !important; }
     .slide-title span { color: #38bdf8; }
-    .slide-subtitle { font-size: 0.74em; color: #94a3b8; margin: 0 0 12px 0; line-height: 1.4; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; }
-    .card { background: rgba(15,23,42,0.88); border: 1px solid #1e293b; border-radius: 10px; padding: 11px 14px; }
-    .card-title { font-size: 0.72em; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
-    .card-text { font-size: 0.66em; color: #cbd5e1; margin: 0; line-height: 1.45; }
-    .graph-frame { background: #0b1320; border: 1px solid #1e293b; border-radius: 10px; padding: 8px 10px; width: 100%; box-sizing: border-box; }
-    .callout { background: rgba(2,132,199,0.14); border: 1px solid rgba(56,189,248,0.35); border-left: 4px solid #38bdf8; border-radius: 8px; padding: 9px 13px; font-size: 0.68em; color: #e2e8f0; line-height: 1.45; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.68em; background: #0b1320; border-radius: 8px; overflow: hidden; }
-    th { background: #0369a1; color: #fff; text-align: left; padding: 7px 10px; font-weight: 800; }
-    td { padding: 7px 10px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
-    code { background: #1e293b; color: #38bdf8; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+    .slide-subtitle { font-size: 0.80em; color: #94a3b8; margin: 0 0 6px 0; line-height: 1.38; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; width: 100%; }
+    .card { background: rgba(15,23,42,0.9); border: 1px solid #1e293b; border-radius: 12px; padding: 14px 17px; }
+    .card-title { font-size: 0.80em; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .card-text { font-size: 0.72em; color: #cbd5e1; margin: 0; line-height: 1.46; }
+    .graph-frame { background: #0b1320; border: 1px solid #1e293b; border-radius: 12px; padding: 8px 14px; width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; }
+    .graph-frame svg { width: 100% !important; height: auto !important; max-height: 300px; display: block; }
+    .grid-2 .graph-frame svg { max-height: 400px; }
+    .callout { background: rgba(2,132,199,0.15); border: 1px solid rgba(56,189,248,0.38); border-left: 5px solid #38bdf8; border-radius: 10px; padding: 12px 16px; font-size: 0.76em; color: #e2e8f0; line-height: 1.46; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.76em; background: #0b1320; border-radius: 10px; overflow: hidden; }
+    th { background: #0369a1; color: #fff; text-align: left; padding: 9px 13px; font-weight: 800; }
+    td { padding: 9px 13px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+    code { background: #1e293b; color: #38bdf8; padding: 1px 6px; border-radius: 4px; font-size: 0.92em; }
     .ok { color: #34d399; }
-    .slide-num { position: absolute; bottom: 10px; right: 18px; font-size: 0.55em; color: #64748b; font-weight: 700; }
+    .slide-num { position: absolute; bottom: 14px; left: 36px; font-size: 0.56em; color: #64748b; font-weight: 700; letter-spacing: 0.04em; }
+    .reveal .controls { bottom: 10px !important; right: 16px !important; }
+    .quiz-webrtc-only { display: none; }
 
     /* LOBBY WEBRTC */
     #webrtc-lobby {
@@ -73,12 +82,18 @@
     .status-info { display: block; background: rgba(56,189,248,0.15); border: 1px solid #38bdf8; color: #bae6fd; }
     .hidden { display: none !important; }
 
-    /* HUD SUPERIOR NA SALA ATIVA */
+    /* HUD SUPERIOR NA SALA ATIVA (AUTO-HIDE QUANDO IDLE) */
     #room-hud {
-      position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 1500;
+      position: fixed; top: 10px; left: 50%; transform: translate(-50%, 0); z-index: 1500;
       background: rgba(11,19,32,0.92); border: 1px solid #334155; border-radius: 999px;
-      padding: 6px 14px; display: none; align-items: center; gap: 12px; font-size: 12px;
+      padding: 6px 14px; display: none; align-items: center; gap: 10px; font-size: 12px;
       backdrop-filter: blur(8px); box-shadow: 0 8px 24px rgba(0,0,0,0.5); white-space: nowrap;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+    }
+    #room-hud.hud-idle {
+      transform: translate(-50%, -150%);
+      opacity: 0;
+      pointer-events: none;
     }
     .role-pill { padding: 3px 10px; border-radius: 999px; font-weight: 800; font-size: 11px; }
     .role-admin { background: rgba(16,185,129,0.2); border: 1px solid #10b981; color: #34d399; }
@@ -87,10 +102,124 @@
     .hud-btn:hover { border-color: #38bdf8; color: #38bdf8; }
     .hud-btn-danger:hover { border-color: #ef4444; color: #fca5a5; }
 
+    /* MODAL QR CODE */
+    #qr-modal {
+      position: fixed; inset: 0; z-index: 2500;
+      background: rgba(2,6,23,0.78); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .qr-card {
+      width: 100%; max-width: 370px; background: #0f172a; border: 1px solid #38bdf8;
+      border-radius: 16px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.75);
+      text-align: center;
+    }
+    .qr-box {
+      background: #ffffff; border-radius: 12px; padding: 14px;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 12px; min-width: 210px; min-height: 210px;
+    }
+    .qr-box svg, .qr-box img { width: 210px; height: 210px; display: block; }
+    .qr-url {
+      font-size: 11px; color: #94a3b8; word-break: break-all;
+      background: #070d18; border: 1px solid #1e293b; border-radius: 8px; padding: 8px 10px;
+    }
+
     /* Bloqueio visual extra para espectador */
     body.viewer-locked .reveal .controls { display: none !important; }
+    body:not(.viewer-locked) .quiz-webrtc-only { display: block; }
+    body.viewer-locked #btn-hud-quiz { display: none !important; }
     #viewer-shield { position: fixed; inset: 0; z-index: 1200; display: none; cursor: default; }
     body.viewer-locked #viewer-shield { display: block; }
+
+    .quiz-launch-btn {
+      padding: 12px 24px; border: none; border-radius: 999px; font-size: 0.76em; font-weight: 800;
+      background: linear-gradient(135deg, #0284c7, #10b981); color: #fff; cursor: pointer;
+      box-shadow: 0 10px 28px rgba(16,185,129,0.35); transition: transform 0.15s ease;
+    }
+    .quiz-launch-btn:hover { transform: scale(1.04); }
+
+    /* QUIZ OVERLAY INTERATIVO */
+    #quiz-overlay {
+      position: fixed; inset: 0; z-index: 1400;
+      background: radial-gradient(circle at 20% 15%, #0f2544 0%, #070d18 70%);
+      display: flex; align-items: center; justify-content: center; padding: 54px 18px 20px 18px;
+      overflow-y: auto;
+    }
+    .quiz-card {
+      width: 100%; max-width: 900px; background: #0f172a; border: 1px solid #1e3a5f;
+      border-radius: 18px; padding: 22px 26px; box-shadow: 0 24px 64px rgba(0,0,0,0.72);
+      position: relative;
+    }
+    .quiz-topbar {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+      gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #1e293b; margin-bottom: 14px;
+    }
+    .quiz-badge {
+      display: inline-block; background: rgba(56,189,248,0.16); border: 1px solid #38bdf8;
+      color: #38bdf8; font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 999px;
+      letter-spacing: 0.08em;
+    }
+    .quiz-question {
+      font-size: 20px; font-weight: 800; color: #fff; margin: 0 0 14px 0; line-height: 1.38;
+    }
+    .quiz-options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+    .quiz-opt-btn {
+      text-align: left; width: 100%; padding: 13px 16px; border-radius: 12px;
+      border: 1.5px solid #334155; background: #0b1320; color: #e2e8f0;
+      font-size: 14.5px; line-height: 1.42; cursor: pointer; transition: all 0.18s ease;
+    }
+    .quiz-opt-btn:hover:not(:disabled) { border-color: #38bdf8; background: #111c32; }
+    .quiz-opt-btn:disabled { cursor: default; }
+    .quiz-opt-correct {
+      border-color: #10b981 !important; background: rgba(16,185,129,0.18) !important; color: #ecfdf5 !important;
+    }
+    .quiz-opt-wrong {
+      border-color: #ef4444 !important; background: rgba(239,68,68,0.18) !important; color: #fee2e2 !important;
+    }
+    .quiz-opt-admin-desc {
+      display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.4; opacity: 0.95;
+    }
+    .quiz-feedback {
+      margin-top: 14px; padding: 12px 15px; border-radius: 10px; font-size: 13.5px; line-height: 1.45; display: none;
+    }
+    .quiz-fb-ok { display: block; background: rgba(16,185,129,0.15); border: 1px solid #10b981; color: #a7f3d0; }
+    .quiz-fb-err { display: block; background: rgba(239,68,68,0.15); border: 1px solid #ef4444; color: #fecaca; }
+    .quiz-admin-bar {
+      margin-top: 16px; padding-top: 14px; border-top: 1px solid #1e293b;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .quiz-nav-btn {
+      padding: 8px 15px; border-radius: 8px; border: 1px solid #334155; background: #1e293b;
+      color: #f8fafc; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .quiz-nav-btn:hover:not(:disabled) { border-color: #38bdf8; color: #38bdf8; }
+    .quiz-nav-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .quiz-nav-primary { background: linear-gradient(135deg, #0284c7, #10b981); border-color: transparent; color: #fff; }
+    .quiz-nav-primary:hover { opacity: 0.92; color: #fff; }
+
+    /* MODAL DISPOSITIVOS CONECTADOS (ADMIN NO QUIZ) */
+    #quiz-devices-modal {
+      position: fixed; inset: 0; z-index: 2600;
+      background: rgba(2,6,23,0.8); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .devices-card {
+      width: 100%; max-width: 640px; max-height: 82vh; overflow-y: auto;
+      background: #0f172a; border: 1px solid #38bdf8; border-radius: 16px; padding: 20px 22px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.8);
+    }
+    .devices-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    .devices-table th { background: #0369a1; color: #fff; padding: 8px 10px; text-align: left; }
+    .devices-table td { padding: 8px 10px; border-bottom: 1px solid #1e293b; color: #e2e8f0; }
+
+    /* AVISO DE PING NO DISPOSITIVO ALVO */
+    #ping-toast {
+      position: fixed; top: 64px; left: 50%; transform: translateX(-50%); z-index: 3000;
+      background: linear-gradient(135deg, #b45309, #d97706); border: 2px solid #fde047;
+      color: #fff; border-radius: 14px; padding: 12px 18px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.65); display: flex; align-items: center; gap: 12px;
+      font-size: 14px; font-weight: 700; max-width: 92vw;
+    }
   </style>
 </head>
 <body>
@@ -111,6 +240,10 @@
         <div class="form-group">
           <label for="join-room-name">Nome da Sala *</label>
           <input type="text" id="join-room-name" placeholder="Ex: scada-h2-etapa3" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="join-display-name">Seu Nome / Dispositivo (Opcional — usado no Quiz)</label>
+          <input type="text" id="join-display-name" placeholder="Ex: João · Celular (vazio = automático)" maxlength="32" autocomplete="off">
         </div>
         <div class="form-group">
           <label for="join-password">Senha (Opcional)</label>
@@ -148,7 +281,59 @@
     <span id="hud-peers" style="color:#94a3b8;">👥 1 conectado</span>
     <span id="hud-sync" style="color:#38bdf8; font-weight:700;">Slide 1/18</span>
     <button type="button" class="hud-btn" id="btn-copy-link" onclick="copyInviteLink()">🔗 Link</button>
+    <button type="button" class="hud-btn" id="btn-show-qr" onclick="openQrModal()">📱 QR</button>
+    <button type="button" class="hud-btn" id="btn-hud-quiz" onclick="adminStartQuiz()">🎯 Quiz</button>
     <button type="button" class="hud-btn hud-btn-danger" onclick="leaveRoom()">Sair</button>
+  </div>
+
+  <!-- MODAL QR CODE DA SALA -->
+  <div id="qr-modal" class="hidden" onclick="if(event.target===this) closeQrModal()">
+    <div class="qr-card" role="dialog" aria-modal="true" aria-labelledby="qr-modal-title">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <h3 id="qr-modal-title" style="margin:0; font-size:17px; color:#fff; font-weight:800;">📱 QR Code da Sala</h3>
+        <button type="button" class="hud-btn" id="btn-close-qr" onclick="closeQrModal()">✕</button>
+      </div>
+      <p style="margin:0 0 12px 0; font-size:12.5px; color:#94a3b8; line-height:1.45;">
+        Escaneie para abrir o site com a sala <strong id="qr-room-label" style="color:#38bdf8;"></strong> já preenchida. Será necessário informar a senha para Administrador (ou deixar vazia para Espectador).
+      </p>
+      <div id="qr-box" class="qr-box"></div>
+      <div id="qr-url-preview" class="qr-url"></div>
+    </div>
+  </div>
+
+  <!-- OVERLAY DO QUIZ INTERATIVO AO VIVO -->
+  <div id="quiz-overlay" class="hidden">
+    <div class="quiz-card">
+      <div class="quiz-topbar">
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span id="quiz-progress-badge" class="quiz-badge">QUESTÃO 1 DE 5</span>
+          <span id="quiz-role-tag" style="font-size:12.5px; color:#94a3b8; font-weight:700;"></span>
+        </div>
+        <div id="quiz-user-stats" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;"></div>
+      </div>
+
+      <div id="quiz-body"></div>
+
+      <div id="quiz-admin-controls" class="quiz-admin-bar hidden"></div>
+    </div>
+  </div>
+
+  <!-- MODAL LISTA DE DISPOSITIVOS CONECTADOS (ADMIN) -->
+  <div id="quiz-devices-modal" class="hidden" onclick="if(event.target===this) closeDevicesModal()">
+    <div class="devices-card" role="dialog" aria-modal="true" aria-labelledby="devices-modal-title">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h3 id="devices-modal-title" style="margin:0; font-size:17px; color:#fff; font-weight:800;">👥 Dispositivos Conectados e Pontuação</h3>
+        <button type="button" class="hud-btn" id="btn-close-devices" onclick="closeDevicesModal()">✕</button>
+      </div>
+      <p style="margin:0 0 8px 0; font-size:12px; color:#94a3b8;">Apenas espectadores somam pontos no Quiz (1 pt ao acertar de primeira). Clique em <strong>Pingar</strong> para exibir um alerta individual na tela do dispositivo escolhido.</p>
+      <div id="quiz-devices-list"></div>
+    </div>
+  </div>
+
+  <!-- AVISO INDIVIDUAL DE PING DO ADMINISTRADOR -->
+  <div id="ping-toast" class="hidden" role="alert">
+    <span id="ping-toast-text">🔔 O administrador enviou um ping para o seu dispositivo!</span>
+    <button type="button" class="hud-btn" onclick="dismissPingToast()">OK</button>
   </div>
 
   <!-- ESCUDO INVISIVEL PARA IMPEDIR CLIQUE DE AVANCO DO ESPECTADOR -->
@@ -160,18 +345,18 @@
     <!-- SLIDE 1: CAPA -->
     <section class="slide-dark">
       <div class="pill">UNIFEI · ECAA08 AUTOMAÇÃO INDUSTRIAL · ETAPA 03</div>
-      <h1 style="font-size: 2.3rem; font-weight: 800; line-height: 1.15; margin: 0 0 12px 0; color: #fff;">
+      <h1 class="cover-title">
         Estruturas em Árvore Aplicadas ao <span style="color:#38bdf8;">SCADA-Core (H₂)</span>
       </h1>
-      <p style="font-size: 1rem; color: #94a3b8; max-width: 85%; margin: 0 auto 18px auto; line-height: 1.5;">
+      <p class="cover-sub">
         Árvores geradoras mínimas, protocolos L2, compressão lossless, historiadores balanceados e espaciais, verificação formal, controle preditivo e diagnóstico inteligente.
       </p>
-      <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin-bottom:18px;">
+      <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-bottom:22px;">
         <span class="chip">Setor 100 · SUP-100 · TK-101/102/103 · XV-104</span>
         <span class="chip" style="border-color:#10b981; color:#34d399;">Setor 200 · Chiller HEX-201 (-40 °C)</span>
         <span class="chip" style="border-color:#f59e0b; color:#fbbf24;">Setor 300 · DISP-300 · SAE J2601</span>
       </div>
-      <div style="font-size:0.78rem; color:#64748b;">Estação de Reabastecimento de Hidrogênio (700 bar) · Grupo 9</div>
+      <div class="cover-foot">Estação de Reabastecimento de Hidrogênio (700 bar) · Grupo 9</div>
       <div class="slide-num">1 / 18</div>
     </section>
 
@@ -204,8 +389,8 @@
     <!-- SLIDE 3: DIVISOR TOPICO 01 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 01</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Topologia Mínima e Redes Industriais</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 70%; margin:0 auto;">
+      <h2 class="divider-title">Topologia Mínima e Redes Industriais</h2>
+      <p class="divider-sub">
         Interligação física econômica dos Setores 100, 200 e 300 (MST) e convergência determinística em anel óptico (RSTP).
       </p>
       <div class="slide-num">3 / 18</div>
@@ -330,8 +515,8 @@
     <!-- SLIDE 6: DIVISOR TOPICO 02 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 02</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Telemetria, Segurança e Historiadores</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+      <h2 class="divider-title">Telemetria, Segurança e Historiadores</h2>
+      <p class="divider-sub">
         Compressão Huffman, decisão booleana SIS em O(1), indexação temporal AVL e busca espacial multivariável KD-Tree.
       </p>
       <div class="slide-num">6 / 18</div>
@@ -480,8 +665,8 @@
     <!-- SLIDE 10: DIVISOR TOPICO 03 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 03</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Verificação Formal, RRT e Behavior Trees</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+      <h2 class="divider-title">Verificação Formal, RRT e Behavior Trees</h2>
+      <p class="divider-sub">
         Prova matemática de ausência de sobrepressão/deadlock, planejamento termodinâmico seguro e preempção reativa em tempo real.
       </p>
       <div class="slide-num">10 / 18</div>
@@ -605,8 +790,8 @@
     <!-- SLIDE 14: DIVISOR TOPICO 04 -->
     <section class="slide-dark">
       <div class="pill">TÓPICO 04</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">Diagnóstico Inteligente e Integração</h2>
-      <p style="font-size: 0.95rem; color:#94a3b8; max-width: 75%; margin:0 auto;">
+      <h2 class="divider-title">Diagnóstico Inteligente e Integração</h2>
+      <p class="divider-sub">
         Classificação automática de falhas via Árvores de Decisão (ID3, C4.5, CART) e arquitetura integrada SCADACoreModulo3.
       </p>
       <div class="slide-num">14 / 18</div>
@@ -617,7 +802,7 @@
       <span class="badge-topic">TÓPICO 04</span>
       <h2 class="slide-title">Árvores de Decisão: <span>ID3, C4.5 e CART</span></h2>
       <p class="slide-subtitle">Indução de regras transparentes e auditáveis contra IEC 61511 sobre telemetria da HRS (600 amostras, 4 classes):</p>
-      <div class="grid-2" style="align-items:center;">
+      <div class="grid-2" style="align-items:stretch;">
         <div class="graph-frame"><svg viewBox="0 0 420 140" width="100%" height="130" style="display:block;">
   <rect x="25" y="12" width="380" height="110" fill="#070d18" stroke="#334155"/>
   <!-- Regioes aprendidas CART -->
@@ -632,8 +817,8 @@
   <text x="215" y="37" fill="#fbbf24" font-size="8.5" font-weight="800" text-anchor="middle">Falha_Chiller_Termica (TT-101 &gt; 55.9 °C)</text>
   <text x="258" y="116" fill="#f87171" font-size="7" font-weight="700">PT-101=381.8 bar</text>
 </svg></div>
-        <div>
-          <table style="font-size:0.72rem; margin-bottom:8px;">
+        <div style="display:flex; flex-direction:column; justify-content:center; gap:12px;">
+          <table>
             <thead><tr><th>Algoritmo</th><th>Critério</th><th>Treino</th><th>Teste</th></tr></thead>
             <tbody>
               <tr><td><strong>CART</strong></td><td>Impureza de Gini</td><td>99,56%</td><td><strong class="ok">98,67%</strong></td></tr>
@@ -641,7 +826,7 @@
               <tr><td><strong>C4.5</strong></td><td><em>Gain Ratio</em></td><td>99,11%</td><td>98,00%</td></tr>
             </tbody>
           </table>
-          <div class="callout" style="font-size:0.72rem;">Fronteiras reais extraídas do CART 2D: <code>PT-101 = 381,8 bar</code> e <code>TT-101 = 55,9 °C</code>, sem caixas-pretas opacas.</div>
+          <div class="callout">Fronteiras reais extraídas do CART 2D: <code>PT-101 = 381,8 bar</code> e <code>TT-101 = 55,9 °C</code>, sem caixas-pretas opacas.</div>
         </div>
       </div>
       <div class="slide-num">15 / 18</div>
@@ -693,13 +878,16 @@
     <!-- SLIDE 18: ENCERRAMENTO -->
     <section class="slide-dark">
       <div class="pill">CONCLUSÃO · ETAPA 03</div>
-      <h2 style="font-size: 2rem; font-weight: 800; color:#fff; margin: 10px 0;">SCADA-Core Completo: Etapas 01, 02 e 03</h2>
-      <div class="grid-3" style="margin: 16px auto; max-width: 92%; text-align:left;">
+      <h2 class="divider-title">SCADA-Core Completo: Etapas 01, 02 e 03</h2>
+      <div class="grid-3" style="margin: 20px auto; max-width: 96%; text-align:left;">
         <div class="card"><div class="card-title" style="color:#38bdf8;">Etapa 01 · Lógica</div><p class="card-text">Proposições ISA-5.1, intertravamentos e regras booleanas de segurança funcional.</p></div>
         <div class="card"><div class="card-title" style="color:#34d399;">Etapa 02 · Grafos</div><p class="card-text">Dígrafo hidráulico, Dijkstra dinâmico, detecção de vazamentos, PIG (Euler) e AGV (TSP).</p></div>
         <div class="card"><div class="card-title" style="color:#fbbf24;">Etapa 03 · Árvores</div><p class="card-text">MST/RSTP, Huffman, BDT/AVL/KD-Tree, Petri/RRT/Behavior Trees e diagnóstico CART.</p></div>
       </div>
-      <p style="font-size:0.82rem; color:#64748b;">UNIFEI · ECAA08 Automação Industrial · Estação de Reabastecimento de Hidrogênio</p>
+      <p class="cover-foot">UNIFEI · ECAA08 Automação Industrial · Estação de Reabastecimento de Hidrogênio</p>
+      <div class="quiz-webrtc-only" style="margin-top:12px;">
+        <button type="button" id="btn-launch-quiz" class="quiz-launch-btn" onclick="adminStartQuiz()">🎯 Iniciar Quiz Interativo (5 Perguntas)</button>
+      </div>
       <div class="slide-num">18 / 18</div>
     </section>
 
@@ -707,7 +895,8 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
-  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
   <script>
     const PEER_PREFIX = "unifei-scada-h2-etapa03-room-";
     const PEER_CFG = {
@@ -726,14 +915,121 @@
     let isHost = false;
     let userRole = null; // 'admin' | 'viewer'
     let currentRoomName = "";
+    let myPeerId = "";
+    let myDisplayName = "";
     let hostPasswordHash = "";
-    let hostClients = new Map(); // peerId -> { conn, role }
+    let nextDeviceSeq = 1;
+    let hostClients = new Map(); // peerId -> { conn, role, name, score, answered, firstAttemptWrong }
+    let devicesList = [];
     let clientConn = null;
     let isApplyingRemote = false;
     let slideState = { h: 0, v: 0, f: 0, seq: 0 };
+    let quizState = { active: false, phase: "question", qIdx: 0, session: 0 };
+    let localQuizProgress = {}; // qIdx -> { tried: [], solved: false, earnedPoint: false, lastMsg: "", lastOk: null }
+    let localScore = 0;
+    let hudIdleTimer = null;
+    let hudHovered = false;
+    let qrModalOpen = false;
+    let pingToastTimer = null;
+
+    const QUIZ_QUESTIONS = [
+      {
+        q: "1) Na Etapa 03, a Árvore Geradora Mínima (MST) da Estação de H₂ interliga os 8 equipamentos com apenas 66 metros de eletrodutos. Qual propriedade garante que Kruskal e Prim não formam ciclos?",
+        options: [
+          "Escolhem sempre as rotas de maior comprimento entre SUP-100 e DISP-300.",
+          "Conectam exatamente |V| - 1 = 7 arestas de menor custo sem fechar circuitos fechados.",
+          "Descartam o nó XV-104 para reduzir a árvore para 6 vértices.",
+          "Substituem o algoritmo Union-Find por uma árvore AVL de timestamps."
+        ],
+        correctIndex: 1,
+        okDesc: "Uma Árvore Geradora Mínima sobre |V| = 8 vértices sempre seleciona exatamente |V| - 1 = 7 arestas de custo total mínimo (66 m) conectando toda a planta sem ciclos.",
+        wrongReasons: {
+          0: "Errado: a MST minimiza o comprimento total de cabos/eletrodutos (66 m), nunca escolhendo rotas mais longas.",
+          1: "",
+          2: "Errado: uma árvore geradora precisa conectar todos os |V| = 8 nós — inclusive XV-104 concentra grau 4 na topologia.",
+          3: "Errado: Kruskal usa Union-Find e Prim usa Min-Heap; a Árvore AVL é usada apenas no historiador cronológico."
+        }
+      },
+      {
+        q: "2) Na camada de comunicação do SCADA-Core, como o protocolo RSTP (IEEE 802.1w) e a Codificação de Huffman atuam em conjunto?",
+        options: [
+          "RSTP bloqueia portas redundantes contra Broadcast Storm (failover < 200 ms) e Huffman reduz a banda em 76,3% sem perdas.",
+          "RSTP comprime os bits dos sensores e Huffman elege o Root Bridge do anel óptico.",
+          "Huffman descarta 76,3% das amostras do sensor PT-101 para economizar banda RS-485.",
+          "Ambos são responsáveis pelo acionamento via Ethernet do botão físico de emergência ESD-100."
+        ],
+        correctIndex: 0,
+        okDesc: "O RSTP evita loops Ethernet L2 com failover determinístico < 200 ms, enquanto Huffman usa códigos prefix-free lossless (1,185 bits/amostra contra 5 bits fixos).",
+        wrongReasons: {
+          0: "",
+          1: "Errado: os papéis estão trocados — RSTP gerencia o anel L2 e elege o Root Bridge (SW-SCADA); Huffman realiza compressão lossless.",
+          2: "Errado: Huffman é 100% lossless (sem perdas); nenhuma leitura é descartada, apenas estados frequentes (00000) usam código de 1 bit.",
+          3: "Errado: segundo IEC 61511 / LOPA, o intertravamento crítico do botão ESD-100 permanece hardwired, independente da rede Ethernet."
+        }
+      },
+      {
+        q: "3) Comparando as estruturas BDT, AVL e KD-Tree implementadas na Etapa 03, qual afirmação está correta?",
+        options: [
+          "BDT indexa séries temporais em O(log N), enquanto AVL executa busca espacial 4D.",
+          "A Árvore AVL foi ~129x mais lenta que a busca linear para N = 2.000 timestamps.",
+          "BDT avalia o intertravamento SIS em O(1) (h=5), AVL indexa timestamps em O(log N) e KD-Tree detecta anomalias 4D.",
+          "A KD-Tree dispensa reconstrução em batch porque executa rotações automáticas LL/RR/LR/RL."
+        ],
+        correctIndex: 2,
+        okDesc: "Cada árvore cumpre um papel específico: BDT com curto-circuito O(1) no SIS (3,17 µs), AVL auto-balanceada para série temporal (129x mais rápida) e KD-Tree para k-NN / Range Search 4D.",
+        wrongReasons: {
+          0: "Errado: BDT avalia regras booleanas do SIS em O(1); quem indexa timestamps em O(log N) é a AVL, e a busca 4D pertence à KD-Tree.",
+          1: "Errado: ocorreu o oposto — a AVL de altura 11 foi 129x MAIS RÁPIDA que a busca linear (0,098 ms vs 12,6 ms).",
+          2: "",
+          3: "Errado: rotações LL/RR/LR/RL pertencem à AVL; a KD-Tree precisa de reconstrução em batch para não degradar com inserções sequenciais."
+        }
+      },
+      {
+        q: "4) Na verificação formal com Redes de Petri (Karp-Miller) e planejamento Kinodynamic RRT, o que garantiu abastecimento seguro até 700 bar?",
+        options: [
+          "O símbolo ω em P4 provou sobrepressão sem controle; o lugar complementar P6 (K=2) eliminou ω (0 deadlocks), e o RRT manteve TT-301 ≤ 85 °C com HEX-201 a -40 °C.",
+          "O símbolo ω significa que a estação alcançou o rendimento máximo da norma SAE J2601.",
+          "O RRT planejou o abastecimento em malha aberta sem o chiller HEX-201 para manter 50,8 °C.",
+          "O lugar complementar P6 aumentou o total de deadlocks de 0 para 12 estados travados."
+        ],
+        correctIndex: 0,
+        okDesc: "Na árvore de cobertura, ω em P4 indicava acúmulo ilimitado; P6 impôs M(P4)+M(P6)=2 (finita, 12 estados, 0 deadlocks), e o RRT validou 30 passos seguros com HEX-201 a -40 °C.",
+        wrongReasons: {
+          0: "",
+          1: "Errado: na Árvore de Cobertura de Karp-Miller, ω representa crescimento ilimitado de fichas — indicando risco de sobrepressão em TK-103/DISP-300.",
+          2: "Errado: sem o chiller HEX-201 (malha aberta), o efeito Joule-Thomson dispara TT-301 para acima de 100 °C, violando a barreira de 85 °C.",
+          3: "Errado: P6 gerou 12 marcações alcançáveis com exatamente 0 deadlocks e exclusão mútua estrita."
+        }
+      },
+      {
+        q: "5) No simulador integrado (Aula 28), ao ocorrer vazamento AT-101 = 34% (> 25% LIE), como atuam a Behavior Tree e a Árvore de Decisão CART?",
+        options: [
+          "A Behavior Tree espera concluir a carga de 700 bar para só então verificar SIS_OK.",
+          "SIS_OK retorna FAILURE, o Fallback preempciona no mesmo tick com TRIP SIS (XV=0) e CART classifica Vazamento_H2 com regras auditáveis.",
+          "A árvore CART opera como rede neural caixa-preta sem limiares numéricos auditáveis pela IEC 61511.",
+          "O nó Sequence ignora a falha de SIS_OK e retorna SUCCESS para liberar o dispensador."
+        ],
+        correctIndex: 1,
+        okDesc: "Em Behavior Trees, cada tick reavalia da raiz: SIS_OK=FAILURE causa preempção imediata no Fallback acionando TRIP SIS, e o CART isola a causa raiz com limiares transparentes (98,67% de acerto).",
+        wrongReasons: {
+          0: "Errado: Behavior Trees executam varredura reativa a cada tick — o Fallback interrompe a cascata imediatamente sem esperar o fim da carga.",
+          1: "",
+          2: "Errado: ID3, C4.5 e CART produzem fronteiras explícitas e auditáveis (ex: PT-101 = 381,8 bar e TT-101 = 55,9 °C), evitando caixas-pretas opacas.",
+          3: "Errado: em um nó Sequence, se qualquer filho retorna FAILURE (como SIS_OK), a sequência aborta imediatamente e propaga FAILURE ao Fallback."
+        }
+      }
+    ];
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
 
     Reveal.initialize({
-      width: 1280, height: 720, margin: 0.04,
+      width: 1280, height: 720, margin: 0.02,
       hash: false, history: false, slideNumber: false, transition: 'fade'
     }).then(() => {
       revealReady = true;
@@ -790,11 +1086,30 @@
       document.getElementById("btn-create-submit").disabled = busy;
     }
 
+    function scheduleHudIdle() {
+      clearTimeout(hudIdleTimer);
+      if (!userRole || hudHovered || qrModalOpen) return;
+      hudIdleTimer = setTimeout(() => {
+        if (userRole && !hudHovered && !qrModalOpen) {
+          document.getElementById("room-hud").classList.add("hud-idle");
+        }
+      }, 2200);
+    }
+
+    function wakeHud() {
+      if (!userRole) return;
+      const hud = document.getElementById("room-hud");
+      hud.classList.remove("hud-idle");
+      scheduleHudIdle();
+    }
+
     function enterPresentation(role, roomName) {
       userRole = role;
       currentRoomName = roomName;
       document.getElementById("webrtc-lobby").classList.add("hidden");
-      document.getElementById("room-hud").style.display = "flex";
+      const hud = document.getElementById("room-hud");
+      hud.style.display = "flex";
+      hud.classList.remove("hud-idle");
       document.getElementById("hud-room").textContent = "Sala: " + roomName;
 
       const roleEl = document.getElementById("hud-role");
@@ -810,6 +1125,7 @@
         Reveal.configure({ controls: false, keyboard: false, touch: false, overview: false });
       }
       applySlideState(slideState);
+      scheduleHudIdle();
     }
 
     function applySlideState(st) {
@@ -870,12 +1186,17 @@
       peer = new Peer(hostId, PEER_CFG);
 
       let settled = false;
-      peer.on("open", () => {
+      peer.on("open", (id) => {
         settled = true;
+        myPeerId = id || hostId;
+        myDisplayName = "Admin (Criador)";
+        nextDeviceSeq = 1;
+        quizState = { active: false, phase: "question", qIdx: 0, session: 0 };
         setButtonsBusy(false);
         slideState = { h: 0, v: 0, f: 0, seq: 0 };
         enterPresentation("admin", rawName);
         updateHudCounts(getCountsPayload());
+        syncDevicesListFromHost();
       });
 
       peer.on("error", (err) => {
@@ -895,24 +1216,47 @@
 
           if (data.type === "HELLO") {
             const incomingPwd = typeof data.password === "string" ? data.password : "";
+            const rawUserNick = typeof data.name === "string" ? data.name.trim().slice(0, 32) : "";
             // Caixa de senha vazia -> modo espectador
             if (incomingPwd === "") {
-              hostClients.set(conn.peer, { conn, role: "viewer" });
+              const seq = nextDeviceSeq++;
+              const dispName = rawUserNick || ("Espectador #" + seq);
+              hostClients.set(conn.peer, {
+                conn, role: "viewer", name: dispName,
+                score: 0, answered: {}, firstAttemptWrong: {}
+              });
               const counts = getCountsPayload();
-              conn.send({ type: "AUTH_OK", role: "viewer", state: slideState, counts });
+              const devs = getDevicesPayload();
+              conn.send({
+                type: "AUTH_OK", role: "viewer", state: slideState, counts,
+                peerId: conn.peer, displayName: dispName,
+                quizState, devices: devs
+              });
               updateHudCounts(counts);
-              hostBroadcast({ type: "PEERS_UPDATE", counts }, conn.peer);
+              syncDevicesListFromHost();
+              hostBroadcast({ type: "PEERS_UPDATE", counts, devices: devs }, conn.peer);
               return;
             }
 
             // Caixa de senha preenchida -> validar senha
             const incomingHash = await sha256Hex(incomingPwd);
             if (incomingHash === hostPasswordHash) {
-              hostClients.set(conn.peer, { conn, role: "admin" });
+              const seq = nextDeviceSeq++;
+              const dispName = rawUserNick || ("Admin #" + seq);
+              hostClients.set(conn.peer, {
+                conn, role: "admin", name: dispName,
+                score: 0, answered: {}, firstAttemptWrong: {}
+              });
               const counts = getCountsPayload();
-              conn.send({ type: "AUTH_OK", role: "admin", state: slideState, counts });
+              const devs = getDevicesPayload();
+              conn.send({
+                type: "AUTH_OK", role: "admin", state: slideState, counts,
+                peerId: conn.peer, displayName: dispName,
+                quizState, devices: devs
+              });
               updateHudCounts(counts);
-              hostBroadcast({ type: "PEERS_UPDATE", counts }, conn.peer);
+              syncDevicesListFromHost();
+              hostBroadcast({ type: "PEERS_UPDATE", counts, devices: devs }, conn.peer);
             } else {
               conn.send({
                 type: "AUTH_ERR",
@@ -926,6 +1270,37 @@
             slideState = { h: data.h || 0, v: data.v || 0, f: data.f || 0, seq: slideState.seq + 1 };
             applySlideState(slideState);
             hostBroadcast({ type: "SYNC_SLIDE", state: slideState });
+          } else if (data.type === "QUIZ_ANSWER") {
+            const entry = hostClients.get(conn.peer);
+            if (!entry || entry.role !== "viewer") return; // Apenas espectadores pontuam
+            const qIdx = Number(data.qIdx);
+            const optIdx = Number(data.optionIdx);
+            if (!quizState.active || quizState.phase !== "question" || qIdx !== quizState.qIdx) return;
+            if (entry.answered[qIdx]) return;
+            const qObj = QUIZ_QUESTIONS[qIdx];
+            if (!qObj) return;
+            if (optIdx === qObj.correctIndex) {
+              if (!entry.firstAttemptWrong[qIdx]) {
+                entry.score += 1;
+              }
+              entry.answered[qIdx] = true;
+            } else {
+              entry.firstAttemptWrong[qIdx] = true;
+            }
+            syncDevicesListFromHost();
+            hostBroadcast({ type: "DEVICES_UPDATE", devices: getDevicesPayload() });
+          } else if (data.type === "QUIZ_RENAME") {
+            const entry = hostClients.get(conn.peer);
+            if (!entry) return;
+            const clean = typeof data.name === "string" ? data.name.trim().slice(0, 32) : "";
+            if (!clean) return;
+            entry.name = clean;
+            syncDevicesListFromHost();
+            hostBroadcast({ type: "DEVICES_UPDATE", devices: getDevicesPayload() });
+          } else if (data.type === "REQ_QUIZ_ACTION") {
+            const entry = hostClients.get(conn.peer);
+            if (!entry || entry.role !== "admin") return;
+            executeHostQuizAction(data.action, data, entry.name);
           }
         });
 
@@ -933,8 +1308,10 @@
           if (hostClients.has(conn.peer)) {
             hostClients.delete(conn.peer);
             const counts = getCountsPayload();
+            const devs = getDevicesPayload();
             updateHudCounts(counts);
-            hostBroadcast({ type: "PEERS_UPDATE", counts });
+            syncDevicesListFromHost();
+            hostBroadcast({ type: "PEERS_UPDATE", counts, devices: devs });
           }
         });
       });
@@ -946,6 +1323,7 @@
     function handleJoinRoom(e) {
       e.preventDefault();
       const rawName = document.getElementById("join-room-name").value.trim();
+      const rawDisplay = document.getElementById("join-display-name").value.trim();
       const pwd = document.getElementById("join-password").value; // Vazio = espectador; preenchido = valida senha
       const slug = normalizeRoomSlug(rawName);
       if (!slug) {
@@ -973,10 +1351,11 @@
         }
       }, 10000);
 
-      peer.on("open", () => {
+      peer.on("open", (id) => {
+        myPeerId = id || "";
         clientConn = peer.connect(hostId, { reliable: true });
         clientConn.on("open", () => {
-          clientConn.send({ type: "HELLO", password: pwd });
+          clientConn.send({ type: "HELLO", password: pwd, name: rawDisplay });
         });
 
         clientConn.on("data", (data) => {
@@ -985,9 +1364,18 @@
             authDone = true;
             clearTimeout(timeoutTimer);
             setButtonsBusy(false);
+            myPeerId = data.peerId || myPeerId;
+            myDisplayName = data.displayName || rawDisplay || "Dispositivo";
             slideState = data.state || { h: 0, v: 0, f: 0, seq: 0 };
             enterPresentation(data.role, rawName);
             if (data.counts) updateHudCounts(data.counts);
+            if (data.devices) {
+              devicesList = data.devices;
+              refreshDevicesModalIfOpen();
+            }
+            if (data.quizState) {
+              applyQuizState(data.quizState);
+            }
           } else if (data.type === "AUTH_ERR") {
             authDone = true;
             clearTimeout(timeoutTimer);
@@ -999,6 +1387,19 @@
             applySlideState(slideState);
           } else if (data.type === "PEERS_UPDATE") {
             updateHudCounts(data.counts);
+            if (data.devices) {
+              devicesList = data.devices;
+              refreshDevicesModalIfOpen();
+              if (quizState.active) renderQuizOverlay();
+            }
+          } else if (data.type === "DEVICES_UPDATE") {
+            devicesList = data.devices || [];
+            refreshDevicesModalIfOpen();
+            if (quizState.active) renderQuizOverlay();
+          } else if (data.type === "QUIZ_STATE") {
+            applyQuizState(data.quizState);
+          } else if (data.type === "QUIZ_PING") {
+            showPingToast(data.message || "🔔 O administrador enviou um ping para o seu dispositivo!");
           }
         });
 
@@ -1052,11 +1453,18 @@
     Reveal.on("fragmentshown", onLocalSlideChange);
     Reveal.on("fragmenthidden", onLocalSlideChange);
 
-    function copyInviteLink() {
+    function buildRoomInviteUrl() {
       const u = new URL(window.location.href);
+      u.search = "";
+      u.hash = "";
       u.searchParams.set("room", currentRoomName);
+      return u.toString();
+    }
+
+    function copyInviteLink() {
+      const url = buildRoomInviteUrl();
       if (navigator.clipboard) {
-        navigator.clipboard.writeText(u.toString()).then(() => {
+        navigator.clipboard.writeText(url).then(() => {
           const btn = document.getElementById("btn-copy-link");
           btn.textContent = "✓ Copiado!";
           setTimeout(() => { btn.textContent = "🔗 Link"; }, 1800);
@@ -1064,20 +1472,405 @@
       }
     }
 
+    function openQrModal() {
+      if (!currentRoomName) return;
+      qrModalOpen = true;
+      clearTimeout(hudIdleTimer);
+      document.getElementById("room-hud").classList.remove("hud-idle");
+      const url = buildRoomInviteUrl();
+      document.getElementById("qr-room-label").textContent = currentRoomName;
+      document.getElementById("qr-url-preview").textContent = url;
+      const box = document.getElementById("qr-box");
+      if (typeof qrcode === "function") {
+        const qr = qrcode(0, "M");
+        qr.addData(url);
+        qr.make();
+        box.innerHTML = qr.createSvgTag(4, 2);
+      } else {
+        box.innerHTML = "<span style='color:#0f172a;font-size:12px;font-weight:700;'>Biblioteca QR indisponível offline</span>";
+      }
+      document.getElementById("qr-modal").classList.remove("hidden");
+    }
+
+    function closeQrModal() {
+      qrModalOpen = false;
+      document.getElementById("qr-modal").classList.add("hidden");
+      wakeHud();
+    }
+
+    // =========================================================================
+    // QUIZ INTERATIVO AO VIVO + DISPOSITIVOS CONECTADOS + PING INDIVIDUAL
+    // =========================================================================
+    function getDevicesPayload() {
+      const list = [{
+        peerId: myPeerId || "host",
+        name: myDisplayName || "Admin (Criador)",
+        role: "admin",
+        score: 0
+      }];
+      hostClients.forEach((c, pid) => {
+        list.push({
+          peerId: pid,
+          name: c.name || "Dispositivo",
+          role: c.role,
+          score: c.score || 0
+        });
+      });
+      return list;
+    }
+
+    function syncDevicesListFromHost() {
+      if (!isHost) return;
+      devicesList = getDevicesPayload();
+      refreshDevicesModalIfOpen();
+      if (quizState.active) renderQuizOverlay();
+    }
+
+    function executeHostQuizAction(action, payload = {}, actorName = "Admin") {
+      if (!isHost) return;
+      if (action === "start") {
+        hostClients.forEach((c) => {
+          c.score = 0;
+          c.answered = {};
+          c.firstAttemptWrong = {};
+        });
+        quizState = {
+          active: true,
+          phase: "question",
+          qIdx: 0,
+          session: (quizState.session || 0) + 1
+        };
+        const devs = getDevicesPayload();
+        devicesList = devs;
+        applyQuizState(quizState);
+        hostBroadcast({ type: "DEVICES_UPDATE", devices: devs });
+        hostBroadcast({ type: "QUIZ_STATE", quizState });
+      } else if (action === "prev") {
+        quizState = { ...quizState, phase: "question", qIdx: Math.max(0, (quizState.qIdx || 0) - 1) };
+        applyQuizState(quizState);
+        hostBroadcast({ type: "QUIZ_STATE", quizState });
+      } else if (action === "next") {
+        if ((quizState.qIdx || 0) < QUIZ_QUESTIONS.length - 1) {
+          quizState = { ...quizState, phase: "question", qIdx: quizState.qIdx + 1 };
+        } else {
+          quizState = { ...quizState, phase: "finished" };
+        }
+        applyQuizState(quizState);
+        hostBroadcast({ type: "QUIZ_STATE", quizState });
+      } else if (action === "finish") {
+        quizState = { ...quizState, phase: "finished" };
+        applyQuizState(quizState);
+        hostBroadcast({ type: "QUIZ_STATE", quizState });
+      } else if (action === "close") {
+        quizState = { ...quizState, active: false };
+        applyQuizState(quizState);
+        hostBroadcast({ type: "QUIZ_STATE", quizState });
+      } else if (action === "ping") {
+        const targetId = payload.targetPeerId;
+        if (targetId === myPeerId) {
+          showPingToast(`🔔 Olá, ${myDisplayName}! ${actorName} enviou um ping para o seu dispositivo.`);
+        } else {
+          const target = hostClients.get(targetId);
+          if (target && target.conn && target.conn.open) {
+            target.conn.send({
+              type: "QUIZ_PING",
+              message: `🔔 Olá, ${target.name}! ${actorName} enviou um ping para o seu dispositivo.`
+            });
+          }
+        }
+      }
+    }
+
+    function adminStartQuiz() {
+      if (userRole !== "admin") return;
+      if (isHost) executeHostQuizAction("start", {}, myDisplayName);
+      else if (clientConn && clientConn.open) clientConn.send({ type: "REQ_QUIZ_ACTION", action: "start" });
+    }
+
+    function sendQuizAction(action, extra = {}) {
+      if (userRole !== "admin") return;
+      if (isHost) executeHostQuizAction(action, extra, myDisplayName);
+      else if (clientConn && clientConn.open) clientConn.send({ type: "REQ_QUIZ_ACTION", action, ...extra });
+    }
+
+    let lastQuizSessionRendered = -1;
+    function applyQuizState(newState) {
+      if (!newState) return;
+      if (newState.session !== lastQuizSessionRendered) {
+        localQuizProgress = {};
+        localScore = 0;
+        lastQuizSessionRendered = newState.session;
+      }
+      quizState = newState;
+      const overlay = document.getElementById("quiz-overlay");
+      if (quizState.active) {
+        overlay.classList.remove("hidden");
+        renderQuizOverlay();
+      } else {
+        overlay.classList.add("hidden");
+        closeDevicesModal();
+      }
+    }
+
+    function selectQuizOption(optIdx) {
+      if (userRole !== "viewer") return;
+      if (!quizState.active || quizState.phase !== "question") return;
+      const qIdx = quizState.qIdx;
+      const qObj = QUIZ_QUESTIONS[qIdx];
+      if (!qObj) return;
+      if (!localQuizProgress[qIdx]) {
+        localQuizProgress[qIdx] = { tried: [], solved: false, earnedPoint: false, lastMsg: "", lastOk: null };
+      }
+      const prog = localQuizProgress[qIdx];
+      if (prog.solved || prog.tried.includes(optIdx)) return;
+
+      prog.tried.push(optIdx);
+      const isFirstTry = prog.tried.length === 1;
+      const isCorrect = optIdx === qObj.correctIndex;
+
+      if (isCorrect) {
+        prog.solved = true;
+        prog.lastOk = true;
+        if (isFirstTry) {
+          prog.earnedPoint = true;
+          localScore += 1;
+          prog.lastMsg = "✅ Correto de primeira! (+1 ponto) — " + qObj.okDesc;
+        } else {
+          prog.lastMsg = "✅ Resposta correta! (0 pts nesta questão pois houve erro anterior) — " + qObj.okDesc;
+        }
+      } else {
+        prog.lastOk = false;
+        const why = (qObj.wrongReasons && qObj.wrongReasons[optIdx]) || "Esta opção não corresponde ao comportamento da Etapa 03.";
+        const ptWarn = isFirstTry ? "Você não somará ponto nesta questão, mas pode tentar outra opção para conferir a resposta correta." : "Tente outra opção para encontrar a resposta correta.";
+        prog.lastMsg = "❌ " + why + " (" + ptWarn + ")";
+      }
+
+      if (clientConn && clientConn.open) {
+        clientConn.send({ type: "QUIZ_ANSWER", qIdx, optionIdx: optIdx });
+      }
+      renderQuizOverlay();
+    }
+
+    function promptRenameSpectator() {
+      if (userRole !== "viewer") return;
+      const novo = window.prompt("Digite seu nome para exibição no ranking e lista de dispositivos:", myDisplayName || "");
+      if (!novo || !novo.trim()) return;
+      myDisplayName = novo.trim().slice(0, 32);
+      if (clientConn && clientConn.open) {
+        clientConn.send({ type: "QUIZ_RENAME", name: myDisplayName });
+      }
+      renderQuizOverlay();
+    }
+
+    function renderQuizOverlay() {
+      if (!quizState.active) return;
+      const badgeEl = document.getElementById("quiz-progress-badge");
+      const roleTagEl = document.getElementById("quiz-role-tag");
+      const statsEl = document.getElementById("quiz-user-stats");
+      const bodyEl = document.getElementById("quiz-body");
+      const adminBarEl = document.getElementById("quiz-admin-controls");
+
+      const viewersList = devicesList.filter(d => d.role === "viewer");
+
+      if (userRole === "admin") {
+        roleTagEl.textContent = "👑 Modo Administrador (gabarito comentado · apenas espectadores pontuam)";
+        statsEl.innerHTML = `<span style="font-size:12.5px; color:#34d399; font-weight:700;">👥 ${viewersList.length} espectador(es) no quiz</span>`;
+      } else {
+        roleTagEl.textContent = "👁️ Espectador (acerte de 1ª para pontuar)";
+        statsEl.innerHTML = `
+          <span style="background:#0b1320; border:1px solid #334155; padding:4px 10px; border-radius:999px; font-size:12px; color:#e2e8f0; font-weight:700;">
+            👤 ${escapeHtml(myDisplayName || "Participante")}
+            <button type="button" onclick="promptRenameSpectator()" style="background:none;border:none;color:#38bdf8;cursor:pointer;font-size:12px;padding:0 0 0 4px;" title="Editar nome">✏️</button>
+          </span>
+          <span id="quiz-my-score" style="background:rgba(16,185,129,0.18); border:1px solid #10b981; color:#34d399; padding:4px 12px; border-radius:999px; font-size:12.5px; font-weight:800;">
+            🏆 ${localScore} pt(s)
+          </span>`;
+      }
+
+      if (quizState.phase === "finished") {
+        badgeEl.textContent = "🏁 RESULTADO FINAL DO QUIZ";
+        const sorted = [...viewersList].sort((a, b) => (b.score || 0) - (a.score || 0) || a.name.localeCompare(b.name));
+        let rankHtml = `<h2 class="quiz-question" style="margin-bottom:10px;">🏆 Ranking dos Participantes (Máximo: ${QUIZ_QUESTIONS.length} pts)</h2>`;
+        if (sorted.length === 0) {
+          rankHtml += `<p style="color:#94a3b8; font-size:14px;">Nenhum espectador conectado neste momento.</p>`;
+        } else {
+          rankHtml += `<table class="devices-table"><thead><tr><th>Pos.</th><th>Participante</th><th>Pontuação</th></tr></thead><tbody>`;
+          sorted.forEach((v, idx) => {
+            const medal = idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : `${idx + 1}º`;
+            rankHtml += `<tr><td><strong>${medal}</strong></td><td>${escapeHtml(v.name)}</td><td><strong style="color:#34d399;">${v.score || 0} / ${QUIZ_QUESTIONS.length}</strong></td></tr>`;
+          });
+          rankHtml += `</tbody></table>`;
+        }
+        bodyEl.innerHTML = rankHtml;
+      } else {
+        const qIdx = quizState.qIdx || 0;
+        const qObj = QUIZ_QUESTIONS[qIdx];
+        badgeEl.textContent = `QUESTÃO ${qIdx + 1} DE ${QUIZ_QUESTIONS.length}`;
+        const letters = ["A", "B", "C", "D"];
+
+        if (userRole === "admin") {
+          // Administrador: ve todas as opcoes bloqueadas para pontuacao, com status Certo/Errado e descricao
+          let optsHtml = "";
+          qObj.options.forEach((optText, i) => {
+            const isOk = i === qObj.correctIndex;
+            const cls = isOk ? "quiz-opt-btn quiz-opt-correct" : "quiz-opt-btn quiz-opt-wrong";
+            const badge = isOk ? "✅ CORRETA" : "❌ ERRADA";
+            const desc = isOk ? qObj.okDesc : ((qObj.wrongReasons && qObj.wrongReasons[i]) || "");
+            optsHtml += `
+              <button type="button" class="${cls}" disabled>
+                <div><strong>${letters[i]})</strong> ${escapeHtml(optText)} <span style="float:right; font-weight:800;">${badge}</span></div>
+                <span class="quiz-opt-admin-desc">${escapeHtml(desc)}</span>
+              </button>`;
+          });
+          bodyEl.innerHTML = `<h3 class="quiz-question">${escapeHtml(qObj.q)}</h3><div class="quiz-options">${optsHtml}</div>`;
+        } else {
+          // Espectador: opcoes clicaveis; verde se certa, vermelho se errada + motivo do erro; ponto so de primeira
+          const prog = localQuizProgress[qIdx] || { tried: [], solved: false, earnedPoint: false, lastMsg: "", lastOk: null };
+          let optsHtml = "";
+          qObj.options.forEach((optText, i) => {
+            const wasTried = prog.tried.includes(i);
+            const isOk = i === qObj.correctIndex;
+            let cls = "quiz-opt-btn";
+            let statusTag = "";
+            if (wasTried) {
+              if (isOk) { cls += " quiz-opt-correct"; statusTag = " ✅"; }
+              else { cls += " quiz-opt-wrong"; statusTag = " ❌"; }
+            }
+            const dis = (prog.solved || wasTried) ? "disabled" : "";
+            optsHtml += `<button type="button" class="${cls}" data-opt="${i}" onclick="selectQuizOption(${i})" ${dis}><strong>${letters[i]})</strong> ${escapeHtml(optText)}${statusTag}</button>`;
+          });
+          const fbCls = prog.lastMsg ? ("quiz-feedback " + (prog.lastOk ? "quiz-fb-ok" : "quiz-fb-err")) : "quiz-feedback";
+          bodyEl.innerHTML = `
+            <h3 class="quiz-question">${escapeHtml(qObj.q)}</h3>
+            <div class="quiz-options">${optsHtml}</div>
+            <div id="quiz-spec-feedback" class="${fbCls}">${escapeHtml(prog.lastMsg || "")}</div>
+            <p style="margin:10px 0 0 0; font-size:12px; color:#64748b;">Aguarde o administrador avançar para a próxima questão.</p>`;
+        }
+      }
+
+      if (userRole === "admin") {
+        adminBarEl.classList.remove("hidden");
+        const isLast = (quizState.qIdx || 0) >= QUIZ_QUESTIONS.length - 1;
+        const nextBtn = quizState.phase === "finished"
+          ? `<button type="button" class="quiz-nav-btn quiz-nav-primary" onclick="sendQuizAction('start')">🔄 Reiniciar Quiz</button>`
+          : (isLast
+              ? `<button type="button" id="btn-quiz-next" class="quiz-nav-btn quiz-nav-primary" onclick="sendQuizAction('finish')">🏁 Ver Ranking Final</button>`
+              : `<button type="button" id="btn-quiz-next" class="quiz-nav-btn quiz-nav-primary" onclick="sendQuizAction('next')">➡️ Próxima Questão</button>`);
+        adminBarEl.innerHTML = `
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" id="btn-quiz-devices" class="quiz-nav-btn" onclick="openDevicesModal()">👥 Dispositivos (${devicesList.length})</button>
+            <button type="button" id="btn-quiz-close" class="quiz-nav-btn" onclick="sendQuizAction('close')">✕ Voltar aos Slides</button>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" id="btn-quiz-prev" class="quiz-nav-btn" onclick="sendQuizAction('prev')" ${(quizState.qIdx || 0) === 0 && quizState.phase !== 'finished' ? 'disabled' : ''}>⬅️ Anterior</button>
+            ${nextBtn}
+          </div>`;
+      } else {
+        adminBarEl.classList.add("hidden");
+        adminBarEl.innerHTML = "";
+      }
+    }
+
+    function openDevicesModal() {
+      if (userRole !== "admin") return;
+      renderDevicesList();
+      document.getElementById("quiz-devices-modal").classList.remove("hidden");
+    }
+
+    function closeDevicesModal() {
+      document.getElementById("quiz-devices-modal").classList.add("hidden");
+    }
+
+    function refreshDevicesModalIfOpen() {
+      const modal = document.getElementById("quiz-devices-modal");
+      if (modal && !modal.classList.contains("hidden")) {
+        renderDevicesList();
+      }
+    }
+
+    function renderDevicesList() {
+      const box = document.getElementById("quiz-devices-list");
+      if (!box) return;
+      const sorted = [...devicesList].sort((a, b) => {
+        if (a.role !== b.role) return a.role === "viewer" ? -1 : 1;
+        return (b.score || 0) - (a.score || 0) || a.name.localeCompare(b.name);
+      });
+      let html = `<table class="devices-table"><thead><tr><th>Nome do Dispositivo</th><th>Função</th><th>Pontos</th><th>Ação</th></tr></thead><tbody>`;
+      sorted.forEach((d) => {
+        const roleTxt = d.role === "viewer" ? "👁️ Espectador" : "👑 Admin";
+        const ptsTxt = d.role === "viewer" ? `<strong style="color:#34d399;">${d.score || 0} pts</strong>` : "—";
+        const canPing = d.peerId && d.peerId !== myPeerId && d.peerId !== "host";
+        const pingBtn = canPing
+          ? `<button type="button" class="hud-btn" data-ping-peer="${escapeHtml(d.peerId)}" onclick="adminPingDevice('${escapeHtml(d.peerId)}')">🔔 Pingar</button>`
+          : `<span style="font-size:11px; color:#64748b;">(Você)</span>`;
+        html += `<tr><td><strong>${escapeHtml(d.name)}</strong></td><td>${roleTxt}</td><td>${ptsTxt}</td><td>${pingBtn}</td></tr>`;
+      });
+      html += `</tbody></table>`;
+      box.innerHTML = html;
+    }
+
+    function adminPingDevice(targetPeerId) {
+      if (userRole !== "admin") return;
+      if (isHost) {
+        executeHostQuizAction("ping", { targetPeerId }, myDisplayName);
+      } else if (clientConn && clientConn.open) {
+        clientConn.send({ type: "REQ_QUIZ_ACTION", action: "ping", targetPeerId });
+      }
+      const btn = document.querySelector(`[data-ping-peer="${targetPeerId}"]`);
+      if (btn) {
+        btn.textContent = "✓ Ping enviado";
+        setTimeout(() => { if (btn) btn.textContent = "🔔 Pingar"; }, 1400);
+      }
+    }
+
+    function showPingToast(msg) {
+      const toast = document.getElementById("ping-toast");
+      document.getElementById("ping-toast-text").textContent = msg;
+      toast.classList.remove("hidden");
+      clearTimeout(pingToastTimer);
+      pingToastTimer = setTimeout(dismissPingToast, 7000);
+    }
+
+    function dismissPingToast() {
+      clearTimeout(pingToastTimer);
+      document.getElementById("ping-toast").classList.add("hidden");
+    }
+
     function leaveRoom() {
       userRole = null;
       isHost = false;
+      qrModalOpen = false;
+      quizState = { active: false, phase: "question", qIdx: 0, session: 0 };
+      devicesList = [];
+      clearTimeout(hudIdleTimer);
+      dismissPingToast();
       if (peer) { try { peer.destroy(); } catch (_) {} peer = null; }
       document.body.classList.remove("viewer-locked");
-      document.getElementById("room-hud").style.display = "none";
+      document.getElementById("qr-modal").classList.add("hidden");
+      document.getElementById("quiz-overlay").classList.add("hidden");
+      document.getElementById("quiz-devices-modal").classList.add("hidden");
+      const hud = document.getElementById("room-hud");
+      hud.style.display = "none";
+      hud.classList.remove("hud-idle");
       document.getElementById("webrtc-lobby").classList.remove("hidden");
       document.getElementById("lobby-status").className = "status-box";
     }
 
-    // Pre-preencher sala se vier ?room=... na URL
+    // Listeners para acordar/ocultar a barra superior conforme movimento do mouse
+    ["mousemove", "mousedown", "touchstart", "keydown"].forEach((evt) => {
+      window.addEventListener(evt, wakeHud, { passive: true });
+    });
+    const hudEl = document.getElementById("room-hud");
+    hudEl.addEventListener("mouseenter", () => { hudHovered = true; wakeHud(); });
+    hudEl.addEventListener("mouseleave", () => { hudHovered = false; scheduleHudIdle(); });
+
+    // Pre-preencher APENAS o nome da sala se vier ?room=... na URL (nunca entra direto nem preenche senha)
     const initRoom = new URLSearchParams(window.location.search).get("room");
     if (initRoom) {
+      switchLobbyTab("join");
       document.getElementById("join-room-name").value = initRoom;
+      document.getElementById("join-password").value = "";
+      showStatus("Sala '" + initRoom + "' preenchida. Informe a senha (Administrador) ou deixe vazia (Espectador) e clique em Entrar.");
     }
   </script>
 </body>
